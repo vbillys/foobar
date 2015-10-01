@@ -1,0 +1,24 @@
+<launch>
+    <arg name="debug_0" default="false" />
+    <arg name="debug_1" default="false" />
+    <arg name="debug_2" default="false" />
+    <arg name="debug_3" default="false" />
+    <arg name="debug_left"  default="false" />
+    <arg name="debug_right" default="false" />
+    <arg name="debug_6" default="false" />
+    <arg name="process_layer" default="16" />
+    <arg name="simul_until" default="0" />
+
+    <node name="curb_detect_node" pkg="foobar" type="cloud_filter" output="screen">
+         <param name="debug_flag_0" value="$(arg debug_0)" type="bool" />
+         <param name="debug_flag_1" value="$(arg debug_1)" type="bool" />
+         <param name="debug_flag_2" value="$(arg debug_2)" type="bool" />
+         <param name="debug_flag_3" value="$(arg debug_3)" type="bool" />
+         <param name="debug_flag_left"  value="$(arg debug_left)"  type="bool" />
+         <param name="debug_flag_right" value="$(arg debug_right)" type="bool" />
+         <param name="debug_flag_6" value="$(arg debug_6)" type="bool" />
+         <param name="process_layer" value="$(arg process_layer)" type="int" />
+         <param name="simul_until" value="$(arg simul_until)" type="double" />
+    </node>
+
+</launch>

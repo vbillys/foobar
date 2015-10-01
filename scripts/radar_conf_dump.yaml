@@ -1,0 +1,5 @@
+radar_packet:
+  devices:
+  - {interface: can0, name_id: center_front}
+  - {interface: can1, name_id: left_front}
+  - {interface: can2, name_id: right_front}

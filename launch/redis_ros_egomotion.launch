@@ -1,0 +1,7 @@
+<launch>
+	<node name="redis_ros_nodelet" pkg="nodelet" type="nodelet" output="screen" args="load foobar/alphard_egomotion_talker_rosredis.py redis_ros_nodelet_manager"> <!-- screen/log -->
+		
+	</node>
+
+</launch>
+<!--<node name="redis_ros_egomotion" pkg="foobar" type="alphard_egomotion_talker_rosredis.py" output="screen"> -->

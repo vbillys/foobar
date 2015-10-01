@@ -1,0 +1,436 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+APPROX_HALF_ANGLE	cloud_filter _multi_backup20150723.cpp	106;"	d	file:
+APPROX_HALF_ANGLE	cloud_filter.cpp	124;"	d	file:
+APPROX_HALF_ANGLE	cloud_filter_multi_backup.cpp	101;"	d	file:
+APPROX_HALF_ANGLE	cloud_filter_multi_sorted_20150724.cpp	114;"	d	file:
+APPROX_HALF_ANGLE	cloud_filter_one_ring.cpp	113;"	d	file:
+APPROX_HALF_ANGLE	cloud_filter_one_ring_debug.cpp	126;"	d	file:
+APPROX_HALF_ANGLE	cloud_filter_one_ring_finetuned.cpp	137;"	d	file:
+AllCellPoints	cloud_test_crf.cpp	/^typedef std::vector<CellPoints> AllCellPoints;$/;"	t	file:
+BasicFilter	debug_print.hpp	/^    BasicFilter(bool enabled)$/;"	f	struct:globaldebugdata::BasicFilter
+BasicFilter	debug_print.hpp	/^    struct BasicFilter : public ros::console::FilterBase$/;"	s	namespace:globaldebugdata
+CLOUD_UTIL_H_CURB_DETECT	cloud_util.h	3;"	d
+COMMON_H_CURB_DETECT	common.h	2;"	d
+CROSS_PROD_DIST	cloud_filter _multi_backup20150723.cpp	342;"	d	file:
+CROSS_PROD_DIST	cloud_filter.cpp	483;"	d	file:
+CROSS_PROD_DIST	cloud_filter_multi_backup.cpp	308;"	d	file:
+CROSS_PROD_DIST	cloud_filter_multi_sorted_20150724.cpp	434;"	d	file:
+CROSS_PROD_DIST	cloud_filter_one_ring.cpp	246;"	d	file:
+CROSS_PROD_DIST	cloud_filter_one_ring_debug.cpp	265;"	d	file:
+CROSS_PROD_DIST	cloud_filter_one_ring_finetuned.cpp	279;"	d	file:
+CURB_YDIFF_THRESHOLD	cloud_filter _multi_backup20150723.cpp	403;"	d	file:
+CURB_YDIFF_THRESHOLD	cloud_filter.cpp	716;"	d	file:
+CURB_YDIFF_THRESHOLD	cloud_filter_multi_backup.cpp	368;"	d	file:
+CURB_YDIFF_THRESHOLD	cloud_filter_multi_sorted_20150724.cpp	495;"	d	file:
+CURB_YDIFF_THRESHOLD	cloud_filter_one_ring.cpp	402;"	d	file:
+CURB_YDIFF_THRESHOLD	cloud_filter_one_ring_debug.cpp	421;"	d	file:
+CURB_YDIFF_THRESHOLD	cloud_filter_one_ring_finetuned.cpp	435;"	d	file:
+CURB_ZCROSS_THRESHOLD	cloud_filter _multi_backup20150723.cpp	343;"	d	file:
+CURB_ZCROSS_THRESHOLD	cloud_filter.cpp	484;"	d	file:
+CURB_ZCROSS_THRESHOLD	cloud_filter_multi_backup.cpp	309;"	d	file:
+CURB_ZCROSS_THRESHOLD	cloud_filter_multi_sorted_20150724.cpp	435;"	d	file:
+CURB_ZCROSS_THRESHOLD	cloud_filter_one_ring.cpp	247;"	d	file:
+CURB_ZCROSS_THRESHOLD	cloud_filter_one_ring_debug.cpp	266;"	d	file:
+CURB_ZCROSS_THRESHOLD	cloud_filter_one_ring_finetuned.cpp	280;"	d	file:
+CURB_ZHEIGHT_THRESHOLD	cloud_filter _multi_backup20150723.cpp	402;"	d	file:
+CURB_ZHEIGHT_THRESHOLD	cloud_filter.cpp	715;"	d	file:
+CURB_ZHEIGHT_THRESHOLD	cloud_filter_multi_backup.cpp	367;"	d	file:
+CURB_ZHEIGHT_THRESHOLD	cloud_filter_multi_sorted_20150724.cpp	494;"	d	file:
+CURB_ZHEIGHT_THRESHOLD	cloud_filter_one_ring.cpp	401;"	d	file:
+CURB_ZHEIGHT_THRESHOLD	cloud_filter_one_ring_debug.cpp	420;"	d	file:
+CURB_ZHEIGHT_THRESHOLD	cloud_filter_one_ring_finetuned.cpp	434;"	d	file:
+CellBoundaries	cloud_test_crf.cpp	/^typedef arma::field<CellBoundary2D> CellBoundaries;$/;"	t	file:
+CellBoundary2D	cloud_test_crf.cpp	/^} CellBoundary2D;$/;"	t	typeref:struct:__anon1	file:
+CellBoundary2DRow	cloud_test_crf.cpp	/^typedef arma::Row<float> CellBoundary2DRow;$/;"	t	file:
+CellPoints	cloud_test_crf.cpp	/^typedef std::vector<arma::fmat> CellPoints;$/;"	t	file:
+CellPoints3DMat	cloud_test_crf.cpp	/^typedef arma::Mat<float> CellPoints3DMat;$/;"	t	file:
+CloudProcessor	cloud_test_crf.cpp	/^  CloudProcessor()$/;"	f	class:CloudProcessor
+CloudProcessor	cloud_test_crf.cpp	/^class CloudProcessor$/;"	c	file:
+CloudUtil	cloud_util.h	/^CloudUtil(){};$/;"	f	class:cloud_util::CloudUtil
+CloudUtil	cloud_util.h	/^CloudUtil(VPointCloud::Ptr & cloud)$/;"	f	class:cloud_util::CloudUtil
+CloudUtil	cloud_util.h	/^class CloudUtil$/;"	c	namespace:cloud_util
+CurbRing	cloud_filter _multi_backup20150723.cpp	/^}CurbRing;$/;"	t	typeref:struct:__anon6	file:
+CurbRing	cloud_filter.cpp	/^}CurbRing;$/;"	t	typeref:struct:__anon10	file:
+CurbRing	cloud_filter_multi_backup.cpp	/^}CurbRing;$/;"	t	typeref:struct:__anon9	file:
+CurbRing	cloud_filter_multi_sorted_20150724.cpp	/^}CurbRing;$/;"	t	typeref:struct:__anon4	file:
+DATA_TYPES_CURB_DETECT	data_types.h	2;"	d
+DEBUG_PRINT_CURB_DETECT	debug_print.hpp	2;"	d
+DEBUG_TEST_0	debug_print.hpp	7;"	d
+DEBUG_TEST_1	debug_print.hpp	8;"	d
+DEBUG_TEST_2	debug_print.hpp	9;"	d
+DEBUG_TEST_3	debug_print.hpp	10;"	d
+DEBUG_TEST_4	debug_print.hpp	11;"	d
+DEBUG_TEST_5	debug_print.hpp	12;"	d
+DEBUG_TEST_6	debug_print.hpp	13;"	d
+DebugFlags	debug_print.hpp	/^    class DebugFlags{$/;"	c	namespace:globaldebugdata
+EulerTransformParameters	data_types.h	/^} EulerTransformParameters;$/;"	t	typeref:struct:__anon7
+GlobalDebugData	debug_print.hpp	/^class GlobalDebugData{$/;"	c
+ImageConverter	image_saver.cpp	/^  ImageConverter()$/;"	f	class:ImageConverter
+ImageConverter	image_saver.cpp	/^class ImageConverter$/;"	c	file:
+IndexedAngle	cloud_filter.cpp	/^} IndexedAngle;$/;"	t	typeref:struct:__anon11	file:
+IndexedAngle	cloud_filter_multi_sorted_20150724.cpp	/^} IndexedAngle;$/;"	t	typeref:struct:__anon5	file:
+IndexedAngle	data_types.h	/^} IndexedAngle;$/;"	t	typeref:struct:__anon8
+LIMIT_ANGLE	cloud_filter _multi_backup20150723.cpp	107;"	d	file:
+LIMIT_ANGLE	cloud_filter.cpp	125;"	d	file:
+LIMIT_ANGLE	cloud_filter_multi_backup.cpp	102;"	d	file:
+LIMIT_ANGLE	cloud_filter_multi_sorted_20150724.cpp	115;"	d	file:
+LIMIT_ANGLE	cloud_filter_one_ring.cpp	114;"	d	file:
+LIMIT_ANGLE	cloud_filter_one_ring_debug.cpp	127;"	d	file:
+LIMIT_ANGLE	cloud_filter_one_ring_finetuned.cpp	138;"	d	file:
+MinAngle	data_types.h	/^typedef float         MinAngle[16];$/;"	t
+MinIndex	data_types.h	/^typedef int           MinIndex[16];$/;"	t
+NoOfPointsRings	data_types.h	/^typedef int           NoOfPointsRings[16];$/;"	t
+OPENCV_WINDOW	image_saver.cpp	/^static const std::string OPENCV_WINDOW = "Image window";$/;"	v	file:
+OrganizedPointCloud	data_types.h	/^struct  OrganizedPointCloud{$/;"	s
+PI	cloud_filter _multi_backup20150723.cpp	66;"	d	file:
+PI	cloud_filter.cpp	70;"	d	file:
+PI	cloud_filter_multi_backup.cpp	61;"	d	file:
+PI	cloud_filter_multi_sorted_20150724.cpp	69;"	d	file:
+PI	cloud_filter_one_ring.cpp	36;"	d	file:
+PI	cloud_filter_one_ring_debug.cpp	44;"	d	file:
+PI	cloud_filter_one_ring_finetuned.cpp	55;"	d	file:
+PI	common.h	20;"	d
+Ptr	debug_print.hpp	/^    typedef boost::shared_ptr<BasicFilter> Ptr;$/;"	t	struct:globaldebugdata::BasicFilter
+RING_NO	cloud_filter _multi_backup20150723.cpp	984;"	d	file:
+RING_NO	cloud_filter.cpp	1299;"	d	file:
+RING_NO	cloud_filter_multi_backup.cpp	947;"	d	file:
+RING_NO	cloud_filter_multi_sorted_20150724.cpp	1076;"	d	file:
+RING_NO	cloud_filter_one_ring.cpp	116;"	d	file:
+RING_NO	cloud_filter_one_ring_debug.cpp	129;"	d	file:
+RING_NO	cloud_filter_one_ring_finetuned.cpp	140;"	d	file:
+RingCell	cloud_test_crf.cpp	/^} RingCell;$/;"	t	typeref:struct:__anon2	file:
+RingPointCloud	data_types.h	/^typedef VPointCloud::Ptr   RingPointCloud[16];$/;"	t
+SEGMENT_DIST_FILTER	cloud_filter _multi_backup20150723.cpp	1224;"	d	file:
+SEGMENT_DIST_FILTER	cloud_filter.cpp	1540;"	d	file:
+SEGMENT_DIST_FILTER	cloud_filter_multi_backup.cpp	1187;"	d	file:
+SEGMENT_DIST_FILTER	cloud_filter_multi_sorted_20150724.cpp	1317;"	d	file:
+SEGMENT_DIST_FILTER	cloud_filter_one_ring.cpp	336;"	d	file:
+SEGMENT_DIST_FILTER	cloud_filter_one_ring_debug.cpp	355;"	d	file:
+SEGMENT_DIST_FILTER	cloud_filter_one_ring_finetuned.cpp	369;"	d	file:
+T	qui.cpp	/^typedef float T;                  \/* type of item to be sorted *\/$/;"	t	file:
+VAngleData	data_types.h	/^typedef float VAngleData[32000];$/;"	t
+VAngleDataOrg	data_types.h	/^typedef IndexedAngle VAngleDataOrg[2000];$/;"	t
+VAngleDataOrgRings	data_types.h	/^typedef VAngleDataOrg VAngleDataOrgRings[16];$/;"	t
+VELO_DATA_CURB_DETECT	data/velo_data.h	2;"	d
+VLP16PointCloud	data/velo_data.cpp	/^	VLP16PointCloud::VLP16PointCloud(const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f	class:velodyne_process_data::VLP16PointCloud
+VLP16PointCloud	data/velo_data.h	/^	class VLP16PointCloud{$/;"	c	namespace:velodyne_process_data
+VPoint	cloud_filter _multi_backup20150723.cpp	/^typedef velodyne_rawdata::VPoint VPoint;$/;"	t	file:
+VPoint	cloud_filter.cpp	/^typedef velodyne_rawdata::VPoint VPoint;$/;"	t	file:
+VPoint	cloud_filter_multi_backup.cpp	/^typedef velodyne_rawdata::VPoint VPoint;$/;"	t	file:
+VPoint	cloud_filter_multi_sorted_20150724.cpp	/^typedef velodyne_rawdata::VPoint VPoint;$/;"	t	file:
+VPoint	cloud_filter_one_ring.cpp	/^typedef velodyne_rawdata::VPoint VPoint;$/;"	t	file:
+VPoint	cloud_filter_one_ring_debug.cpp	/^typedef velodyne_rawdata::VPoint VPoint;$/;"	t	file:
+VPoint	cloud_filter_one_ring_finetuned.cpp	/^typedef velodyne_rawdata::VPoint VPoint;$/;"	t	file:
+VPoint	cloud_repub.cpp	/^typedef velodyne_rawdata::VPoint VPoint;$/;"	t	file:
+VPoint	data_types.h	/^typedef velodyne_rawdata::VPoint VPoint;$/;"	t
+VPointCloud	cloud_filter _multi_backup20150723.cpp	/^typedef velodyne_rawdata::VPointCloud VPointCloud;$/;"	t	file:
+VPointCloud	cloud_filter.cpp	/^typedef velodyne_rawdata::VPointCloud VPointCloud;$/;"	t	file:
+VPointCloud	cloud_filter_multi_backup.cpp	/^typedef velodyne_rawdata::VPointCloud VPointCloud;$/;"	t	file:
+VPointCloud	cloud_filter_multi_sorted_20150724.cpp	/^typedef velodyne_rawdata::VPointCloud VPointCloud;$/;"	t	file:
+VPointCloud	cloud_filter_one_ring.cpp	/^typedef velodyne_rawdata::VPointCloud VPointCloud;$/;"	t	file:
+VPointCloud	cloud_filter_one_ring_debug.cpp	/^typedef velodyne_rawdata::VPointCloud VPointCloud;$/;"	t	file:
+VPointCloud	cloud_filter_one_ring_finetuned.cpp	/^typedef velodyne_rawdata::VPointCloud VPointCloud;$/;"	t	file:
+VPointCloud	cloud_repub.cpp	/^typedef velodyne_rawdata::VPointCloud VPointCloud;$/;"	t	file:
+VPointCloud	data_types.h	/^typedef velodyne_rawdata::VPointCloud VPointCloud;$/;"	t
+ZVCand	cloud_filter.cpp	/^} ZVCand;$/;"	t	typeref:struct:__anon12	file:
+Z_CUT_LIMIT	cloud_filter _multi_backup20150723.cpp	108;"	d	file:
+Z_CUT_LIMIT	cloud_filter.cpp	126;"	d	file:
+Z_CUT_LIMIT	cloud_filter_multi_backup.cpp	103;"	d	file:
+Z_CUT_LIMIT	cloud_filter_multi_sorted_20150724.cpp	116;"	d	file:
+Z_CUT_LIMIT	cloud_filter_one_ring.cpp	115;"	d	file:
+Z_CUT_LIMIT	cloud_filter_one_ring_debug.cpp	128;"	d	file:
+Z_CUT_LIMIT	cloud_filter_one_ring_finetuned.cpp	139;"	d	file:
+_test	_rubish.cpp	/^    static int _test = 0;$/;"	v	file:
+allocateDataMem	data/velo_data.cpp	/^	void VLP16PointCloud::allocateDataMem()$/;"	f	class:velodyne_process_data::VLP16PointCloud
+angle	cloud_filter.cpp	/^	float angle;$/;"	m	struct:__anon11	file:
+angle	cloud_filter_multi_sorted_20150724.cpp	/^	float angle;$/;"	m	struct:__anon5	file:
+angle	data_types.h	/^	float angle;$/;"	m	struct:__anon8
+angle_data_	cloud_util.h	/^    VAngleData    angle_data_;$/;"	m	class:cloud_util::CloudUtil
+angle_data_org_rings_	cloud_util.h	/^    VAngleDataOrgRings angle_data_org_rings_;$/;"	m	class:cloud_util::CloudUtil
+angle_data_orgs	data_types.h	/^	VAngleDataOrgRings angle_data_orgs;$/;"	m	struct:OrganizedPointCloud
+boundary	cloud_test_crf.cpp	/^	CellBoundary2D boundary;$/;"	m	struct:__anon2	file:
+clearFrame	cloud_util.cpp	/^void CloudUtil::clearFrame(velodyne_rawdata::VPointCloud::Ptr &cloud)$/;"	f	class:cloud_util::CloudUtil
+cloudCb	cloud_test_crf.cpp	/^  void cloudCb(const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f	class:CloudProcessor
+cloudProcess	cloud_filter _multi_backup20150723.cpp	/^CurbRing cloudProcess ( const VPointCloud::Ptr& outMsg_debug , int ring_no)$/;"	f
+cloudProcess	cloud_filter.cpp	/^CurbRing cloudProcess ( const VPointCloud::Ptr& outMsg_debug , int ring_no, std::vector<ZVCand> &cand_accum_z_right, std::vector<ZVCand> &cand_accum_z_left)$/;"	f
+cloudProcess	cloud_filter_multi_backup.cpp	/^CurbRing cloudProcess ( const VPointCloud::Ptr& outMsg_debug , int ring_no)$/;"	f
+cloudProcess	cloud_filter_multi_sorted_20150724.cpp	/^CurbRing cloudProcess ( const VPointCloud::Ptr& outMsg_debug , int ring_no)$/;"	f
+cloud_	cloud_util.h	/^    VPointCloud cloud_;$/;"	m	class:cloud_util::CloudUtil
+cloud_cb	_rubish.cpp	/^void cloud_cb (const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg)$/;"	f
+cloud_cb	cloud_filter _multi_backup20150723.cpp	/^void cloud_cb (const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg)$/;"	f
+cloud_cb	cloud_filter.cpp	/^void cloud_cb (const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg)$/;"	f
+cloud_cb	cloud_filter_multi_backup.cpp	/^void cloud_cb (const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg)$/;"	f
+cloud_cb	cloud_filter_multi_sorted_20150724.cpp	/^void cloud_cb (const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg)$/;"	f
+cloud_cb	cloud_filter_one_ring.cpp	/^void cloud_cb (const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg)$/;"	f
+cloud_cb	cloud_filter_one_ring_debug.cpp	/^void cloud_cb (const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg)$/;"	f
+cloud_cb	cloud_filter_one_ring_finetuned.cpp	/^void cloud_cb (const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg)$/;"	f
+cloud_cb	cloud_repub.cpp	/^void cloud_cb (const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg)$/;"	f
+cloud_cb_2	cloud_filter _multi_backup20150723.cpp	/^void cloud_cb_2 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_2	cloud_filter.cpp	/^void cloud_cb_2 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_2	cloud_filter_multi_backup.cpp	/^void cloud_cb_2 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_2	cloud_filter_multi_sorted_20150724.cpp	/^void cloud_cb_2 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_2	cloud_filter_one_ring.cpp	/^void cloud_cb_2 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_2	cloud_filter_one_ring_debug.cpp	/^void cloud_cb_2 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_2	cloud_filter_one_ring_finetuned.cpp	/^void cloud_cb_2 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_2	cloud_repub.cpp	/^void cloud_cb_2 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_2	cloud_test_crf.cpp	/^void cloud_cb_2 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_3	cloud_filter _multi_backup20150723.cpp	/^void cloud_cb_3 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_3	cloud_filter.cpp	/^void cloud_cb_3 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_3	cloud_filter_multi_backup.cpp	/^void cloud_cb_3 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_3	cloud_filter_multi_sorted_20150724.cpp	/^void cloud_cb_3 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_3	cloud_filter_one_ring_debug.cpp	/^void cloud_cb_3 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_cb_3	cloud_filter_one_ring_finetuned.cpp	/^void cloud_cb_3 (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)$/;"	f
+cloud_util	cloud_util.cpp	/^namespace cloud_util {$/;"	n	file:
+cloud_util	cloud_util.h	/^namespace cloud_util {$/;"	n
+compGT	qui.cpp	9;"	d	file:
+compLT	qui.cpp	10;"	d	file:
+compareIndexedAngle	cloud_filter.cpp	/^int compareIndexedAngle (const void * a, const void * b)$/;"	f
+compareIndexedAngle	cloud_filter_multi_sorted_20150724.cpp	/^int compareIndexedAngle (const void * a, const void * b)$/;"	f
+compareIndexedAngle	common.cpp	/^int compareIndexedAngle (const void * a, const void * b)$/;"	f
+convertToRingsData	data/velo_data.cpp	/^	void VLP16PointCloud::convertToRingsData()$/;"	f	class:velodyne_process_data::VLP16PointCloud
+convertToRingsDataFromROI	data/velo_data.cpp	/^	void VLP16PointCloud::convertToRingsDataFromROI()$/;"	f	class:velodyne_process_data::VLP16PointCloud
+convertToRingsDataFromTransformed	data/velo_data.cpp	/^	void VLP16PointCloud::convertToRingsDataFromTransformed()$/;"	f	class:velodyne_process_data::VLP16PointCloud
+cu_	data/velo_data.h	/^		    cloud_util::CloudUtil cu_;$/;"	m	class:velodyne_process_data::VLP16PointCloud
+data_invalid	cloud_filter _multi_backup20150723.cpp	/^	bool  data_invalid;$/;"	m	struct:__anon6	file:
+data_invalid	cloud_filter.cpp	/^	bool  data_invalid;$/;"	m	struct:__anon10	file:
+data_invalid	cloud_filter_multi_backup.cpp	/^	bool  data_invalid;$/;"	m	struct:__anon9	file:
+data_invalid	cloud_filter_multi_sorted_20150724.cpp	/^	bool  data_invalid;$/;"	m	struct:__anon4	file:
+debug_print_0	debug_print.hpp	146;"	d
+debug_print_1	debug_print.hpp	149;"	d
+debug_print_2	debug_print.hpp	152;"	d
+debug_print_3	debug_print.hpp	155;"	d
+debug_print_4	debug_print.hpp	158;"	d
+debug_print_5	debug_print.hpp	161;"	d
+debug_print_6	_rubish.cpp	22;"	d	file:
+debug_print_6	debug_print.hpp	164;"	d
+enabled_	debug_print.hpp	/^    bool enabled_;$/;"	m	struct:globaldebugdata::BasicFilter
+fill	qui.cpp	/^void fill(T *a, tblIndex lb, tblIndex ub) {$/;"	f
+fp	cloud_filter _multi_backup20150723.cpp	/^FILE *fp;$/;"	v
+fp	cloud_filter.cpp	/^FILE *fp;$/;"	v
+fp	cloud_filter_multi_backup.cpp	/^FILE *fp;$/;"	v
+fp	cloud_filter_multi_sorted_20150724.cpp	/^FILE *fp;$/;"	v
+fp	cloud_filter_one_ring_debug.cpp	/^FILE *fp;$/;"	v
+fp	cloud_filter_one_ring_finetuned.cpp	/^FILE *fp;$/;"	v
+g_angle_data	cloud_filter _multi_backup20150723.cpp	/^float g_angle_data[32000];$/;"	v
+g_angle_data	cloud_filter.cpp	/^float g_angle_data[32000];$/;"	v
+g_angle_data	cloud_filter_multi_backup.cpp	/^float g_angle_data[32000];$/;"	v
+g_angle_data	cloud_filter_multi_sorted_20150724.cpp	/^float g_angle_data[32000];$/;"	v
+g_angle_data_ring	cloud_filter _multi_backup20150723.cpp	/^float g_angle_data_ring[16][1000];$/;"	v
+g_angle_data_ring	cloud_filter.cpp	/^float g_angle_data_ring[16][1000];$/;"	v
+g_angle_data_ring	cloud_filter_multi_backup.cpp	/^float g_angle_data_ring[16][1000];$/;"	v
+g_angle_data_ring	cloud_filter_multi_sorted_20150724.cpp	/^float g_angle_data_ring[16][1000];$/;"	v
+g_angle_data_ring	cloud_test_crf.cpp	/^float g_angle_data_ring[16][1000];$/;"	v
+g_angle_data_ring_org	cloud_filter _multi_backup20150723.cpp	/^float g_angle_data_ring_org[16][1000];$/;"	v
+g_angle_data_ring_org	cloud_filter.cpp	/^float g_angle_data_ring_org[16][1000];$/;"	v
+g_angle_data_ring_org	cloud_filter_multi_backup.cpp	/^float g_angle_data_ring_org[16][1000];$/;"	v
+g_angle_data_ring_org	cloud_filter_multi_sorted_20150724.cpp	/^float g_angle_data_ring_org[16][1000];$/;"	v
+g_angle_data_ring_org	cloud_test_crf.cpp	/^float g_angle_data_ring_org[16][1000];$/;"	v
+g_debug_test_0	cloud_filter.cpp	/^bool GlobalDebugData::g_debug_test_0 = DEBUG_TEST_0;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_0	cloud_test_crf.cpp	/^bool GlobalDebugData::g_debug_test_0 = DEBUG_TEST_0;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_0	debug_print.hpp	/^		static bool g_debug_test_0;\/\/ = DEBUG_TEST_0;$/;"	m	class:GlobalDebugData
+g_debug_test_0	debug_print.hpp	/^	        static BasicFilter::Ptr g_debug_test_0;$/;"	m	class:globaldebugdata::DebugFlags
+g_debug_test_1	cloud_filter.cpp	/^bool GlobalDebugData::g_debug_test_1 = DEBUG_TEST_1;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_1	cloud_test_crf.cpp	/^bool GlobalDebugData::g_debug_test_1 = DEBUG_TEST_1;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_1	debug_print.hpp	/^		static bool g_debug_test_1;\/\/ = DEBUG_TEST_1;$/;"	m	class:GlobalDebugData
+g_debug_test_1	debug_print.hpp	/^	        static BasicFilter::Ptr g_debug_test_1;$/;"	m	class:globaldebugdata::DebugFlags
+g_debug_test_2	cloud_filter.cpp	/^bool GlobalDebugData::g_debug_test_2 = DEBUG_TEST_2;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_2	cloud_test_crf.cpp	/^bool GlobalDebugData::g_debug_test_2 = DEBUG_TEST_2;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_2	debug_print.hpp	/^		static bool g_debug_test_2;\/\/ = DEBUG_TEST_2;$/;"	m	class:GlobalDebugData
+g_debug_test_2	debug_print.hpp	/^	        static BasicFilter::Ptr g_debug_test_2;$/;"	m	class:globaldebugdata::DebugFlags
+g_debug_test_3	cloud_filter.cpp	/^bool GlobalDebugData::g_debug_test_3 = DEBUG_TEST_3;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_3	cloud_test_crf.cpp	/^bool GlobalDebugData::g_debug_test_3 = DEBUG_TEST_3;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_3	debug_print.hpp	/^		static bool g_debug_test_3;\/\/ = DEBUG_TEST_3;$/;"	m	class:GlobalDebugData
+g_debug_test_3	debug_print.hpp	/^	        static BasicFilter::Ptr g_debug_test_3;$/;"	m	class:globaldebugdata::DebugFlags
+g_debug_test_4	cloud_filter.cpp	/^bool GlobalDebugData::g_debug_test_4 = DEBUG_TEST_4;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_4	cloud_test_crf.cpp	/^bool GlobalDebugData::g_debug_test_4 = DEBUG_TEST_4;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_4	debug_print.hpp	/^		static bool g_debug_test_4;\/\/ = DEBUG_TEST_4;$/;"	m	class:GlobalDebugData
+g_debug_test_4	debug_print.hpp	/^	        static BasicFilter::Ptr g_debug_test_4;$/;"	m	class:globaldebugdata::DebugFlags
+g_debug_test_5	cloud_filter.cpp	/^bool GlobalDebugData::g_debug_test_5 = DEBUG_TEST_5;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_5	cloud_test_crf.cpp	/^bool GlobalDebugData::g_debug_test_5 = DEBUG_TEST_5;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_5	debug_print.hpp	/^		static bool g_debug_test_5;\/\/ = DEBUG_TEST_5;$/;"	m	class:GlobalDebugData
+g_debug_test_5	debug_print.hpp	/^	        static BasicFilter::Ptr g_debug_test_5;$/;"	m	class:globaldebugdata::DebugFlags
+g_debug_test_6	_rubish.cpp	/^bool g_debug_test_6 = 0;$/;"	v
+g_debug_test_6	cloud_filter.cpp	/^bool GlobalDebugData::g_debug_test_6 = DEBUG_TEST_6;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_6	cloud_test_crf.cpp	/^bool GlobalDebugData::g_debug_test_6 = DEBUG_TEST_6;$/;"	m	class:GlobalDebugData	file:
+g_debug_test_6	debug_print.hpp	/^		static bool g_debug_test_6;\/\/ = DEBUG_TEST_6;$/;"	m	class:GlobalDebugData
+g_debug_test_6	debug_print.hpp	/^	        static BasicFilter::Ptr g_debug_test_6;$/;"	m	class:globaldebugdata::DebugFlags
+g_flag_process_ring	cloud_filter _multi_backup20150723.cpp	/^int g_flag_process_ring = 16;$/;"	v
+g_flag_process_ring	cloud_filter.cpp	/^int g_flag_process_ring = 16;$/;"	v
+g_flag_process_ring	cloud_filter_multi_sorted_20150724.cpp	/^int g_flag_process_ring = 16;$/;"	v
+g_flag_simul_until	cloud_filter _multi_backup20150723.cpp	/^double g_flag_simul_until = 0;$/;"	v
+g_flag_simul_until	cloud_filter.cpp	/^double g_flag_simul_until = 0;$/;"	v
+g_flag_simul_until	cloud_filter_multi_sorted_20150724.cpp	/^double g_flag_simul_until = 0;$/;"	v
+g_info_counter	cloud_filter _multi_backup20150723.cpp	/^unsigned int  g_info_counter = 0;$/;"	v
+g_info_counter	cloud_filter.cpp	/^unsigned int  g_info_counter = 0;$/;"	v
+g_info_counter	cloud_filter_multi_backup.cpp	/^unsigned int  g_info_counter = 0;$/;"	v
+g_info_counter	cloud_filter_multi_sorted_20150724.cpp	/^unsigned int  g_info_counter = 0;$/;"	v
+g_info_counter	cloud_filter_one_ring_debug.cpp	/^unsigned int  g_info_counter = 0;$/;"	v
+g_info_counter	cloud_filter_one_ring_finetuned.cpp	/^unsigned int  g_info_counter = 0;$/;"	v
+getDebugTest0Flag	debug_print.hpp	/^	    static bool getDebugTest0Flag(){return g_debug_test_0;}$/;"	f	class:GlobalDebugData
+getDebugTest1Flag	debug_print.hpp	/^	    static bool getDebugTest1Flag(){return g_debug_test_1;}$/;"	f	class:GlobalDebugData
+getDebugTest2Flag	debug_print.hpp	/^	    static bool getDebugTest2Flag(){return g_debug_test_2;}$/;"	f	class:GlobalDebugData
+getDebugTest3Flag	debug_print.hpp	/^	    static bool getDebugTest3Flag(){return g_debug_test_3;}$/;"	f	class:GlobalDebugData
+getDebugTest4Flag	debug_print.hpp	/^	    static bool getDebugTest4Flag(){return g_debug_test_4;}$/;"	f	class:GlobalDebugData
+getDebugTest5Flag	debug_print.hpp	/^	    static bool getDebugTest5Flag(){return g_debug_test_5;}$/;"	f	class:GlobalDebugData
+getDebugTest6Flag	debug_print.hpp	/^	    static bool getDebugTest6Flag(){return g_debug_test_6;}$/;"	f	class:GlobalDebugData
+getFlag0	debug_print.hpp	/^	        static BasicFilter::Ptr getFlag0(){return  g_debug_test_0;};$/;"	f	class:globaldebugdata::DebugFlags
+getFlag1	debug_print.hpp	/^	        static BasicFilter::Ptr getFlag1(){return  g_debug_test_1;};$/;"	f	class:globaldebugdata::DebugFlags
+getFlag2	debug_print.hpp	/^	        static BasicFilter::Ptr getFlag2(){return  g_debug_test_2;};$/;"	f	class:globaldebugdata::DebugFlags
+getFlag3	debug_print.hpp	/^	        static BasicFilter::Ptr getFlag3(){return  g_debug_test_3;};$/;"	f	class:globaldebugdata::DebugFlags
+getFlag4	debug_print.hpp	/^	        static BasicFilter::Ptr getFlag4(){return  g_debug_test_4;};$/;"	f	class:globaldebugdata::DebugFlags
+getFlag5	debug_print.hpp	/^	        static BasicFilter::Ptr getFlag5(){return  g_debug_test_5;};$/;"	f	class:globaldebugdata::DebugFlags
+getFlag6	debug_print.hpp	/^	        static BasicFilter::Ptr getFlag6(){return  g_debug_test_6;};$/;"	f	class:globaldebugdata::DebugFlags
+globaldebugdata	cloud_test_crf.cpp	/^namespace globaldebugdata{$/;"	n	file:
+globaldebugdata	debug_print.hpp	/^namespace globaldebugdata{$/;"	n
+got_left	cloud_filter _multi_backup20150723.cpp	/^	bool  got_left;$/;"	m	struct:__anon6	file:
+got_left	cloud_filter.cpp	/^	bool  got_left;$/;"	m	struct:__anon10	file:
+got_left	cloud_filter_multi_backup.cpp	/^	bool  got_left;$/;"	m	struct:__anon9	file:
+got_left	cloud_filter_multi_sorted_20150724.cpp	/^	bool  got_left;$/;"	m	struct:__anon4	file:
+got_right	cloud_filter _multi_backup20150723.cpp	/^	bool  got_right;$/;"	m	struct:__anon6	file:
+got_right	cloud_filter.cpp	/^	bool  got_right;$/;"	m	struct:__anon10	file:
+got_right	cloud_filter_multi_backup.cpp	/^	bool  got_right;$/;"	m	struct:__anon9	file:
+got_right	cloud_filter_multi_sorted_20150724.cpp	/^	bool  got_right;$/;"	m	struct:__anon4	file:
+imageCb	image_saver.cpp	/^  void imageCb(const sensor_msgs::ImageConstPtr& msg)$/;"	f	class:ImageConverter
+image_pub_	image_saver.cpp	/^  image_transport::Publisher image_pub_;$/;"	m	class:ImageConverter	file:
+image_sub_	image_saver.cpp	/^  image_transport::Subscriber image_sub_;$/;"	m	class:ImageConverter	file:
+index	cloud_filter.cpp	/^	int   index;$/;"	m	struct:__anon11	file:
+index	cloud_filter.cpp	/^	int   index;$/;"	m	struct:__anon12	file:
+index	cloud_filter_multi_sorted_20150724.cpp	/^	int   index;$/;"	m	struct:__anon5	file:
+index	data_types.h	/^	int   index;$/;"	m	struct:__anon8
+initHeader	data/velo_data.cpp	/^	void VLP16PointCloud::initHeader(VPointCloud::Ptr& cloud)$/;"	f	class:velodyne_process_data::VLP16PointCloud
+initHeaderPCs	data/velo_data.cpp	/^	void VLP16PointCloud::initHeaderPCs()$/;"	f	class:velodyne_process_data::VLP16PointCloud
+initHeaderPCsOrg	data/velo_data.cpp	/^	void VLP16PointCloud::initHeaderPCsOrg()$/;"	f	class:velodyne_process_data::VLP16PointCloud
+isEnabled	debug_print.hpp	/^    inline virtual bool isEnabled() { return enabled_; };$/;"	f	struct:globaldebugdata::BasicFilter
+it_	image_saver.cpp	/^  image_transport::ImageTransport it_;$/;"	m	class:ImageConverter	file:
+left_ind	cloud_filter.cpp	/^	int   left_ind;$/;"	m	struct:__anon10	file:
+left_x	cloud_filter _multi_backup20150723.cpp	/^	float left_x;$/;"	m	struct:__anon6	file:
+left_x	cloud_filter.cpp	/^	float left_x;$/;"	m	struct:__anon10	file:
+left_x	cloud_filter_multi_backup.cpp	/^	float left_x;$/;"	m	struct:__anon9	file:
+left_x	cloud_filter_multi_sorted_20150724.cpp	/^	float left_x;$/;"	m	struct:__anon4	file:
+left_y	cloud_filter _multi_backup20150723.cpp	/^	float left_y;$/;"	m	struct:__anon6	file:
+left_y	cloud_filter.cpp	/^	float left_y;$/;"	m	struct:__anon10	file:
+left_y	cloud_filter_multi_backup.cpp	/^	float left_y;$/;"	m	struct:__anon9	file:
+left_y	cloud_filter_multi_sorted_20150724.cpp	/^	float left_y;$/;"	m	struct:__anon4	file:
+main	cloud_filter _multi_backup20150723.cpp	/^int main(int argc, char** argv) $/;"	f
+main	cloud_filter.cpp	/^int main(int argc, char** argv) $/;"	f
+main	cloud_filter_multi_backup.cpp	/^int main(int argc, char** argv) $/;"	f
+main	cloud_filter_multi_sorted_20150724.cpp	/^int main(int argc, char** argv) $/;"	f
+main	cloud_filter_one_ring.cpp	/^int main(int argc, char** argv) $/;"	f
+main	cloud_filter_one_ring_debug.cpp	/^int main(int argc, char** argv) $/;"	f
+main	cloud_filter_one_ring_finetuned.cpp	/^int main(int argc, char** argv) $/;"	f
+main	cloud_repub.cpp	/^int main(int argc, char** argv) $/;"	f
+main	cloud_test_crf.cpp	/^int main(int argc, char** argv) $/;"	f
+main	image_saver.cpp	/^int main(int argc, char** argv)$/;"	f
+min_angle_	cloud_util.h	/^    float min_angle_;$/;"	m	class:cloud_util::CloudUtil
+min_index_	cloud_util.h	/^    int   min_index_;$/;"	m	class:cloud_util::CloudUtil
+nh	cloud_test_crf.cpp	/^  ros::NodeHandle nh;$/;"	m	class:CloudProcessor	file:
+nh_	image_saver.cpp	/^  ros::NodeHandle nh_;$/;"	m	class:ImageConverter	file:
+no_of_points	data_types.h	/^	NoOfPointsRings    no_of_points;$/;"	m	struct:OrganizedPointCloud
+normal_pdf	common.cpp	/^float normal_pdf(float x, float m, float s)$/;"	f
+org_data_	data/velo_data.h	/^		    OrganizedPointCloud org_data_;$/;"	m	class:velodyne_process_data::VLP16PointCloud
+p_not_roi_data_	data/velo_data.h	/^		    VPointCloud::Ptr p_not_roi_data_;$/;"	m	class:velodyne_process_data::VLP16PointCloud
+p_raw_data_	data/velo_data.h	/^		    VPointCloud::Ptr p_raw_data_;$/;"	m	class:velodyne_process_data::VLP16PointCloud
+p_raw_transformed_data_	data/velo_data.h	/^		    VPointCloud::Ptr p_raw_transformed_data_;$/;"	m	class:velodyne_process_data::VLP16PointCloud
+p_roi_data_	data/velo_data.h	/^		    VPointCloud::Ptr p_roi_data_;$/;"	m	class:velodyne_process_data::VLP16PointCloud
+partition	qui.cpp	/^tblIndex partition(T *x, tblIndex lb, tblIndex ub) {$/;"	f
+points	cloud_test_crf.cpp	/^	arma::fmat points;$/;"	m	struct:__anon2	file:
+pub	cloud_filter _multi_backup20150723.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub	cloud_filter.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub	cloud_filter_multi_backup.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub	cloud_filter_multi_sorted_20150724.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub	cloud_filter_one_ring.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub	cloud_filter_one_ring_debug.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub	cloud_filter_one_ring_finetuned.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub	cloud_repub.cpp	/^ros::Publisher  pub;$/;"	v
+pub	cloud_test_crf.cpp	/^  ros::Publisher  pub;$/;"	m	class:CloudProcessor	file:
+pub	cloud_test_crf.cpp	/^ros::Publisher  pub, pub_transformed;$/;"	v
+pub_curb	cloud_filter _multi_backup20150723.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_curb	cloud_filter.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_curb	cloud_filter_multi_backup.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_curb	cloud_filter_multi_sorted_20150724.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_curb	cloud_filter_one_ring.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_curb	cloud_filter_one_ring_debug.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_curb	cloud_filter_one_ring_finetuned.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_debug	cloud_filter _multi_backup20150723.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_debug	cloud_filter.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_debug	cloud_filter_multi_backup.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_debug	cloud_filter_multi_sorted_20150724.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_debug	cloud_filter_one_ring.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_debug	cloud_filter_one_ring_debug.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_debug	cloud_filter_one_ring_finetuned.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_transformed	cloud_filter _multi_backup20150723.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_transformed	cloud_filter.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_transformed	cloud_filter_multi_backup.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_transformed	cloud_filter_multi_sorted_20150724.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_transformed	cloud_filter_one_ring.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_transformed	cloud_filter_one_ring_debug.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_transformed	cloud_filter_one_ring_finetuned.cpp	/^ros::Publisher  pub, pub_debug, pub_curb, pub_transformed;$/;"	v
+pub_transformed	cloud_test_crf.cpp	/^  ros::Publisher  pub_transformed;$/;"	m	class:CloudProcessor	file:
+pub_transformed	cloud_test_crf.cpp	/^ros::Publisher  pub, pub_transformed;$/;"	v
+quickSort	qui.cpp	/^void quickSort(T *x, tblIndex lb, tblIndex ub) {$/;"	f
+quickSortImproved	qui.cpp	/^void quickSortImproved(T *x, tblIndex lb, tblIndex ub) {$/;"	f
+rangeSelectCloud	cloud_util.cpp	/^void CloudUtil::rangeSelectCloud(velodyne_rawdata::VPointCloud::Ptr &cloud_in$/;"	f	class:cloud_util::CloudUtil
+rangeSelectCloud	data/velo_data.cpp	/^	void VLP16PointCloud::rangeSelectCloud($/;"	f	class:velodyne_process_data::VLP16PointCloud
+right_ind	cloud_filter.cpp	/^	int   right_ind;$/;"	m	struct:__anon10	file:
+right_x	cloud_filter _multi_backup20150723.cpp	/^	float right_x;$/;"	m	struct:__anon6	file:
+right_x	cloud_filter.cpp	/^	float right_x;$/;"	m	struct:__anon10	file:
+right_x	cloud_filter_multi_backup.cpp	/^	float right_x;$/;"	m	struct:__anon9	file:
+right_x	cloud_filter_multi_sorted_20150724.cpp	/^	float right_x;$/;"	m	struct:__anon4	file:
+right_y	cloud_filter _multi_backup20150723.cpp	/^	float right_y;$/;"	m	struct:__anon6	file:
+right_y	cloud_filter.cpp	/^	float right_y;$/;"	m	struct:__anon10	file:
+right_y	cloud_filter_multi_backup.cpp	/^	float right_y;$/;"	m	struct:__anon9	file:
+right_y	cloud_filter_multi_sorted_20150724.cpp	/^	float right_y;$/;"	m	struct:__anon4	file:
+ring_point_cloud	data_types.h	/^    RingPointCloud     ring_point_cloud;$/;"	m	struct:OrganizedPointCloud
+ring_process	ring_process.cpp	/^namespace ring_process$/;"	n	file:
+ring_process	ring_process.h	/^namespace ring_process$/;"	n
+ros_data_	data/velo_data.h	/^		    sensor_msgs::PointCloud2ConstPtr& ros_data_;$/;"	m	class:velodyne_process_data::VLP16PointCloud
+setCloud	cloud_util.h	/^void setCloud(velodyne_rawdata::VPointCloud::Ptr &cloud){$/;"	f	class:cloud_util::CloudUtil
+setDebugTest0Flag	debug_print.hpp	/^	    static void setDebugTest0Flag(bool flag){g_debug_test_0 = flag;}$/;"	f	class:GlobalDebugData
+setDebugTest1Flag	debug_print.hpp	/^	    static void setDebugTest1Flag(bool flag){g_debug_test_1 = flag;}$/;"	f	class:GlobalDebugData
+setDebugTest2Flag	debug_print.hpp	/^	    static void setDebugTest2Flag(bool flag){g_debug_test_2 = flag;}$/;"	f	class:GlobalDebugData
+setDebugTest3Flag	debug_print.hpp	/^	    static void setDebugTest3Flag(bool flag){g_debug_test_3 = flag;}$/;"	f	class:GlobalDebugData
+setDebugTest4Flag	debug_print.hpp	/^	    static void setDebugTest4Flag(bool flag){g_debug_test_4 = flag;}$/;"	f	class:GlobalDebugData
+setDebugTest5Flag	debug_print.hpp	/^	    static void setDebugTest5Flag(bool flag){g_debug_test_5 = flag;}$/;"	f	class:GlobalDebugData
+setDebugTest6Flag	debug_print.hpp	/^	    static void setDebugTest6Flag(bool flag){g_debug_test_6 = flag;}$/;"	f	class:GlobalDebugData
+setFlag	debug_print.hpp	/^        void setFlag(bool is){$/;"	f	struct:globaldebugdata::BasicFilter
+setFlag0	debug_print.hpp	/^	        static void setFlag0(bool is){g_debug_test_0->setFlag(is);};$/;"	f	class:globaldebugdata::DebugFlags
+setFlag1	debug_print.hpp	/^	        static void setFlag1(bool is){g_debug_test_1->setFlag(is);};$/;"	f	class:globaldebugdata::DebugFlags
+setFlag2	debug_print.hpp	/^	        static void setFlag2(bool is){g_debug_test_2->setFlag(is);};$/;"	f	class:globaldebugdata::DebugFlags
+setFlag3	debug_print.hpp	/^	        static void setFlag3(bool is){g_debug_test_3->setFlag(is);};$/;"	f	class:globaldebugdata::DebugFlags
+setFlag4	debug_print.hpp	/^	        static void setFlag4(bool is){g_debug_test_4->setFlag(is);};$/;"	f	class:globaldebugdata::DebugFlags
+setFlag5	debug_print.hpp	/^	        static void setFlag5(bool is){g_debug_test_5->setFlag(is);};$/;"	f	class:globaldebugdata::DebugFlags
+setFlag6	debug_print.hpp	/^	        static void setFlag6(bool is){g_debug_test_6->setFlag(is);};$/;"	f	class:globaldebugdata::DebugFlags
+sortByInsertion	qui.cpp	/^void sortByInsertion(T *x, tblIndex lb, tblIndex ub) {$/;"	f
+sub	cloud_test_crf.cpp	/^  ros::Subscriber sub;$/;"	m	class:CloudProcessor	file:
+tblIndex	qui.cpp	/^typedef int tblIndex;           \/* type of subscript *\/$/;"	t	file:
+theta	_rubish.cpp	/^    double theta  = 22 * PI\/180;$/;"	v
+thetaX	_rubish.cpp	/^    double thetaX = -2 * PI\/180;$/;"	v
+theta_x	data_types.h	/^	double x, y, z, theta_x, theta_y, theta_z;$/;"	m	struct:__anon7
+theta_y	data_types.h	/^	double x, y, z, theta_x, theta_y, theta_z;$/;"	m	struct:__anon7
+theta_z	data_types.h	/^	double x, y, z, theta_x, theta_y, theta_z;$/;"	m	struct:__anon7
+transform	data/velo_data.cpp	/^	void VLP16PointCloud::transform(EulerTransformParameters &pose)$/;"	f	class:velodyne_process_data::VLP16PointCloud
+transformCloud	cloud_util.cpp	/^void CloudUtil::transformCloud(velodyne_rawdata::VPointCloud::Ptr cloud_in$/;"	f	class:cloud_util::CloudUtil
+transformPointCloud	_rubish.cpp	/^    pcl::transformPointCloud(*cloud,*cloud_transformed,transform_2);$/;"	m	class:pcl	file:
+transform_	data/velo_data.h	/^		    EulerTransformParameters transform_;$/;"	m	class:velodyne_process_data::VLP16PointCloud
+transform_2	_rubish.cpp	/^    Eigen::Affine3f transform_2 = Eigen::Affine3f::Identity();$/;"	v
+velodyne_process_data	data/velo_data.cpp	/^namespace velodyne_process_data{$/;"	n	file:
+velodyne_process_data	data/velo_data.h	/^namespace velodyne_process_data{$/;"	n
+x	cloud_filter.cpp	/^	float z,y,x;$/;"	m	struct:__anon12	file:
+x	data_types.h	/^	double x, y, z, theta_x, theta_y, theta_z;$/;"	m	struct:__anon7
+x0	cloud_test_crf.cpp	/^	float x0;$/;"	m	struct:__anon1	file:
+x1	cloud_test_crf.cpp	/^	float x1;$/;"	m	struct:__anon1	file:
+y	cloud_filter.cpp	/^	float z,y,x;$/;"	m	struct:__anon12	file:
+y	data_types.h	/^	double x, y, z, theta_x, theta_y, theta_z;$/;"	m	struct:__anon7
+y0	cloud_test_crf.cpp	/^	float y0;$/;"	m	struct:__anon1	file:
+y1	cloud_test_crf.cpp	/^	float y1;$/;"	m	struct:__anon1	file:
+z	cloud_filter.cpp	/^	float z,y,x;$/;"	m	struct:__anon12	file:
+z	data_types.h	/^	double x, y, z, theta_x, theta_y, theta_z;$/;"	m	struct:__anon7
+~CloudProcessor	cloud_test_crf.cpp	/^  ~CloudProcessor()$/;"	f	class:CloudProcessor
+~CloudUtil	cloud_util.h	/^~CloudUtil(){};$/;"	f	class:cloud_util::CloudUtil
+~ImageConverter	image_saver.cpp	/^  ~ImageConverter()$/;"	f	class:ImageConverter
+~VLP16PointCloud	data/velo_data.cpp	/^	VLP16PointCloud::~VLP16PointCloud()$/;"	f	class:velodyne_process_data::VLP16PointCloud
