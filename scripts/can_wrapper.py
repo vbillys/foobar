@@ -24,12 +24,13 @@ class CanSendThread(threading.Thread):
 		self.bus.send(msg)
 		
 class CanQueuePublishThread(threading.Thread):
-	def __init__ (self, can_polling_thread, pub_can_msg):
+	def __init__ (self, can_polling_thread, pub_can_msg, name_id):
 		self.can_polling_thread = can_polling_thread
 		self.thread_stop = False
 		self.counter = 0
 		self.canbus_msg = CanBusMsg()
 		self.pub_can_msg = pub_can_msg
+		self.name_id = name_id
 		threading.Thread.__init__ (self)
 
 	def setThreadStop(self, thread_stop):
@@ -43,6 +44,7 @@ class CanQueuePublishThread(threading.Thread):
 				self.canbus_msg.id = _msg.arbitration_id
 				self.canbus_msg.dlc = _msg.dlc
 				self.canbus_msg.data= [i for i in _msg.data]
+				self.canbus_msg.header.frame_id = self.name_id
 				# print type(_msg.data)
 				# print type(self.canbus_msg.id), type(_msg.arbitration_id)
 				# print format(self.canbus_msg.id,'04x'),format(_msg.arbitration_id,'04x')
@@ -95,9 +97,9 @@ class CanPollingThread(threading.Thread):
 			# return None
 
 
-def startCanThread(pub_can_msg, can_interface):
+def startCanThread(pub_can_msg, can_interface, name_id):
 	can_polling_thread = CanPollingThread(can_interface)
-	can_publish_thread = CanQueuePublishThread(can_polling_thread,pub_can_msg)
+	can_publish_thread = CanQueuePublishThread(can_polling_thread,pub_can_msg, name_id)
 	can_send_thread    = CanSendThread(can_polling_thread.getBus())
 	can_publish_thread.start()
 	can_polling_thread.start()
@@ -136,7 +138,7 @@ def startRosNode():
 		thread_list[device['interface']]['name_id'] = device['name_id']
 		pub_can_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+device['interface']+'/recv', CanBusMsg, queue_size=10)
 		pub_log_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+device['interface']+'/log' , String   , queue_size=10)
-		_thread = startCanThread(pub_can_msg[device['interface']], device['interface'])
+		_thread = startCanThread(pub_can_msg[device['interface']], device['interface'], device['name_id'])
 		thread_list[device['interface']]['can_publish_thread'] = _thread[0]
 		thread_list[device['interface']]['can_polling_thread'] = _thread[1]
 		thread_list[device['interface']]['can_send_thread']    = _thread[2]
