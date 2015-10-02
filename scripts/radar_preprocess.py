@@ -61,19 +61,19 @@ class RadarEsr:
             # self.pub_can_send.publish(msg)
             self.pub_result.publish('from '+self.name_id+' '+self.interface)
 
-def createRadarHandler(radar_list, name_id, interface, interface_type):
+def createRadarHandler(radar_list, name_id, interface, radar_type):
     radar_list[name_id] = {}
     pub_dict = {
             'esr': (rospy.Publisher ('radar_packet/'+interface+'/send'     , CanBusMsg, queue_size=10),
                     rospy.Publisher ('radar_packet/'+interface+'/processed', String   , queue_size=10)
                    )
             }
-    puber = pub_dict.get(interface_type,None)
+    puber = pub_dict.get(radar_type,None)
     handler_dict = {
             'esr': RadarEsr(puber[0], puber[1], name_id, interface)
             }
     # radar_handler = RadarEsr(puber[0], puber[1], name_id, interface)
-    radar_handler = handler_dict.get(interface_type)
+    radar_handler = handler_dict.get(radar_type)
     rospy.Subscriber('radar_packet/'+interface+'/recv', CanBusMsg, radar_handler.processRadar)
     radar_list[name_id]['handler'] = radar_handler
     # radar_list[name_id]['pub_can_send'] = handler[0]
@@ -90,16 +90,16 @@ def startRosNode(node_name):
 
     radar_list = {}
     for device in devices_conf:
-        _interface_type = 'esr' if re.search('esr',device['name_id']) else None
-        print device['interface'], device['name_id'], ' interface: ', _interface_type
-        if _interface_type:
+        _radar_type = 'esr' if re.search('esr',device['name_id']) else None
+        print device['interface'], device['name_id'], ' interface: ', _radar_type
+        if _radar_type:
             # radar_list[device['name_id']] = {}
             # _pub_can_send  = rospy.Publisher ('radar_packet/'+device['interface']+'/send'     , CanBusMsg, queue_size=10)
             # _pub_result    = rospy.Publisher ('radar_packet/'+device['interface']+'/processed', String, queue_size=10)
             # radar_list[device['name_id']]['pub_can_send'] = _pub_can_send 
             # radar_list[device['name_id']]['pub_result']   = _pub_result
 
-            createRadarHandler(radar_list, device['name_id'], device['interface'], _interface_type)
+            createRadarHandler(radar_list, device['name_id'], device['interface'], _radar_type)
 
             # rospy.Subscriber('radar_packet/'+device['interface']+'/recv', CanBusMsg, processRadarEsr)
 
