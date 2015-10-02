@@ -20,7 +20,7 @@ class CanSendThread(threading.Thread):
 		self.thread_stop = thread_stop
 
 	def callback(self, data):
-		msg = can.Message(arbitration_id=data.id, data=[i for i in data.data], extended_id=False)
+		msg = can.Message(arbitration_id=data.id, data=[i for i in data.data], extended_id=False, dlc=data.dlc)
 		self.bus.send(msg)
 		
 class CanQueuePublishThread(threading.Thread):
@@ -134,7 +134,7 @@ def startRosNode():
 	for device in devices_conf:
 		thread_list[device['interface']] = {}
 		thread_list[device['interface']]['name_id'] = device['name_id']
-		pub_can_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+device['interface']+'/read', CanBusMsg, queue_size=10)
+		pub_can_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+device['interface']+'/recv', CanBusMsg, queue_size=10)
 		pub_log_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+device['interface']+'/log' , String   , queue_size=10)
 		_thread = startCanThread(pub_can_msg[device['interface']], device['interface'])
 		thread_list[device['interface']]['can_publish_thread'] = _thread[0]
