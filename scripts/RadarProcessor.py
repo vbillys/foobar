@@ -73,7 +73,7 @@ def getSignalNumber(barray, start_bit, signalsize, isByteorderIntel, isValuetype
 	field_count     = int(math.floor((signalsize - start_field_count) / 8))
 	end_bit_first_field =int( math.floor(start_bit/8)*8)
 	#first field
-	print signalsize-1,signalsize-start_field_count,start_bit,end_bit_first_field
+	# print signalsize-1,signalsize-start_field_count,start_bit,end_bit_first_field
 	barray_map[signalsize-1:signalsize-start_field_count] =( barray[start_bit:end_bit_first_field])
 	#intermediary field(s):
 	running_index = end_bit_first_field + 8
@@ -128,11 +128,11 @@ class RadarEsr:
 	# if msg.id == self.test_frame._Id: # 0x04e0:
 	frame_detected = self.registered_dict.get(msg.id, None)
 	if frame_detected is not None:
-	    print '- - - -'
-	    print frame_detected._name
+	    # print '- - - -'
+	    # print frame_detected._name
 	    # print msg.header.stamp, msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [(ord(i)) for i in msg.data]
 	    # print rospy.Time(msg.header.stamp.secs,msg.header.stamp.nsecs), msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [(ord(i)) for i in msg.data]
-	    print str(msg.header.stamp.secs)+'.'+str(msg.header.stamp.nsecs).rjust(9,'0'), msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [format((ord(i)),'02x') for i in msg.data]
+	    # print str(msg.header.stamp.secs)+'.'+str(msg.header.stamp.nsecs).rjust(9,'0'), msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [format((ord(i)),'02x') for i in msg.data]
 	    # bytearray(msg.data)
 	    # print format(convertRadarToBitArray(msg),'016x')
 	    # print convertRadarToBitArray(msg)
@@ -146,8 +146,8 @@ class RadarEsr:
 		# signal_number = barray[start_bit:start_bit]
 		signal_number = getSignalNumber(barray, start_bit, signal._signalsize, signal._byteorder, isSignalSignedType(signal), signal._factor, signal._offset)
 		signal_value = signal._values.get(signal_number,None)
-		print signal._name, signal_number, isSignalSignedType(self.test_signal), signal_value, signal._offset, signal._factor
+		# print signal._name, signal_number, isSignalSignedType(self.test_signal), signal_value, signal._offset, signal._factor
 	    self.counter_processed = self.counter_processed + 1
-	    print self.counter_processed
-	    print '- - - -'
+	    # print self.counter_processed
+	    # print '- - - -'
 

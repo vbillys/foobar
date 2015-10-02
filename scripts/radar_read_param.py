@@ -4,15 +4,18 @@ import rospy
 import rospkg
 import yaml
 from collections import namedtuple
-import os
+import os, sys
 
 if __name__ == '__main__':
 	rospack = rospkg.RosPack()
 
-	print 'Loading conf...'
-	
-	# fo = open(rospack.get_path('foobar')+'/scripts/radar_conf.yaml')
-	fo = open(os.path.dirname(__file__)+'/radar_conf.yaml')
+	if len(sys.argv) > 1:
+	    print 'Loading conf... ' + sys.argv[1]
+	    fo = open(os.path.dirname(__file__)+'/' + sys.argv[1])
+	else:
+	    print 'Loading standard conf...' 
+	    # fo = open(rospack.get_path('foobar')+'/scripts/radar_conf.yaml')
+	    fo = open(os.path.dirname(__file__)+'/radar_conf.yaml')
 	radar_conf = yaml.load(fo.read())
 	fo.close()
 	# print radar_conf

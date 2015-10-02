@@ -76,9 +76,17 @@ def startRosNode(node_name):
         else:
             print device['interface'], device['name_id'], ' interface: WARNING not detected!'
 
+    pub_process_log  = rospy.Publisher ('radar_packet/process_log' , String   , queue_size=10)
 
     # print radar_list
-    rospy.spin()
+    # rospy.spin()
+    rate = rospy.Rate(1)
+    while not rospy.is_shutdown():
+        string_log = ''
+        for handler in radar_list:
+            string_log = string_log + handler + ' ' +  str(radar_list[handler]['handler'].counter_processed) + ' '
+        pub_process_log.publish(string_log)
+        rate.sleep()
 
 
 if __name__ == '__main__':
