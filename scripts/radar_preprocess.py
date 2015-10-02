@@ -44,9 +44,11 @@ def createRadarHandler(radar_list, name_id, interface, radar_type, name_resoluti
 
 def startRosNode(node_name):
     if not ServerSolution.resolveRosmaster(): return
-    devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
+    # devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
+    devices_conf = ServerSolution.resolveParameters('radar_packet/devices',os.path.dirname(__file__)+'/radar_read_param.py') 
     if devices_conf is None: return 
-    options_conf = ServerSolution.resolveParameters('radar_packet/options','rosrun foobar radar_read_param.py') 
+    # options_conf = ServerSolution.resolveParameters('radar_packet/options','rosrun foobar radar_read_param.py') 
+    options_conf = ServerSolution.resolveParameters('radar_packet/options',os.path.dirname(__file__)+'/radar_read_param.py') 
     if options_conf is None: return 
     if ServerSolution.checkNodeStarted(node_name): return
     rospy.init_node(node_name, anonymous=False)

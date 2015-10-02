@@ -1,3 +1,6 @@
+import sys, os
+sys.path.append(os.path.dirname(__file__) + '/canmatrix')
+import library.exportall as ex
 
 class BitVector:
     def __init__(self,val):

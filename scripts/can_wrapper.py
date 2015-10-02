@@ -7,6 +7,7 @@ from foobar.msg import Canbus as CanBusMsg
 from std_msgs.msg import String
 
 import ServerSolution
+import os
 
 # can_interface = 'can0'
 # can_interface = 'can1'
@@ -121,9 +122,11 @@ def startRosNode(node_name):
 	# print os.path.dirname(os.path.realpath(__file__))
 	# devices_conf = ServerSolution.resolveParameters('radar_packet/devices',os.path.dirname(os.path.realpath(__file__))+'radar_read_param.py') 
 	# devices_conf = ServerSolution.resolveParameters('radar_packet/devices','radar_read_param.py') 
-	devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
+	devices_conf = ServerSolution.resolveParameters('radar_packet/devices',os.path.dirname(__file__)+'/radar_read_param.py') 
+	# devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
 	if devices_conf is None: return 
-	options_conf = ServerSolution.resolveParameters('radar_packet/options','rosrun foobar radar_read_param.py') 
+	options_conf = ServerSolution.resolveParameters('radar_packet/options',os.path.dirname(__file__)+'/radar_read_param.py') 
+	# options_conf = ServerSolution.resolveParameters('radar_packet/options','rosrun foobar radar_read_param.py') 
 	if options_conf is None: return 
 
 	if ServerSolution.checkNodeStarted(node_name): return
