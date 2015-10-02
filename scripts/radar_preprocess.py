@@ -62,7 +62,6 @@ def startRosNode(node_name):
     radar_list = {}
     for device in devices_conf:
         _radar_type = 'esr' if re.search('esr',device['name_id']) else None
-        print device['interface'], device['name_id'], ' interface: ', _radar_type
         if _radar_type:
             # radar_list[device['name_id']] = {}
             # _pub_can_send  = rospy.Publisher ('radar_packet/'+device['interface']+'/send'     , CanBusMsg, queue_size=10)
@@ -70,9 +69,13 @@ def startRosNode(node_name):
             # radar_list[device['name_id']]['pub_can_send'] = _pub_can_send 
             # radar_list[device['name_id']]['pub_result']   = _pub_result
 
+            print device['interface'], device['name_id'], ' interface: ', _radar_type
             createRadarHandler(radar_list, device['name_id'], device['interface'], _radar_type, options_conf['name_resolution'])
 
             # rospy.Subscriber('radar_packet/'+device['interface']+'/recv', CanBusMsg, processRadarEsr)
+        else:
+            print device['interface'], device['name_id'], ' interface: WARNING not detected!'
+
 
     # print radar_list
     rospy.spin()
