@@ -4,6 +4,12 @@ import rospy
 import math
 from foobar.msg import Canbus as CanBusMsg
 
+import os, sys
+import ServerSolution
+
+sys.path.append(os.path.dirname(__file__) + '/canmatrix')
+import library.exportall as ex
+
 class BitVector:
     def __init__(self,val):
         self._val = val
@@ -47,13 +53,20 @@ def processRadar(msg):
 
 
 def startRosNode():
-    rospy.init_node('radar_preprocess', anonymous=True)
+    if not ServerSolution.resolveRosmaster(): return
+    devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
+    if devices_conf is None: return 
+    rospy.init_node('radar_preprocess', anonymous=False)
 
     rospy.Subscriber('radar_packet', CanBusMsg, processRadar)
     rospy.spin()
 
 
 if __name__ == '__main__':
+    # print os.getcwd()
+    # print __file__
+    # print os.path.dirname(__file__)
+
     try:
         startRosNode()
     except rospy.ROSInterruptException:
