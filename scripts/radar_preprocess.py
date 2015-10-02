@@ -13,11 +13,22 @@ sys.path.append(os.path.dirname(__file__) + '/canmatrix')
 import library.exportall as ex
 import re
 
-def createRadarHandler(radar_list, name_id, interface, radar_type):
+def getNameResolution(name_resolution, name_id, interface):
+    name_res_dict = {
+            'name_id': name_id,
+            'interface': interface
+            }
+    return name_res_dict.get(name_resolution, None)
+
+def createRadarHandler(radar_list, name_id, interface, radar_type, name_resolution):
+    solved_name_res = getNameResolution(name_resolution, name_id, interface)
+    if solved_name_res is None: 
+        print 'WARNING: internal error, name resolution faulty, couldni\'t create radar handler'
+        return
     radar_list[name_id] = {}
     pub_dict = {
-            'esr': (rospy.Publisher ('radar_packet/'+interface+'/send'     , CanBusMsg, queue_size=10),
-                    rospy.Publisher ('radar_packet/'+interface+'/processed', String   , queue_size=10)
+            'esr': (rospy.Publisher ('radar_packet/'+solved_name_res+'/send'     , CanBusMsg, queue_size=10),
+                    rospy.Publisher ('radar_packet/'+solved_name_res+'/processed', String   , queue_size=10)
                    )
             }
     puber = pub_dict.get(radar_type,None)
@@ -26,7 +37,7 @@ def createRadarHandler(radar_list, name_id, interface, radar_type):
             }
     # radar_handler = RadarEsr(puber[0], puber[1], name_id, interface)
     radar_handler = handler_dict.get(radar_type)
-    rospy.Subscriber('radar_packet/'+interface+'/recv', CanBusMsg, radar_handler.processRadar)
+    rospy.Subscriber('radar_packet/'+solved_name_res+'/recv', CanBusMsg, radar_handler.processRadar)
     radar_list[name_id]['handler'] = radar_handler
     # radar_list[name_id]['pub_can_send'] = handler[0]
     # radar_list[name_id]['pub_result']   = handler[1]
@@ -35,10 +46,16 @@ def startRosNode(node_name):
     if not ServerSolution.resolveRosmaster(): return
     devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
     if devices_conf is None: return 
+    options_conf = ServerSolution.resolveParameters('radar_packet/options','rosrun foobar radar_read_param.py') 
+    if options_conf is None: return 
     if ServerSolution.checkNodeStarted(node_name): return
     rospy.init_node(node_name, anonymous=False)
 
     print 'start to read radar packets on these devices...'
+    # print options_conf
+    # return
+
+
 
     radar_list = {}
     for device in devices_conf:
@@ -51,7 +68,7 @@ def startRosNode(node_name):
             # radar_list[device['name_id']]['pub_can_send'] = _pub_can_send 
             # radar_list[device['name_id']]['pub_result']   = _pub_result
 
-            createRadarHandler(radar_list, device['name_id'], device['interface'], _radar_type)
+            createRadarHandler(radar_list, device['name_id'], device['interface'], _radar_type, options_conf['name_resolution'])
 
             # rospy.Subscriber('radar_packet/'+device['interface']+'/recv', CanBusMsg, processRadarEsr)
 

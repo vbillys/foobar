@@ -21,4 +21,6 @@ if __name__ == '__main__':
 	print devices_tuple
 	print 'Publishing to param server.'
 	rospy.set_param('radar_packet/devices',radar_conf['DEVICES'])
+	rospy.set_param('radar_packet/options',radar_conf['OPTIONS'])
+
 	

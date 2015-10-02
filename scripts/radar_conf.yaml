@@ -1,10 +1,14 @@
 DEVICES:
 -
         interface: 'can0'
-        name_id: 'center_front'
+        name_id: 'center_front_esr'
 -
         interface: 'can1'
-        name_id: 'left_front'
+        name_id: 'left_front_esr'
 #-
 #        interface: 'can2'
 #        name_id: 'right_front'
+
+OPTIONS:
+        #name_resolution: 'name_id' # 'name_id' or 'interface'
+        name_resolution: 'interface' # 'name_id' or 'interface'

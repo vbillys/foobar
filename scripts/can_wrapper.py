@@ -107,6 +107,12 @@ def startCanThread(pub_can_msg, can_interface, name_id):
 	return [can_publish_thread, can_polling_thread, can_send_thread]
 
 
+def getNameResolution(name_resolution, name_id, interface):
+	name_res_dict = {
+			'name_id': name_id,
+			'interface': interface
+			}
+	return name_res_dict.get(name_resolution, None)
 
 def startRosNode(node_name):
 
@@ -117,6 +123,8 @@ def startRosNode(node_name):
 	# devices_conf = ServerSolution.resolveParameters('radar_packet/devices','radar_read_param.py') 
 	devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
 	if devices_conf is None: return 
+	options_conf = ServerSolution.resolveParameters('radar_packet/options','rosrun foobar radar_read_param.py') 
+	if options_conf is None: return 
 
 	if ServerSolution.checkNodeStarted(node_name): return
 	rospy.init_node(node_name, anonymous=False)
@@ -135,15 +143,18 @@ def startRosNode(node_name):
 	pub_log_msg_central  = rospy.Publisher ('radar_packet/log' , String   , queue_size=10)
 
 	for device in devices_conf:
+		solved_name_res = getNameResolution(options_conf['name_resolution'],device['name_id'],device['interface'])
+
+
 		thread_list[device['interface']] = {}
 		thread_list[device['interface']]['name_id'] = device['name_id']
-		pub_can_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+device['interface']+'/recv', CanBusMsg, queue_size=10)
-		pub_log_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+device['interface']+'/log' , String   , queue_size=10)
+		pub_can_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+solved_name_res+'/recv', CanBusMsg, queue_size=10)
+		pub_log_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+solved_name_res+'/log' , String   , queue_size=10)
 		_thread = startCanThread(pub_can_msg[device['interface']], device['interface'], device['name_id'])
 		thread_list[device['interface']]['can_publish_thread'] = _thread[0]
 		thread_list[device['interface']]['can_polling_thread'] = _thread[1]
 		thread_list[device['interface']]['can_send_thread']    = _thread[2]
-		sub_can_msg[device['interface']]  = rospy.Subscriber('radar_packet/'+device['interface']+'/send', CanBusMsg, thread_list[device['interface']]['can_send_thread'].callback)
+		sub_can_msg[device['interface']]  = rospy.Subscriber('radar_packet/'+solved_name_res+'/send', CanBusMsg, thread_list[device['interface']]['can_send_thread'].callback)
 
 		thread_list[device['interface']]['pub_log_msg'] = pub_log_msg[device['interface']]
 		print 'started ' + device['interface']
