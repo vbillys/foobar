@@ -3,12 +3,14 @@
 import rospy
 import math
 from foobar.msg import Canbus as CanBusMsg
+from std_msgs.msg import String
 
 import os, sys
 import ServerSolution
 
 sys.path.append(os.path.dirname(__file__) + '/canmatrix')
 import library.exportall as ex
+import re
 
 class BitVector:
     def __init__(self,val):
@@ -41,16 +43,41 @@ def convertRadarToBitArray(msg):
         index = index + 1
     return b
 
+class RadarEsr:
+    def __init__(self, pub_can_send, pub_result, name_id, interface):
+        self.pub_can_send = pub_can_send
+        self.pub_result   = pub_result
+        self.name_id      = name_id
+        self.interface    = interface
 
-def processRadar(msg):
-    if msg.id == 0x04e0:
-        # print msg.header.stamp, msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [(ord(i)) for i in msg.data]
-        # print rospy.Time(msg.header.stamp.secs,msg.header.stamp.nsecs), msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [(ord(i)) for i in msg.data]
-        print str(msg.header.stamp.secs)+'.'+str(msg.header.stamp.nsecs).rjust(9,'0'), msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [format((ord(i)),'02x') for i in msg.data]
-        # bytearray(msg.data)
-        # print format(convertRadarToBitArray(msg),'016x')
-        print convertRadarToBitArray(msg)
+    def processRadar(self,msg):
+        if msg.id == 0x04e0:
+            # print msg.header.stamp, msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [(ord(i)) for i in msg.data]
+            # print rospy.Time(msg.header.stamp.secs,msg.header.stamp.nsecs), msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [(ord(i)) for i in msg.data]
+            print str(msg.header.stamp.secs)+'.'+str(msg.header.stamp.nsecs).rjust(9,'0'), msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [format((ord(i)),'02x') for i in msg.data]
+            # bytearray(msg.data)
+            # print format(convertRadarToBitArray(msg),'016x')
+            print convertRadarToBitArray(msg)
+            # self.pub_can_send.publish(msg)
+            self.pub_result.publish('from '+self.name_id+' '+self.interface)
 
+def createRadarHandler(radar_list, name_id, interface, interface_type):
+    radar_list[name_id] = {}
+    pub_dict = {
+            'esr': (rospy.Publisher ('radar_packet/'+interface+'/send'     , CanBusMsg, queue_size=10),
+                    rospy.Publisher ('radar_packet/'+interface+'/processed', String   , queue_size=10)
+                   )
+            }
+    puber = pub_dict.get(interface_type,None)
+    handler_dict = {
+            'esr': RadarEsr(puber[0], puber[1], name_id, interface)
+            }
+    # radar_handler = RadarEsr(puber[0], puber[1], name_id, interface)
+    radar_handler = handler_dict.get(interface_type)
+    rospy.Subscriber('radar_packet/'+interface+'/recv', CanBusMsg, radar_handler.processRadar)
+    radar_list[name_id]['handler'] = radar_handler
+    # radar_list[name_id]['pub_can_send'] = handler[0]
+    # radar_list[name_id]['pub_result']   = handler[1]
 
 def startRosNode(node_name):
     if not ServerSolution.resolveRosmaster(): return
@@ -59,7 +86,24 @@ def startRosNode(node_name):
     if ServerSolution.checkNodeStarted(node_name): return
     rospy.init_node(node_name, anonymous=False)
 
-    rospy.Subscriber('radar_packet', CanBusMsg, processRadar)
+    print 'start to read radar packets on these devices...'
+
+    radar_list = {}
+    for device in devices_conf:
+        _interface_type = 'esr' if re.search('esr',device['name_id']) else None
+        print device['interface'], device['name_id'], ' interface: ', _interface_type
+        if _interface_type:
+            # radar_list[device['name_id']] = {}
+            # _pub_can_send  = rospy.Publisher ('radar_packet/'+device['interface']+'/send'     , CanBusMsg, queue_size=10)
+            # _pub_result    = rospy.Publisher ('radar_packet/'+device['interface']+'/processed', String, queue_size=10)
+            # radar_list[device['name_id']]['pub_can_send'] = _pub_can_send 
+            # radar_list[device['name_id']]['pub_result']   = _pub_result
+
+            createRadarHandler(radar_list, device['name_id'], device['interface'], _interface_type)
+
+            # rospy.Subscriber('radar_packet/'+device['interface']+'/recv', CanBusMsg, processRadarEsr)
+
+    # print radar_list
     rospy.spin()
 
 
