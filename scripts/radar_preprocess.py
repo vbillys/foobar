@@ -52,11 +52,12 @@ def processRadar(msg):
         print convertRadarToBitArray(msg)
 
 
-def startRosNode():
+def startRosNode(node_name):
     if not ServerSolution.resolveRosmaster(): return
     devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
     if devices_conf is None: return 
-    rospy.init_node('radar_preprocess', anonymous=False)
+    if ServerSolution.checkNodeStarted(node_name): return
+    rospy.init_node(node_name, anonymous=False)
 
     rospy.Subscriber('radar_packet', CanBusMsg, processRadar)
     rospy.spin()
@@ -68,7 +69,7 @@ if __name__ == '__main__':
     # print os.path.dirname(__file__)
 
     try:
-        startRosNode()
+        startRosNode('radar_preprocess')
     except rospy.ROSInterruptException:
         pass
 

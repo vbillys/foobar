@@ -3,6 +3,8 @@ import xmlrpclib
 import rospy
 import time
 import os
+import subprocess
+import re
 
 def checkRosmasterOn():
 	caller_id = '/script'
@@ -55,3 +57,14 @@ def resolveParameters(param_name, cmd_retry):
 		except:
 			print 'failed to read parameters, sorry couldn\'t continue'
 			return None
+
+def checkNodeStarted(node_name):
+	out = subprocess.check_output(['rosnode','list'])
+	mat = re.search(node_name, out)
+	if mat:
+		print node_name + ' already running..'
+		return True
+	else:
+		return False
+
+

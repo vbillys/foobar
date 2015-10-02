@@ -108,7 +108,7 @@ def startCanThread(pub_can_msg, can_interface, name_id):
 
 
 
-def startRosNode():
+def startRosNode(node_name):
 
 	if not ServerSolution.resolveRosmaster(): return
 	# print None
@@ -118,7 +118,8 @@ def startRosNode():
 	devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
 	if devices_conf is None: return 
 
-	rospy.init_node('can_wrapper_ros_node', anonymous=False)
+	if ServerSolution.checkNodeStarted(node_name): return
+	rospy.init_node(node_name, anonymous=False)
 
 	print 'start to operating on these devices...'
 	for device in devices_conf:
@@ -184,7 +185,7 @@ def startRosNode():
 
 if __name__ == '__main__':
 	try:
-		startRosNode()
+		startRosNode('can_wrapper_ros_node')
 	except rospy.ROSInterruptException:
 		pass
 
