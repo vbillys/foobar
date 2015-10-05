@@ -78,6 +78,7 @@ find_package(Armadillo REQUIRED)
  add_message_files(
    FILES
    Canbus.msg
+   Esr_track.msg
 #   Message1.msg
 #   Message2.msg
  )

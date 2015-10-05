@@ -1,0 +1,13 @@
+Header header
+bool grouping_changed
+bool oncoming
+float32 lat_rate
+bool bridge_object
+float32 width
+uint8 status
+bool rolling_count
+float32 range_rate
+float32 range_accel
+float32 range
+uint8 med_range_mode
+float32 angle
