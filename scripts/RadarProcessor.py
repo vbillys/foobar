@@ -2,6 +2,7 @@ import sys, os
 sys.path.append(os.path.dirname(__file__) + '/canmatrix')
 import library.importall as im
 import math
+from foobar.msg import Esr_track
 
 class BitVector:
     def __init__(self,val):
@@ -95,27 +96,51 @@ def getSignalNumber(barray, start_bit, signalsize, isByteorderIntel, isValuetype
     return signal_number*factor_number+offset_number
 	    
 
+def decodeEsrTrack(signal_dict):
+    msg = Esr_track()
+    msg.grouping_changed  = signal_dict['CAN_TX_GROUPING_CHANGED']
+    msg.oncoming          = signal_dict['CAN_TX_ONCOMING']
+    msg.lat_rate          = signal_dict['CAN_TX_LAT_RATE']
+    msg.bridge_object     = signal_dict['CAN_TX_BRIDGE_OBJECT']
+    msg.width             = signal_dict['CAN_TX_WIDTH']
+    msg.status            = signal_dict['CAN_TX_STATUS']
+    msg.rolling_count     = signal_dict['CAN_TX_ROLLING_COUNT']
+    msg.range_rate        = signal_dict['CAN_TX_RANGE_RATE']
+    msg.range_accel       = signal_dict['CAN_TX_RANGE_ACCEL']
+    msg.range             = signal_dict['CAN_TX_RANGE']
+    msg.med_range_mode    = signal_dict['CAN_TX_MED_RANGE_MODE']
+    msg.angle             = signal_dict['CAN_TX_ANGLE']
+    return msg
+
+
 class RadarEsr:
     def __init__(self, pub_can_send, pub_result, name_id, interface):
 	self.pub_can_send = pub_can_send
 	self.pub_result   = pub_result
 	self.name_id      = name_id
 	self.interface    = interface
-	self.db           = im.importDbc(os.path.dirname(__file__)+'/RSDS_PCAN_v18.dbc')
+	# self.db           = im.importDbc(os.path.dirname(__file__)+'/RSDS_PCAN_v18.dbc')
+	self.db           = im.importDbc(os.path.dirname(__file__)+'/ESR_radar.dbc')
 	# self.signal       = self.db._fl.byName('SODL_Status1').signalByName('CAN_TX_LOOK_TYPE')
-	self.test_frame   = getFrame(self.db, 'SODL_Status1')
+	# self.test_frame   = getFrame(self.db, 'SODL_Status1')
 	# self.test_signal  = self.getSignal(self.getFrame('SODL_Status1'), 'CAN_TX_LOOK_TYPE')
 	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_LOOK_TYPE')
 	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_SCAN_INDEX')
 	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_CURVATURE')
 	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_VEHICLE_SPEED_CALC')
 	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_YAW_RATE_CALC')
-	self.test_signal  = getSignal(self.test_frame, 'CAN_TX_DSP_TIMESTAMP')
+	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_DSP_TIMESTAMP')
 	# self.registerFrames([ 'SODL_Status1' ])
-	self.registerFrames([ frame._name for frame in self.db._fl._list])
+	# self.registerFrames([ frame._name for frame in self.db._fl._list])
+	self.registerFrames(['ESR_Track64'])
 	# print 'RadarEsr handler created :', self.registered_dict
 	self.counter_processed = 0
 
+	self.registered_msgs = {}
+	self.registerMessage('ESR_Track64',decodeEsrTrack)
+
+    def registerMessage(self, frame_name, message_func):
+	self.registered_msgs[frame_name] = message_func
 
     def registerFrames(self, frame_name_list):
 	self.registered_Ids    = [getFrame(self.db, x)._Id for x in frame_name_list]
@@ -141,13 +166,18 @@ class RadarEsr:
 
 	    barray = convertRadarToBitArray(msg)
 	    # signal = self.test_signal
+	    signal_list ={} 
 	    for signal in frame_detected._signals:
 		start_bit = signal._startbit
 		# signal_number = barray[start_bit:start_bit]
 		signal_number = getSignalNumber(barray, start_bit, signal._signalsize, signal._byteorder, isSignalSignedType(signal), signal._factor, signal._offset)
 		signal_value = signal._values.get(signal_number,None)
 		# print signal._name, signal_number, isSignalSignedType(self.test_signal), signal_value, signal._offset, signal._factor
+		signal_list[signal._name] = signal_number
+	    self.pub_result.publish(decodeEsrTrack(signal_list))
 	    self.counter_processed = self.counter_processed + 1
 	    # print self.counter_processed
 	    # print '- - - -'
+
+	    # print format(msg.id, '04x')
 
