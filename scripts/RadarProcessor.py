@@ -156,6 +156,9 @@ class RadarEsr:
 	self.registered_frames = [getFrame(self.db, x)     for x in frame_name_list]
 	self.registered_dict   = dict(zip(self.registered_Ids, self.registered_frames))
 	
+    def processEgomotion(self, egomotion_msg):
+	self.RadarEsrSyncThread.processEgomotion(egomotion_msg)
+	
 
 
     def processRadar(self,msg):
