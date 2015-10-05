@@ -4,6 +4,7 @@ import rospy
 import math
 from foobar.msg import Canbus as CanBusMsg
 from std_msgs.msg import String
+from nav_msgs.msg import Odometry
 
 import os, sys
 import ServerSolution
@@ -38,6 +39,7 @@ def createRadarHandler(radar_list, name_id, interface, radar_type, name_resoluti
     # radar_handler = RadarEsr(puber[0], puber[1], name_id, interface)
     radar_handler = handler_dict.get(radar_type)
     rospy.Subscriber('radar_packet/'+solved_name_res+'/recv', CanBusMsg, radar_handler.processRadar)
+    rospy.Subscriber('radar_packet/egomotion', Odometry, radar_handler.processEgomotion)
     radar_list[name_id]['handler'] = radar_handler
     radar_list[name_id]['handler_sync_thread'] = radar_handler.getSyncThread()
 
