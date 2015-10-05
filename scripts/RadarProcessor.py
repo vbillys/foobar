@@ -174,7 +174,10 @@ class RadarEsr:
 		signal_value = signal._values.get(signal_number,None)
 		# print signal._name, signal_number, isSignalSignedType(self.test_signal), signal_value, signal._offset, signal._factor
 		signal_list[signal._name] = signal_number
-	    self.pub_result.publish(decodeEsrTrack(signal_list))
+	    msg_pub = decodeEsrTrack(signal_list)
+	    msg_pub.header.stamp = msg.header.stamp
+	    msg.header.frame_id = msg.header.frame_id
+	    self.pub_result.publish(msg)
 	    self.counter_processed = self.counter_processed + 1
 	    # print self.counter_processed
 	    # print '- - - -'
