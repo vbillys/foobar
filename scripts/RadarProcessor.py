@@ -3,6 +3,7 @@ sys.path.append(os.path.dirname(__file__) + '/canmatrix')
 import library.importall as im
 import math
 from foobar.msg import Esr_track
+import RadarSync, Queue
 
 class BitVector:
     def __init__(self,val):
@@ -115,6 +116,11 @@ def decodeEsrTrack(signal_dict):
 
 class RadarEsr:
     def __init__(self, pub_can_send, pub_result, name_id, interface):
+
+	self.radar_sync_queue = Queue.Queue()
+	self.radar_sync_thread = RadarSync.RadarEsrSyncThread(pub_can_send, self.radar_sync_queue)
+	self.radar_sync_thread.start()
+
 	self.pub_can_send = pub_can_send
 	self.pub_result   = pub_result
 	self.name_id      = name_id
@@ -138,6 +144,9 @@ class RadarEsr:
 
 	self.registered_msgs = {}
 	self.registerMessage('ESR_Track64',decodeEsrTrack)
+
+    def getSyncThread(self):
+	return self.radar_sync_thread
 
     def registerMessage(self, frame_name, message_func):
 	self.registered_msgs[frame_name] = message_func

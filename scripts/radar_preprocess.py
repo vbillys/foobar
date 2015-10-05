@@ -39,6 +39,8 @@ def createRadarHandler(radar_list, name_id, interface, radar_type, name_resoluti
     radar_handler = handler_dict.get(radar_type)
     rospy.Subscriber('radar_packet/'+solved_name_res+'/recv', CanBusMsg, radar_handler.processRadar)
     radar_list[name_id]['handler'] = radar_handler
+    radar_list[name_id]['handler_sync_thread'] = radar_handler.getSyncThread()
+
     # radar_list[name_id]['pub_can_send'] = handler[0]
     # radar_list[name_id]['pub_result']   = handler[1]
 
@@ -87,6 +89,13 @@ def startRosNode(node_name):
             string_log = string_log + handler + ' ' +  str(radar_list[handler]['handler'].counter_processed) + ' '
         pub_process_log.publish(string_log)
         rate.sleep()
+
+    print "stopping sync thread..."
+    for handler in radar_list:
+	radar_list[handler]['handler_sync_thread'].setThreadStop(True)
+	radar_list[handler]['handler_sync_thread'].join()
+	print 'stopped ' + handler
+
 
 
 if __name__ == '__main__':
