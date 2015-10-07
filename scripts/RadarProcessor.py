@@ -24,36 +24,38 @@ class RadarEsr:
 	self.pub_result   = pub_result
 	self.name_id      = name_id
 	self.interface    = interface
-	# self.db           = im.importDbc(os.path.dirname(__file__)+'/RSDS_PCAN_v18.dbc')
-	self.db           = im.importDbc(os.path.dirname(__file__)+'/ESR_radar.dbc')
-	# self.signal       = self.db._fl.byName('SODL_Status1').signalByName('CAN_TX_LOOK_TYPE')
-	# self.test_frame   = getFrame(self.db, 'SODL_Status1')
-	# self.test_signal  = self.getSignal(self.getFrame('SODL_Status1'), 'CAN_TX_LOOK_TYPE')
-	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_LOOK_TYPE')
-	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_SCAN_INDEX')
-	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_CURVATURE')
-	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_VEHICLE_SPEED_CALC')
-	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_YAW_RATE_CALC')
-	# self.test_signal  = getSignal(self.test_frame, 'CAN_TX_DSP_TIMESTAMP')
+	self.db           = im.importDbc(os.path.dirname(__file__)+'/RSDS_PCAN_v18.dbc')
+	# self.db           = im.importDbc(os.path.dirname(__file__)+'/ESR_radar.dbc')
 	# self.registerFrames([ 'SODL_Status1' ])
 	# self.registerFrames([ frame._name for frame in self.db._fl._list])
-	self.registerFrames(['ESR_Track64'])
-	# print 'RadarEsr handler created :', self.registered_dict
+	# self.registerFrames(['ESR_Track64'])
+	self.registerFrames(['SODL_Status4','SODL_Status1','SODL_Status2','SODL_Status3'])
 	self.counter_processed = 0
 
-	# self.registered_msgs = {}
-	# self.registerMessage('ESR_Track64',RadarMsgs.crackEsrTrack)
+	self.reg_id_idx = 0
+
+    def resetIdIdx(self):
+	self.reg_id_idx = 0
+
+    def getIdIdx(self):
+	return self.reg_id_idx
+
+    def incrementIdIdx(self):
+	if self.reg_id_idx >= self.no_of_frame_registered-1:
+	    self.reg_id_idx = 0
+	    return True
+	else:
+	    self.reg_id_idx = self.reg_id_idx + 1
+	    return False
 
     def getSyncThread(self):
 	return self.radar_sync_thread
 
-    # def registerMessage(self, frame_name, message_func):
-	# self.registered_msgs[frame_name] = message_func
-
     def registerFrames(self, frame_name_list):
-	self.registered_Ids    = [getFrame(self.db, x)._Id for x in frame_name_list]
+	self.registered_Ids    = sorted([getFrame(self.db, x)._Id for x in frame_name_list])
 	self.registered_frames = [getFrame(self.db, x)     for x in frame_name_list]
 	self.registered_dict   = dict(zip(self.registered_Ids, self.registered_frames))
+	self.no_of_frame_registered = len(frame_name_list)
 	
     def processEgomotion(self, egomotion_msg):
 	self.RadarEsrSyncThread.processEgomotion(egomotion_msg)
@@ -64,7 +66,15 @@ class RadarEsr:
 	# if msg.id == self.test_frame._Id: # 0x04e0:
 	frame_detected = self.registered_dict.get(msg.id, None)
 	if frame_detected is not None:
-	    # print '- - - -'
+	    if msg.id == self.registered_Ids[self.getIdIdx()]:
+		is_scan_completed = self.incrementIdIdx()
+	    else:
+		self.resetIdIdx()
+		return
+
+	    print format(msg.id, '04x')
+	    if is_scan_completed:
+		print '- - - -'
 	    # print frame_detected._name
 	    # print msg.header.stamp, msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [(ord(i)) for i in msg.data]
 	    # print rospy.Time(msg.header.stamp.secs,msg.header.stamp.nsecs), msg.header.seq, msg.header.frame_id, format(msg.id, '04x'), msg.dlc, [(ord(i)) for i in msg.data]
@@ -91,5 +101,4 @@ class RadarEsr:
 	    # print self.counter_processed
 	    # print '- - - -'
 
-	    # print format(msg.id, '04x')
 
