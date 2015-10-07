@@ -1,4 +1,5 @@
 import math
+from foobar.msg import Esr_track
 
 
 class BitVector:
@@ -87,38 +88,43 @@ def getSignalNumber(barray, start_bit, signalsize, isByteorderIntel, isValuetype
 	signal_number = twosComplement(signal_number, signalsize)
     return signal_number*factor_number+offset_number
 
-def crack(msg, signal_list, signal_name):
+def crack(msg, signal_obj, signal_name):
     barray = convertRadarToBitArray(msg)
     # signal = self.test_signal
     signal_list ={} 
-    for signal in frame_detected._signals:
+    for signal in signal_obj:
 	start_bit = signal._startbit
 	# signal_number = barray[start_bit:start_bit]
 	signal_number = getSignalNumber(barray, start_bit, signal._signalsize, signal._byteorder, isSignalSignedType(signal), signal._factor, signal._offset)
 	signal_value = signal._values.get(signal_number,None)
 	# print signal._name, signal_number, isSignalSignedType(self.test_signal), signal_value, signal._offset, signal._factor
 	signal_list[signal._name] = signal_number
-    try:
-	result =  decode_dict.get(signal_name)(signal_list)
-	return result
-    except:
+    # try:
+    # print signal_list
+    result_dict =  decode_dict.get(signal_name, None)
+    if result_dict is not None:
+	return result_dict(signal_list, msg)
+    else:
 	return None
 
-def decodeEsrTrack(signal_dict):
-    msg = Esr_track()
-    msg.grouping_changed  = signal_dict['CAN_TX_GROUPING_CHANGED']
-    msg.oncoming          = signal_dict['CAN_TX_ONCOMING']
-    msg.lat_rate          = signal_dict['CAN_TX_LAT_RATE']
-    msg.bridge_object     = signal_dict['CAN_TX_BRIDGE_OBJECT']
-    msg.width             = signal_dict['CAN_TX_WIDTH']
-    msg.status            = signal_dict['CAN_TX_STATUS']
-    msg.rolling_count     = signal_dict['CAN_TX_ROLLING_COUNT']
-    msg.range_rate        = signal_dict['CAN_TX_RANGE_RATE']
-    msg.range_accel       = signal_dict['CAN_TX_RANGE_ACCEL']
-    msg.range             = signal_dict['CAN_TX_RANGE']
-    msg.med_range_mode    = signal_dict['CAN_TX_MED_RANGE_MODE']
-    msg.angle             = signal_dict['CAN_TX_ANGLE']
-    return msg
+def decodeEsrTrack(signal_dict, msg):
+    msg_pub = Esr_track()
+    msg_pub.grouping_changed  = signal_dict['CAN_TX_TRACK_GROUPING_CHANGED']
+    msg_pub.oncoming          = signal_dict['CAN_TX_TRACK_ONCOMING']
+    msg_pub.lat_rate          = signal_dict['CAN_TX_TRACK_LAT_RATE']
+    msg_pub.bridge_object     = signal_dict['CAN_TX_TRACK_BRIDGE_OBJECT']
+    msg_pub.width             = signal_dict['CAN_TX_TRACK_WIDTH']
+    msg_pub.status            = signal_dict['CAN_TX_TRACK_STATUS']
+    msg_pub.rolling_count     = signal_dict['CAN_TX_TRACK_ROLLING_COUNT']
+    msg_pub.range_rate        = signal_dict['CAN_TX_TRACK_RANGE_RATE']
+    msg_pub.range_accel       = signal_dict['CAN_TX_TRACK_RANGE_ACCEL']
+    msg_pub.range             = signal_dict['CAN_TX_TRACK_RANGE']
+    msg_pub.med_range_mode    = signal_dict['CAN_TX_TRACK_MED_RANGE_MODE']
+    msg_pub.angle             = signal_dict['CAN_TX_TRACK_ANGLE']
+    msg_pub.header.stamp = msg.header.stamp
+    msg_pub.header.frame_id = msg.header.frame_id
+    
+    return msg_pub
 
 decode_dict = {
 		'ESR_Track64' : decodeEsrTrack
