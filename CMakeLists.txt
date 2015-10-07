@@ -79,6 +79,7 @@ find_package(Armadillo REQUIRED)
    FILES
    Canbus.msg
    Esr_track.msg
+   GenericObjCanData.msg
 #   Message1.msg
 #   Message2.msg
  )

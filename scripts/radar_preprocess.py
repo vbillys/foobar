@@ -5,6 +5,8 @@ import math
 from foobar.msg import Canbus as CanBusMsg
 from std_msgs.msg import String
 from nav_msgs.msg import Odometry
+from foobar.msg import Esr_track
+from foobar.msg import GenericObjCanData
 
 import os, sys
 import ServerSolution
@@ -29,7 +31,7 @@ def createRadarHandler(radar_list, name_id, interface, radar_type, name_resoluti
     radar_list[name_id] = {}
     pub_dict = {
             'esr': (rospy.Publisher ('radar_packet/'+solved_name_res+'/send'     , CanBusMsg, queue_size=10),
-                    rospy.Publisher ('radar_packet/'+solved_name_res+'/processed', String   , queue_size=10)
+                    rospy.Publisher ('radar_packet/'+solved_name_res+'/processed', Esr_track   , queue_size=10)
                    )
             }
     puber = pub_dict.get(radar_type,None)
