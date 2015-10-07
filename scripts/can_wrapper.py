@@ -15,6 +15,7 @@ import os
 class CanSendThread(threading.Thread):
 	def __init__ (self, bus):
 		self.bus = bus
+		self.counter = 0
 		threading.Thread.__init__ (self)
 
 	def setThreadStop(self, thread_stop):
@@ -23,6 +24,13 @@ class CanSendThread(threading.Thread):
 	def callback(self, data):
 		msg = can.Message(arbitration_id=data.id, data=[i for i in data.data], extended_id=False, dlc=data.dlc)
 		self.bus.send(msg)
+		self.counter = self.counter + 1
+
+	def resetCounter(self):
+	    self.counter = 0
+
+	def getCounter(self):
+	    return self.counter
 		
 class CanQueuePublishThread(threading.Thread):
 	def __init__ (self, can_polling_thread, pub_can_msg, name_id):
@@ -175,10 +183,12 @@ def startRosNode(node_name):
 		# can_publish_thread.resetCounter()
 		_string_log = 'data received: '
 		for thread in thread_list:
-			_str_counter = str(thread_list[thread]['can_publish_thread'].getCounter())
-			thread_list[thread]['pub_log_msg'].publish(_str_counter)
-			_string_log = _string_log + thread + ' ' + thread_list[thread]['name_id'] + ' ' + _str_counter + ' '
+			_str_recv_counter = str(thread_list[thread]['can_publish_thread'].getCounter())
+			_str_send_counter = str(thread_list[thread]['can_send_thread'].getCounter())
+			thread_list[thread]['pub_log_msg'].publish(_str_recv_counter)
+			_string_log = _string_log + thread + ' ' + thread_list[thread]['name_id'] + ' recv, ' + _str_recv_counter + ' sent, ' + _str_send_counter + ' '
 			thread_list[thread]['can_publish_thread'].resetCounter()
+			thread_list[thread]['can_send_thread'].resetCounter()
 		# print _string_log
 		pub_log_msg_central.publish(_string_log)
 
