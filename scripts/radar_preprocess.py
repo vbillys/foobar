@@ -91,6 +91,7 @@ def startRosNode(node_name):
         string_log = ''
         for handler in radar_list:
             string_log = string_log + handler + ' ' +  str(radar_list[handler]['handler'].counter_processed) + ' '
+	    radar_list[handler]['handler'].counter_processed = 0
         pub_process_log.publish(string_log)
         rate.sleep()
 
