@@ -57,6 +57,10 @@ class RadarEsr:
 	self.counter_processed = 0
 
 	self.reg_id_idx = 0
+	self.numba_errs = 0
+
+	# just a trick to prevent multi thread numba complications
+	_siglist = RadarMsgs.crack(8*[0] , [ s._name for s in self.registered_frames[0]._signals] , self.registered_frames[0]._name, self.registered_frames[0]._signals)
 
     def resetIdIdx(self):
 	self.reg_id_idx = 0
@@ -132,7 +136,22 @@ class RadarEsr:
 	    # print msg
 
 
-	    msg_pub = RadarMsgs.crack(msg, frame_detected._signals, frame_detected._name)
+	    # msg_pub = RadarMsgs.crack(msg, frame_detected._signals, frame_detected._name)
+	    # _siglist = RadarMsgs.crack(msg, frame_detected._signals, frame_detected._name)
+	    # msg_data = msg.data
+	    # print msg
+	    # print msg_data
+	    # print type(msg_data)
+
+	    msg_pub = None
+	    # try:
+	    _siglist = RadarMsgs.crack([x for x in (bytearray(msg.data))] , [ s._name for s in frame_detected._signals] , frame_detected._name, frame_detected._signals)
+	    # msg_pub = RadarMsgs.decodeMsg(msg, _siglist, frame_detected._name) 
+
+	    # except AttributeError:
+		# self.numba_errs = self.numba_errs + 1
+		# print 'Attribute Error attributed ' , self.numba_errs
+
 
 
 	    # print msg_pub
