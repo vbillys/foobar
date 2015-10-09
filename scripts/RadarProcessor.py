@@ -7,6 +7,7 @@ from foobar.msg import Esr_track
 import RadarSync, Queue
 import RadarMsgs
 from collections import namedtuple
+import numpy as np
 
 
 def getSignal(frame, signal_name):
@@ -18,28 +19,38 @@ def getFrame(db,frame_name):
 def getFrameById(db, id):
     return db._fl.byId(id)
 
-FrameSignalInfo = namedtuple('FrameSignalInfo','is_signed_type is_number_integer ')
-def getProcessedFrame(db, frame_name):
-    frame = getFrame(db, frame_name)
-    frame_signal_data = []
-    for signal in frame._signals:
-	signal_data = FrameSignalInfo(
-			is_signed_type = RadarMsgs.isSignalSignedType(signal),
-			is_number_integer = RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal)
-		)
-	frame_signal_data.append(signal_data)
-    return frame_signal_data
-
+FrameSignalInfo = namedtuple('FrameSignalInfo','signal_is_signed_types signal_start_bits signal_is_integers signal_sizes signal_offsets signal_factors')
 def getProcessedFrameById(db, frame_id):
     frame = getFrameById(db, frame_id)
-    frame_signal_data = []
-    for signal in frame._signals:
-	signal_data = FrameSignalInfo(
-		is_signed_type = RadarMsgs.isSignalSignedType(signal),
-		is_number_integer = RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal)
-		)
-	frame_signal_data.append(signal_data)
-    return frame_signal_data
+    return FrameSignalInfo(
+	signal_is_signed_types  = np.array([RadarMsgs.isSignalSignedType(signal) for signal in frame._signals],dtype=np.uint8),
+	signal_start_bits  = np.array([signal._startbit for signal in frame._signals],dtype=np.uint8),
+	signal_is_integers = np.array([RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal) for signal in frame._signals],dtype=np.uint8),
+	signal_sizes = np.array([signal._signalsize for signal in frame._signals],dtype=np.uint8),
+	signal_offsets = np.array([signal._offset for signal in frame._signals],dtype=np.float64),
+	signal_factors = np.array([signal._factor for signal in frame._signals],dtype=np.float64),
+    )
+    # return FrameSignalInfo(
+	# signal_is_signed_types  = [RadarMsgs.isSignalSignedType(signal) for signal in frame._signals],
+	# signal_is_signed_types  = np.array(signal_is_signed_types  , dtype=np.uint8),
+	# signal_start_bits  = [signal._startbit for signal in signals],
+	# signal_start_bits  = np.array(signal_start_bits, dtype=np.uint8),
+	# signal_is_integers = [RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal) for signal in frame._signals],
+	# signal_is_integers = np.array(signal_is_integers, dtype=np.uint8),
+	# signal_sizes = [signal._signalsize for signal in signals],
+	# signal_sizes = np.array(signal_sizes, dtype=np.uint8),
+	# signal_offsets = [signal._offset for signal in signals],
+	# signal_offsets = np.array(signal_offsets, dtype=np.float64),
+	# signal_factors = [signal._factor for signal in signals],
+	# signal_factors = np.array(signal_factors, dtype=np.float64)
+    # )
+    # for signal in frame._signals:
+	# signal_data = FrameSignalInfo(
+		# is_signed_type = RadarMsgs.isSignalSignedType(signal),
+		# is_number_integer = RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal)
+		# )
+	# frame_signal_data.append(signal_data)
+    # return frame_signal_data
 
 class RadarEsr:
     def __init__(self, pub_can_send, pub_result, name_id, interface):
@@ -177,7 +188,7 @@ class RadarEsr:
 
 	    msg_pub = None
 	    # try:
-	    print frame_info
+	    # print frame_info
 	    _siglist = RadarMsgs.crack([x for x in (bytearray(msg.data))] , [ s._name for s in frame_detected._signals] , frame_detected._name, frame_detected._signals, frame_info)
 	    # msg_pub = RadarMsgs.decodeMsg(msg, _siglist, frame_detected._name) 
 
