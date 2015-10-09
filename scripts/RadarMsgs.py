@@ -64,6 +64,12 @@ def twosComplement(number, signalsize):
 def getArrayIdxFromStartBit(n):
     return (0 if (n+1)%8 == 0 else 8-((n+1)%8))  + (n/8)*8
 
+def getFactorIsIntegerFromSignal(signal):
+    return True if float(signal._factor).is_integer() else False
+
+def getOffsetIsIntegerFromSignal(signal):
+    return True if float(signal._offset).is_integer() else False
+
 # @jit
 def getSignalNumber(barray_unpacked, barray, start_bit, signalsize, isByteorderIntel, isValuetypeiSigned, factor, offset):
     # just guard againts unhandled (yet) intel bytecode
@@ -135,10 +141,13 @@ def getBigEndiNumberFromBitNpArr(blist, idx, size):
 	signal_number = signal_number | (blist[idx+i] << (size - i))
     return signal_number
     
+@njit(numba.u1(numba.u1[:],numba.u1))
+def getIsNegativeBigEndianNumberFormBitNpArr(blist, idx):
+    return blist[idx]
 
-# @jit
 # @profile
-def parseSignal(barray, barray_unpacked, signal_names, signals):
+# @jit
+def parseSignal(barray, barray_unpacked, signal_names, signals, frame_info):
     signal_list ={} 
 
     #create uint64 from barray
@@ -152,15 +161,25 @@ def parseSignal(barray, barray_unpacked, signal_names, signals):
     # print twosComplement(0x7FFFFFFF, 32), type(twosComplement(0x7FFFFFF, 32))
     # print twosComplement(0x7FFFFFFFFFFFFFFF, 64), type(twosComplement(0x7FFFFFFFFFFFFFFF, 64))
 
+    signal_start_bits = np.array([],dtype=np.uint8)
+    for fi in frame_info:
+	np.append(signal_start_bits, fi.is_signed_type)
+
+    print signal_start_bits, type(signal_start_bits)
+
+    signal_idx = 0
     for signal in signals:
 	start_bit_idx = getArrayIdxFromStartBit(signal._startbit)
 	signal_number = getBigEndiNumberFromBitNpArr(barray_unpacked, start_bit_idx, signal._signalsize)
 	# print signal_number, type(signal_number), barray_unpacked, type(barray_unpacked)
 
-	if isSignalSignedType(signal) and barray_unpacked.tolist()[start_bit_idx]:
+	# if isSignalSignedType(signal) and barray_unpacked.tolist()[start_bit_idx]:
+	# if isSignalSignedType(signal) and getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
+	if frame_info[signal_idx].is_signed_type and getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
 	    signal_number = twosComplement(signal_number, signal._signalsize)
 
 	signal_list[signal._name] = signal_number*signal._factor + signal._offset
+	signal_idx = signal_idx + 1
 	
     
     # for signal in signal_names:
@@ -246,7 +265,7 @@ def parseSignal_old(barray, barray_unpacked, signal_names):
 # @jit(nopython=True)
 # @profile
 # @jit
-def crack(msg_data, signal_names, frame_name, signals):
+def crack(msg_data, signal_names, frame_name, signals, frame_info):
     # barray = convertRadarToBitVector(msg)
     # barray = convertRadarToArray(msg)
     # barray = np.array(bytearray(msg_data), dtype=np.uint8).tolist()
@@ -257,7 +276,7 @@ def crack(msg_data, signal_names, frame_name, signals):
 
     # return None
 
-    signal_list = parseSignal(barray.tolist(), barray_unpacked, signal_names, signals)
+    signal_list = parseSignal(barray.tolist(), barray_unpacked, signal_names, signals, frame_info)
     return signal_list
 
     # try:
