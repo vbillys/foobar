@@ -6,6 +6,7 @@ import math
 from foobar.msg import Esr_track
 import RadarSync, Queue
 import RadarMsgs
+from collections import namedtuple
 
 
 def getSignal(frame, signal_name):
@@ -13,6 +14,32 @@ def getSignal(frame, signal_name):
 
 def getFrame(db,frame_name):
     return db._fl.byName(frame_name)
+
+def getFrameById(db, id):
+    return db._fl.byId(id)
+
+FrameSignalInfo = namedtuple('FrameSignalInfo','is_signed_type is_number_integer ')
+def getProcessedFrame(db, frame_name):
+    frame = getFrame(db, frame_name)
+    frame_signal_data = []
+    for signal in frame._signals:
+	signal_data = FrameSignalInfo(
+			is_signed_type = RadarMsgs.isSignalSignedType(signal),
+			is_number_integer = RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal)
+		)
+	frame_signal_data.append(signal_data)
+    return frame_signal_data
+
+def getProcessedFrameById(db, frame_id):
+    frame = getFrameById(db, frame_id)
+    frame_signal_data = []
+    for signal in frame._signals:
+	signal_data = FrameSignalInfo(
+		is_signed_type = RadarMsgs.isSignalSignedType(signal),
+		is_number_integer = RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal)
+		)
+	frame_signal_data.append(signal_data)
+    return frame_signal_data
 
 class RadarEsr:
     def __init__(self, pub_can_send, pub_result, name_id, interface):
@@ -60,7 +87,7 @@ class RadarEsr:
 	self.numba_errs = 0
 
 	# just a trick to prevent multi thread numba complications
-	_siglist = RadarMsgs.crack(8*[0] , [ s._name for s in self.registered_frames[0]._signals] , self.registered_frames[0]._name, self.registered_frames[0]._signals)
+	_siglist = RadarMsgs.crack(8*[0] , [ s._name for s in self.registered_frames[0]._signals] , self.registered_frames[0]._name, self.registered_frames[0]._signals, self.registered_processed_frames[0])
 
     def resetIdIdx(self):
 	self.reg_id_idx = 0
@@ -81,7 +108,11 @@ class RadarEsr:
 
     def registerFrames(self, frame_name_list):
 	self.registered_Ids    = sorted([getFrame(self.db, x)._Id for x in frame_name_list])
-	self.registered_frames =        [getFrame(self.db, x)     for x in frame_name_list]
+	# self.registered_frames =        [getFrame(self.db, x)     for x in frame_name_list]
+	self.registered_frames =        [getFrameById(self.db, x)     for x in self.registered_Ids]
+	# self.registered_processed_frames = [getProcessedFrame(self.db, x) for x in frame_name_list]
+	self.registered_processed_frames = [getProcessedFrameById(self.db, x) for x in self.registered_Ids]
+	self.registered_processed_dict = dict(zip(self.registered_Ids, self.registered_processed_frames))
 	self.registered_dict   = dict(zip(self.registered_Ids, self.registered_frames))
 	self.no_of_frame_registered = len(frame_name_list)
 	
@@ -94,6 +125,7 @@ class RadarEsr:
 	# print format(msg.id, '04x')
 	# if msg.id == self.test_frame._Id: # 0x04e0:
 	frame_detected = self.registered_dict.get(msg.id, None)
+	frame_info = self.registered_processed_dict.get(msg.id, None)
 	if frame_detected is not None:
 	    #starting frame
 	    if msg.id == self.registered_Ids[0]:
@@ -145,7 +177,8 @@ class RadarEsr:
 
 	    msg_pub = None
 	    # try:
-	    _siglist = RadarMsgs.crack([x for x in (bytearray(msg.data))] , [ s._name for s in frame_detected._signals] , frame_detected._name, frame_detected._signals)
+	    print frame_info
+	    _siglist = RadarMsgs.crack([x for x in (bytearray(msg.data))] , [ s._name for s in frame_detected._signals] , frame_detected._name, frame_detected._signals, frame_info)
 	    # msg_pub = RadarMsgs.decodeMsg(msg, _siglist, frame_detected._name) 
 
 	    # except AttributeError:
