@@ -134,11 +134,11 @@ def getSignalNumber(barray_unpacked, barray, start_bit, signalsize, isByteorderI
 
 
 # big endian assumption 
-@njit(numba.u8(numba.u1[:],numba.u1,numba.u1))
-def getBigEndiNumberFromBitNpArr(blist, idx, size):
+@njit(numba.u8(numba.u1[:],numba.u1,numba.u1, numba.u4))
+def getBigEndiNumberFromBitNpArr(blist, idx, size, id):
     signal_number = 0
     for i in range (0,size):
-	signal_number = signal_number | (blist[idx+i] << (size - i))
+	signal_number = signal_number | (blist[idx+i] << (size - i  - 1))
     return signal_number
     
 @njit(numba.u1(numba.u1[:],numba.u1))
@@ -146,25 +146,33 @@ def getIsNegativeBigEndianNumberFormBitNpArr(blist, idx):
     return blist[idx]
 
 # @njit(numba.f8(numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:]))
-@njit((numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:]))
-def ppParseSignal(barray_unpacked, signal_no, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors ):
+@njit((numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:], numba.u4))
+def ppParseSignal(barray_unpacked, signal_no, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors , id):
     start_bit_idx = getArrayIdxFromStartBit(signal_start_bits[signal_no])
-    this_signal_number = getBigEndiNumberFromBitNpArr(barray_unpacked, start_bit_idx, signal_sizes[signal_no])
+    this_signal_number = getBigEndiNumberFromBitNpArr(barray_unpacked, start_bit_idx, signal_sizes[signal_no], id)
+    # if id == 0x4e0:
+	# print signal_no, signal_start_bits[signal_no], start_bit_idx, signal_sizes[signal_no], this_signal_number
     if signal_is_signed_types[signal_no] and getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
 	this_signal_number = twosComplement(this_signal_number, signal_sizes[signal_no])
+    # if id == 0x4e0:
+	# print  this_signal_number
     if signal_is_integers[signal_no]:
 	this_signal_number = this_signal_number*int(signal_factors[signal_no]) + int(signal_offsets[signal_no])
     else:
 	this_signal_number = this_signal_number*float(signal_factors[signal_no]) + float(signal_offsets[signal_no])
-    return 0
+    # if id == 0x4e0:
+	# print  this_signal_number
+    return this_signal_number
 
 # @jit((numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:]))
 # @jit
-def pParseSignal(barray_unpacked, no_of_signal, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors ):
+def pParseSignal(barray_unpacked, no_of_signal, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors, id ):
     # return [ppParseSignal(barray_unpacked, i, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors ) for i in range(no_of_signal)]
     numbers = []
     for i in range(no_of_signal):
-	numbers = numbers + [ppParseSignal(barray_unpacked, i, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors )] 
+	# if id == 0x4e0:
+	    # print i, ppParseSignal(barray_unpacked, i, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors ) 
+	numbers = numbers + [ppParseSignal(barray_unpacked, i, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors, id)] 
     return numbers
 
 
@@ -196,6 +204,7 @@ def parseSignal(barray, barray_unpacked, signal_names, signals, frame_info):
 	    ,signal_sizes=frame_info.signal_sizes 
 	    ,signal_offsets=frame_info.signal_offsets 
 	    ,signal_factors=frame_info.signal_factors
+	    , id = frame_info.id
 	)
 
     # signal_idx = 0
@@ -225,12 +234,18 @@ def parseSignal(barray, barray_unpacked, signal_names, signals, frame_info):
 
 
     # signal_list = dict(zip(signal_names,signal_number_converted))
-    signal_list = dict(zip(signal_names,signal_number))
+    if frame_info.id == 0x4e2 or frame_info.id == 0x4e3:
+	signal_list = dict(zip(signal_names,signal_number))
 
 
     # print signal_names
     # print signal_number_converted
-    # print signal_list
+	print signal_list
+	# print barray_unpacked
+	# print barray
+	# print signal_names
+	# print signal_number
+	# print frame_info.signal_start_bits
     
     # for signal in signal_names:
     # for signal in signals:
