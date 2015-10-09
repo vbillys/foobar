@@ -145,10 +145,31 @@ def getBigEndiNumberFromBitNpArr(blist, idx, size):
 def getIsNegativeBigEndianNumberFormBitNpArr(blist, idx):
     return blist[idx]
 
+@njit(numba.f8(numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:]))
+def ppParseSignal(barray_unpacked, signal_no, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors ):
+    start_bit_idx = getArrayIdxFromStartBit(signal_start_bits[signal_no])
+    this_signal_number = getBigEndiNumberFromBitNpArr(barray_unpacked, start_bit_idx, signal_sizes[signal_no])
+    if signal_is_signed_types[signal_no] and getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
+	this_signal_number = twosComplement(this_signal_number, signal_sizes[signal_no])
+    this_signal_number = this_signal_number*float(signal_factors[signal_no]) + float(signal_offsets[signal_no])
+    return 0
+
+# @jit((numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:]))
+# @jit
+def pParseSignal(barray_unpacked, no_of_signal, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors ):
+    # return [ppParseSignal(barray_unpacked, i, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors ) for i in range(no_of_signal)]
+    numbers = []
+    for i in range(no_of_signal):
+	numbers = numbers + [ppParseSignal(barray_unpacked, i, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors )] 
+    return numbers
+
+
+
 # @profile
 # @jit
 def parseSignal(barray, barray_unpacked, signal_names, signals, frame_info):
     signal_list ={} 
+    # return None
 
     #create uint64 from barray
     # msg_data_number = 0
@@ -161,26 +182,45 @@ def parseSignal(barray, barray_unpacked, signal_names, signals, frame_info):
     # print twosComplement(0x7FFFFFFF, 32), type(twosComplement(0x7FFFFFF, 32))
     # print twosComplement(0x7FFFFFFFFFFFFFFF, 64), type(twosComplement(0x7FFFFFFFFFFFFFFF, 64))
 
-    signal_start_bits = np.array([],dtype=np.uint8)
-    for fi in frame_info:
-	np.append(signal_start_bits, fi.is_signed_type)
 
-    print signal_start_bits, type(signal_start_bits)
+    # print signal_start_bits, type(signal_start_bits)
 
-    signal_idx = 0
-    for signal in signals:
-	start_bit_idx = getArrayIdxFromStartBit(signal._startbit)
-	signal_number = getBigEndiNumberFromBitNpArr(barray_unpacked, start_bit_idx, signal._signalsize)
-	# print signal_number, type(signal_number), barray_unpacked, type(barray_unpacked)
+    signal_number = pParseSignal(barray_unpacked, len(signal_names)
+	    , signal_is_signed_types=frame_info.signal_is_signed_types 
+	    , signal_start_bits=frame_info.signal_start_bits 
+	    , signal_is_integers=frame_info.signal_is_integers 
+	    ,signal_sizes=frame_info.signal_sizes 
+	    ,signal_offsets=frame_info.signal_offsets 
+	    ,signal_factors=frame_info.signal_factors
+	)
 
-	# if isSignalSignedType(signal) and barray_unpacked.tolist()[start_bit_idx]:
-	# if isSignalSignedType(signal) and getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
-	if frame_info[signal_idx].is_signed_type and getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
-	    signal_number = twosComplement(signal_number, signal._signalsize)
+    # signal_idx = 0
+    # signal_number = []
+    # for signal in signals:
+	# start_bit_idx = getArrayIdxFromStartBit(signal._startbit)
+	# this_signal_number = getBigEndiNumberFromBitNpArr(barray_unpacked, start_bit_idx, signal._signalsize)
+	# # print signal_number, type(signal_number), barray_unpacked, type(barray_unpacked)
 
-	signal_list[signal._name] = signal_number*signal._factor + signal._offset
-	signal_idx = signal_idx + 1
+	# # if isSignalSignedType(signal) and barray_unpacked.tolist()[start_bit_idx]:
+	# # if isSignalSignedType(signal) and getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
+	# if frame_info.signal_is_signed_types[signal_idx] and getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
+	    # this_signal_number = twosComplement(this_signal_number, signal._signalsize)
+
+	# # signal_list[signal._name] = signal_number*signal._factor + signal._offset
+	# this_signal_number = this_signal_number*float(signal._factor) + float(signal._offset)
+	# # signal_number.append(this_signal_number)
+	# signal_number = signal_number + [this_signal_number]
+	# signal_idx = signal_idx + 1
 	
+    # signal_number = [ int(sn) if x else (sn) for (sn,x) in zip(signal_number, frame_info.signal_is_integers)]
+    signal_number = []
+    for (sn,x) in zip(signal_number, frame_info.signal_is_integers):
+	signal_number = signal_number + [ int(sn) if x else (sn)]
+
+
+    signal_list = dict(zip(signal_names,signal_number))
+    # print signal_names
+    # print signal_list
     
     # for signal in signal_names:
     # for signal in signals:
