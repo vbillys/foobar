@@ -46,6 +46,11 @@ def startRosNode():
 	    pub_can_msg.publish(canbus_msg)
 	    pub_can_msg2.publish(canbus_msg)
 	    pub_can_msg3.publish(canbus_msg)
+	for id in range(0x04e0,0x04e4):
+	    canbus_msg.id = id
+	    pub_can_msg.publish(canbus_msg)
+	    pub_can_msg2.publish(canbus_msg)
+	    pub_can_msg3.publish(canbus_msg)
 	    
         rate.sleep()
 

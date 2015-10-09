@@ -19,10 +19,11 @@ def getFrame(db,frame_name):
 def getFrameById(db, id):
     return db._fl.byId(id)
 
-FrameSignalInfo = namedtuple('FrameSignalInfo','signal_is_signed_types signal_start_bits signal_is_integers signal_sizes signal_offsets signal_factors')
+FrameSignalInfo = namedtuple('FrameSignalInfo','id signal_is_signed_types signal_start_bits signal_is_integers signal_sizes signal_offsets signal_factors')
 def getProcessedFrameById(db, frame_id):
     frame = getFrameById(db, frame_id)
     return FrameSignalInfo(
+	id = frame_id,
 	signal_is_signed_types  = np.array([RadarMsgs.isSignalSignedType(signal) for signal in frame._signals],dtype=np.uint8),
 	signal_start_bits  = np.array([signal._startbit for signal in frame._signals],dtype=np.uint8),
 	signal_is_integers = np.array([RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal) for signal in frame._signals],dtype=np.uint8),
@@ -75,7 +76,7 @@ class RadarEsr:
 	    # print frame._name
 	    criteria_ESR_Track = re.match('ESR_Track',frame._name)
 	    criteria_ESR_Valid = re.match('ESR_Valid',frame._name)
-	    criteria_ESR_Status = re.match('ESR_Status[5-9]',frame._name)
+	    criteria_ESR_Status = re.match('ESR_Status[0-9]',frame._name)
 	    # print criteria_ESR_Track, criteria_ESR_Valid, criteria_ESR_Status
 	    if      (criteria_ESR_Track  is not None) \
 		or  (criteria_ESR_Valid  is not None) \
@@ -190,9 +191,11 @@ class RadarEsr:
 	    msg_pub = None
 	    # try:
 	    # print frame_info
+
 	    _siglist = RadarMsgs.crack([x for x in (bytearray(msg.data))] , [ s._name for s in frame_detected._signals] , frame_detected._name, frame_detected._signals, frame_info)
-	    # print _siglist
-	    msg_pub = RadarMsgs.decodeMsg(msg, _siglist, frame_detected._name) 
+	    # if msg.id == 0x5e4:
+		# print _siglist
+	    # msg_pub = RadarMsgs.decodeMsg(msg, _siglist, frame_detected._name) 
 
 	    # except AttributeError:
 		# self.numba_errs = self.numba_errs + 1
