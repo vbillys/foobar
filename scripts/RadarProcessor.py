@@ -132,6 +132,7 @@ class RadarEsr:
 	
 
 
+    # @profile
     def processRadar(self,msg):
 	# print format(msg.id, '04x')
 	# if msg.id == self.test_frame._Id: # 0x04e0:
@@ -190,7 +191,8 @@ class RadarEsr:
 	    # try:
 	    # print frame_info
 	    _siglist = RadarMsgs.crack([x for x in (bytearray(msg.data))] , [ s._name for s in frame_detected._signals] , frame_detected._name, frame_detected._signals, frame_info)
-	    # msg_pub = RadarMsgs.decodeMsg(msg, _siglist, frame_detected._name) 
+	    # print _siglist
+	    msg_pub = RadarMsgs.decodeMsg(msg, _siglist, frame_detected._name) 
 
 	    # except AttributeError:
 		# self.numba_errs = self.numba_errs + 1

@@ -145,13 +145,17 @@ def getBigEndiNumberFromBitNpArr(blist, idx, size):
 def getIsNegativeBigEndianNumberFormBitNpArr(blist, idx):
     return blist[idx]
 
-@njit(numba.f8(numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:]))
+# @njit(numba.f8(numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:]))
+@njit((numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:]))
 def ppParseSignal(barray_unpacked, signal_no, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors ):
     start_bit_idx = getArrayIdxFromStartBit(signal_start_bits[signal_no])
     this_signal_number = getBigEndiNumberFromBitNpArr(barray_unpacked, start_bit_idx, signal_sizes[signal_no])
     if signal_is_signed_types[signal_no] and getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
 	this_signal_number = twosComplement(this_signal_number, signal_sizes[signal_no])
-    this_signal_number = this_signal_number*float(signal_factors[signal_no]) + float(signal_offsets[signal_no])
+    if signal_is_integers[signal_no]:
+	this_signal_number = this_signal_number*int(signal_factors[signal_no]) + int(signal_offsets[signal_no])
+    else:
+	this_signal_number = this_signal_number*float(signal_factors[signal_no]) + float(signal_offsets[signal_no])
     return 0
 
 # @jit((numba.u1[:], numba.u1, numba.u1[:], numba.u1[:], numba.u1[:], numba.u1[:], numba.f8[:], numba.f8[:]))
@@ -213,13 +217,19 @@ def parseSignal(barray, barray_unpacked, signal_names, signals, frame_info):
 	# signal_idx = signal_idx + 1
 	
     # signal_number = [ int(sn) if x else (sn) for (sn,x) in zip(signal_number, frame_info.signal_is_integers)]
-    signal_number = []
-    for (sn,x) in zip(signal_number, frame_info.signal_is_integers):
-	signal_number = signal_number + [ int(sn) if x else (sn)]
 
 
+    # signal_number_converted = []
+    # for (sn,x) in zip(signal_number, frame_info.signal_is_integers):
+	# signal_number_converted= signal_number_converted+ [ (int(sn) if x else (sn))]
+
+
+    # signal_list = dict(zip(signal_names,signal_number_converted))
     signal_list = dict(zip(signal_names,signal_number))
+
+
     # print signal_names
+    # print signal_number_converted
     # print signal_list
     
     # for signal in signal_names:
@@ -322,7 +332,7 @@ def crack(msg_data, signal_names, frame_name, signals, frame_info):
     # try:
     # print signal_list
 
-@jit
+# @jit
 def decodeMsg(msg, signal_list, frame_name):
     result_dict =  decode_dict.get(frame_name, None)
     if result_dict is not None:
