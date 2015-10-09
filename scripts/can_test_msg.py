@@ -21,7 +21,7 @@ def startRosNode():
     #print len(canbus_msg.data)
 
     # rate = rospy.Rate(6000)
-    rate = rospy.Rate(20)
+    rate = rospy.Rate(40)
     while not rospy.is_shutdown():
         canbus_msg.header.stamp = rospy.Time.now()
 	# pub_can_msg.publish(canbus_msg)
