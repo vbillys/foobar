@@ -129,7 +129,7 @@ class RadarEsr:
 	self.no_of_frame_registered = len(frame_name_list)
 	
     def processEgomotion(self, egomotion_msg):
-	self.RadarEsrSyncThread.processEgomotion(egomotion_msg)
+	self.radar_sync_thread.processEgomotion(egomotion_msg)
 	
 
 
