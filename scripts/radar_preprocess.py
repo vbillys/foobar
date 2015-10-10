@@ -44,6 +44,7 @@ def createRadarHandler(radar_list, name_id, interface, radar_type, name_resoluti
     rospy.Subscriber('radar_packet/egomotion', Odometry, radar_handler.processEgomotion)
     radar_list[name_id]['handler'] = radar_handler
     radar_list[name_id]['handler_sync_thread'] = radar_handler.getSyncThread()
+    # radar_list[name_id]['handler_process_thread'] = radar_handler.getProcessThread()
 
     # radar_list[name_id]['pub_can_send'] = handler[0]
     # radar_list[name_id]['pub_result']   = handler[1]
@@ -90,16 +91,23 @@ def startRosNode(node_name):
     while not rospy.is_shutdown():
         string_log = ''
         for handler in radar_list:
-            string_log = string_log + handler + ' ' +  str(radar_list[handler]['handler'].counter_processed) + ' '
-	    radar_list[handler]['handler'].counter_processed = 0
+            string_log = string_log + handler + ' ' +  str(radar_list[handler]['handler'].counter_processed) + ' '\
+            +str(radar_list[handler]['handler_sync_thread'].sync_counter) + ' ' \
+            # +str(radar_list[handler]['handler_process_thread'].process_counter) + ' ' \
+            # +' '
+            radar_list[handler]['handler'].counter_processed = 0
+            radar_list[handler]['handler_sync_thread'].sync_counter = 0
+            # radar_list[handler]['handler_process_thread'].process_counter = 0
         pub_process_log.publish(string_log)
         rate.sleep()
 
     print "stopping sync thread..."
     for handler in radar_list:
-	radar_list[handler]['handler_sync_thread'].setThreadStop(True)
-	radar_list[handler]['handler_sync_thread'].join()
-	print 'stopped ' + handler
+        radar_list[handler]['handler_sync_thread'].setThreadStop(True)
+        radar_list[handler]['handler_sync_thread'].join()
+        # radar_list[handler]['handler_process_thread'].setThreadStop(True)
+        # radar_list[handler]['handler_process_thread'].join()
+        print 'stopped ' + handler
 
 
 

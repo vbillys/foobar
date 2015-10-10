@@ -6,9 +6,9 @@ import math
 from foobar.msg import Esr_track
 import RadarSync, Queue
 import RadarMsgs
+import RadarProcess
 from collections import namedtuple
 import numpy as np
-
 
 def getSignal(frame, signal_name):
     return frame.signalByName(signal_name)
@@ -59,6 +59,11 @@ class RadarEsr:
 	self.radar_sync_queue = Queue.Queue()
 	self.radar_sync_thread = RadarSync.RadarEsrSyncThread(pub_can_send, self.radar_sync_queue)
 	self.radar_sync_thread.start()
+
+	# self.radar_process_queue = Queue.Queue()#(maxsize=1000)
+	# self.radar_process_thread = RadarProcess.RadarEsrProcessThread(pub_result, self.radar_process_queue, self)
+	# self.radar_process_thread.start()
+
 
 	self.pub_can_send = pub_can_send
 	self.pub_result   = pub_result
@@ -118,6 +123,9 @@ class RadarEsr:
     def getSyncThread(self):
 	return self.radar_sync_thread
 
+    def getProcessThread(self):
+	return self.radar_process_thread
+
     def registerFrames(self, frame_name_list):
 	self.registered_Ids    = sorted([getFrame(self.db, x)._Id for x in frame_name_list])
 	# self.registered_frames =        [getFrame(self.db, x)     for x in frame_name_list]
@@ -152,6 +160,12 @@ class RadarEsr:
 		self.counter_processed = self.counter_processed + 1
 	    else:
 		self.track_frame_id[msg.id] = self.track_frame_id[msg.id] + 1
+		# try:
+		    # # self.radar_process_queue.put((msg, frame_detected, frame_info),block=False)
+		    # self.radar_process_queue.put(msg, block=False)
+		# except Queue.Full:
+		    # print "WARNING: process queue full... skipping message"
+		    # pass
 
 
 	    # if msg.id == self.registered_Ids[self.getIdIdx()]:
