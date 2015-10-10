@@ -5,9 +5,12 @@ DEVICES:
 -
         interface: 'can1'
         name_id: 'left_front_esr'
-#-
-        #interface: 'can2'
-        #name_id: 'right_front_esr'
+-
+        interface: 'can2'
+        name_id: 'right_front_esr'
+-
+        interface: 'can3'
+        name_id: 'back_sms_as_esr'
 
 OPTIONS:
         #name_resolution: 'name_id' # 'name_id' or 'interface'
