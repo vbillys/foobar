@@ -22,10 +22,10 @@ def startRosNode():
     rospy.init_node('can_test_msg_node', anonymous=True)
 
     # pub_can_msg  = rospy.Publisher('radar_packet/can0/send', CanBusMsg, queue_size=10)
-    pub_can_msg  = rospy.Publisher('radar_packet/can0/recv', CanBusMsg, queue_size=100)
-    pub_can_msg2 = rospy.Publisher('radar_packet/can1/recv', CanBusMsg, queue_size=100)
-    pub_can_msg3 = rospy.Publisher('radar_packet/can2/recv', CanBusMsg, queue_size=100)
-    pub_can_msg4 = rospy.Publisher('radar_packet/can3/recv', CanBusMsg, queue_size=100)
+    pub_can_msg  = rospy.Publisher('radar_packet/can0/recv', CanBusMsg, queue_size=300)
+    pub_can_msg2 = rospy.Publisher('radar_packet/can1/recv', CanBusMsg, queue_size=300)
+    pub_can_msg3 = rospy.Publisher('radar_packet/can2/recv', CanBusMsg, queue_size=300)
+    pub_can_msg4 = rospy.Publisher('radar_packet/can3/recv', CanBusMsg, queue_size=300)
     canbus_msg.header.frame_id = 'front_middle'
     #canbus_msg.header.seq = 1
     canbus_msg.id = 0x053f # 0x17be
@@ -41,7 +41,7 @@ def startRosNode():
     #print len(canbus_msg.data)
 
     # rate = rospy.Rate(6000)
-    rate = rospy.Rate(20)
+    rate = rospy.Rate(45)
     while not rospy.is_shutdown():
         canbus_msg.header.stamp = rospy.Time.now()
 	# pub_can_msg.publish(canbus_msg)
