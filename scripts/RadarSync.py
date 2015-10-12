@@ -19,18 +19,19 @@ class RadarEsrSyncThread(threading.Thread):
 
     def run(self):
 
-	rate = rospy.Rate(20)
+	rate = rospy.Rate(50)
 	canbus_msg.dlc = 8
 	canbus_msg.data = 8 * [0]
 	counter = 0
 
 	while not self.thread_stop:
-	    try:
-		val = self.sync_queue.get(True,0.02)
-		self.sync_queue.task_done()
-	    except Queue.Empty:
-		# print 'queue empty from radar_esr sync...'
-		pass
+	    # try:
+	    #     val = self.sync_queue.get(True,0.02)
+	    #     self.sync_queue.task_done()
+	    # except Queue.Empty:
+	    #     # print 'queue empty from radar_esr sync...'
+	    #     pass
+	    rate.sleep()
 	    if counter == 2:
 		for cid in range(0x4f0, 0x4f2):
 		    canbus_msg.id = cid
