@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, traceback
 import re
 sys.path.append(os.path.dirname(__file__) + '/canmatrix')
 import library.importall as im
@@ -6,9 +6,15 @@ import math
 from foobar.msg import Esr_track
 import RadarSync, Queue
 import RadarMsgs
+import RadarMsgsCython
 import RadarProcess
 from collections import namedtuple
 import numpy as np
+from array import array
+
+# import pyximport
+# pyximport.install()
+# import RadarMsgsCython
 
 def getSignal(frame, signal_name):
     return frame.signalByName(signal_name)
@@ -19,18 +25,29 @@ def getFrame(db,frame_name):
 def getFrameById(db, id):
     return db._fl.byId(id)
 
-FrameSignalInfo = namedtuple('FrameSignalInfo','id signal_is_signed_types signal_start_bits signal_is_integers signal_sizes signal_offsets signal_factors')
+FrameSignalInfo = namedtuple('FrameSignalInfo','id signal_is_signed_types signal_start_bits signal_is_integers signal_sizes signal_offsets signal_factors howmanysignal sid')
 def getProcessedFrameById(db, frame_id):
     frame = getFrameById(db, frame_id)
     return FrameSignalInfo(
-	id = frame_id,
-	signal_is_signed_types  = np.array([RadarMsgs.isSignalSignedType(signal) for signal in frame._signals],dtype=np.uint8),
-	signal_start_bits  = np.array([signal._startbit for signal in frame._signals],dtype=np.uint8),
-	signal_is_integers = np.array([RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal) for signal in frame._signals],dtype=np.uint8),
-	signal_sizes = np.array([signal._signalsize for signal in frame._signals],dtype=np.uint8),
-	signal_offsets = np.array([signal._offset for signal in frame._signals],dtype=np.float64),
-	signal_factors = np.array([signal._factor for signal in frame._signals],dtype=np.float64),
-    )
+	    id = frame_id,
+	    signal_is_signed_types  = array('B',[RadarMsgs.isSignalSignedType(signal) for signal in frame._signals]),
+	    signal_start_bits  = array('B',[int(signal._startbit) for signal in frame._signals]),
+	    signal_is_integers = array('B',[RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal) for signal in frame._signals]),
+	    signal_sizes = array('B',[int(signal._signalsize) for signal in frame._signals]),
+	    signal_offsets = array('d',[float(signal._offset) for signal in frame._signals]),
+	    signal_factors = array('d',[float(signal._factor) for signal in frame._signals]),
+	    howmanysignal = len(frame._signals),
+	    sid = frame._Id
+	    )
+    # return FrameSignalInfo(
+	# id = frame_id,
+	# signal_is_signed_types  = np.array([RadarMsgs.isSignalSignedType(signal) for signal in frame._signals],dtype=np.uint8),
+	# signal_start_bits  = np.array([signal._startbit for signal in frame._signals],dtype=np.uint8),
+	# signal_is_integers = np.array([RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal) for signal in frame._signals],dtype=np.uint8),
+	# signal_sizes = np.array([signal._signalsize for signal in frame._signals],dtype=np.uint8),
+	# signal_offsets = np.array([signal._offset for signal in frame._signals],dtype=np.float64),
+	# signal_factors = np.array([signal._factor for signal in frame._signals],dtype=np.float64),
+    # )
     # return FrameSignalInfo(
 	# signal_is_signed_types  = [RadarMsgs.isSignalSignedType(signal) for signal in frame._signals],
 	# signal_is_signed_types  = np.array(signal_is_signed_types  , dtype=np.uint8),
@@ -65,46 +82,64 @@ class RadarEsr:
 	# self.radar_process_thread.start()
 
 
-	self.pub_can_send = pub_can_send
-	self.pub_result   = pub_result
-	self.name_id      = name_id
-	self.interface    = interface
+	try:
+		self.pub_can_send = pub_can_send
+		self.pub_result   = pub_result
+		self.name_id      = name_id
+		self.interface    = interface
 
-	# self.db           = im.importDbc(os.path.dirname(__file__)+'/RSDS_PCAN_v18.dbc')
-	self.db           = im.importDbc(os.path.dirname(__file__)+'/ESR_radar.dbc')
-	# self.registerFrames([ 'SODL_Status1' ])
-	# self.registerFrames([ frame._name for frame in self.db._fl._list])
-	# self.registerFrames(['ESR_Track64'])
+		# self.db           = im.importDbc(os.path.dirname(__file__)+'/RSDS_PCAN_v18.dbc')
+		self.db           = im.importDbc(os.path.dirname(__file__)+'/ESR_radar.dbc')
+		# self.registerFrames([ 'SODL_Status1' ])
+		# self.registerFrames([ frame._name for frame in self.db._fl._list])
+		# self.registerFrames(['ESR_Track64'])
 
-	self.registered_frame_names = []
-	for frame in self.db._fl._list:
-	    # print frame._name
-	    criteria_ESR_Track = re.match('ESR_Track',frame._name)
-	    criteria_ESR_Valid = re.match('ESR_Valid',frame._name)
-	    criteria_ESR_Status = re.match('ESR_Status[0-9]',frame._name)
-	    # print criteria_ESR_Track, criteria_ESR_Valid, criteria_ESR_Status
-	    if      (criteria_ESR_Track  is not None) \
-		or  (criteria_ESR_Valid  is not None) \
-		or  (criteria_ESR_Status is not None):
-		    self.registered_frame_names.append(frame._name)
+		self.registered_frame_names = []
+		for frame in self.db._fl._list:
+		    # print frame._name
+		    criteria_ESR_Track = re.match('ESR_Track',frame._name)
+		    criteria_ESR_Valid = re.match('ESR_Valid',frame._name)
+		    criteria_ESR_Status = re.match('ESR_Status[0-9]',frame._name)
+		    # print criteria_ESR_Track, criteria_ESR_Valid, criteria_ESR_Status
+		    if      (criteria_ESR_Track  is not None) \
+			or  (criteria_ESR_Valid  is not None) \
+			or  (criteria_ESR_Status is not None):
+			    self.registered_frame_names.append(frame._name)
 
-	for i in range (0,9):
-	    self.registered_frame_names.append('ESR_TrackMotionPower')
-	self.registerFrames(self.registered_frame_names)
-	print self.registered_frame_names
-	print [format(getFrame(self.db, x)._Id, '04x') for x in self.registered_frame_names]
-	self.track_frame_id = dict.fromkeys(self.registered_Ids, 0)
-	print self.registered_dict
-	print self.track_frame_id
+		for i in range (0,9):
+		    self.registered_frame_names.append('ESR_TrackMotionPower')
+		self.registerFrames(self.registered_frame_names)
+		print self.registered_frame_names
+		print [format(getFrame(self.db, x)._Id, '04x') for x in self.registered_frame_names]
+		self.track_frame_id = dict.fromkeys(self.registered_Ids, 0)
+		print self.registered_dict
+		print self.track_frame_id
+		print [self.registered_processed_dict.get(x).howmanysignal for x in self.registered_processed_dict]
+		print [(x).howmanysignal for x in self.registered_processed_frames]
 
-	# self.registerFrames(['SODL_Status4','SODL_Status1','SODL_Status2','SODL_Status3'])
-	self.counter_processed = 0
+		# self.registerFrames(['SODL_Status4','SODL_Status1','SODL_Status2','SODL_Status3'])
+		self.counter_processed = 0
 
-	self.reg_id_idx = 0
-	self.numba_errs = 0
+		self.reg_id_idx = 0
+		self.numba_errs = 0
 
-	# just a trick to prevent multi thread numba complications
-	_siglist = RadarMsgs.crack(8*[0] , [ s._name for s in self.registered_frames[0]._signals] , self.registered_frames[0]._name, self.registered_frames[0]._signals, self.registered_processed_frames[0])
+		# just a trick to prevent multi thread numba complications
+		# _siglist = RadarMsgs.crack(8*[0] , [ s._name for s in self.registered_frames[0]._signals] , self.registered_frames[0]._name, self.registered_frames[0]._signals, self.registered_processed_frames[0])
+		# _siglist = RadarMsgs.crack(8*[0] , self.registered_processed_frames[0])
+
+		self.first_frame_id = self.registered_Ids[0]
+		self.frames_length = len(self.registered_frame_names)
+		self.buffered_frames_count = array('B', self.frames_length * [0])
+		# self.buffered_frames_canid = array('I', self.frames_length * [0])
+		self.buffered_frames_candt = array('B', (self.frames_length * 64) * [0])
+		self.parse_can = RadarMsgsCython.ParseCan(self.registered_processed_frames)
+		# print self.parse_can.test()
+	except Exception, e:
+		self.radar_sync_thread.setThreadStop(True)
+		self.radar_sync_thread.join()
+		traceback.print_exc(file=sys.stdout)
+		raise e
+
 
     def resetIdIdx(self):
 	self.reg_id_idx = 0
@@ -143,23 +178,57 @@ class RadarEsr:
 
     # @profile
     def processRadar(self,msg):
+	# if msg.id == self.first_frame_id:
+	    # self.counter_processed = self.counter_processed + 1
+	# return
 	# print format(msg.id, '04x')
 	# if msg.id == self.test_frame._Id: # 0x04e0:
-	frame_detected = self.registered_dict.get(msg.id, None)
-	frame_info = self.registered_processed_dict.get(msg.id, None)
-	if frame_detected is not None:
+
+	# frame_detected = self.registered_dict.get(msg.id, None)
+	# frame_info = self.registered_processed_dict.get(msg.id, None)
+	# print type(msg.data), type(msg.id), type(msg.dlc)
+
+	# if frame_info is not None:
+	if msg.id in self.registered_Ids:
+	    msg_data = bytearray(msg.data)
+	    barray = np.array((msg_data), dtype=np.uint8)
+	    barray_unpacked  = np.unpackbits(barray)
+	    # barray_unpacked  = array('B',barray_unpacked.tolist())
 	    #starting frame
-	    if msg.id == self.registered_Ids[0]:
-		if 0 < min(self.track_frame_id.values()) and self.track_frame_id[0x540] >=10:
-		    print '- - - - fullfilled'
-		else:
-		    print '- - - - not completed'
-		    print self.track_frame_id
-		self.track_frame_id = dict.fromkeys(self.registered_Ids, 0)
-		self.track_frame_id[self.registered_Ids[0]] = 1
+	    if msg.id == self.first_frame_id:
+		# if 0 < min(self.track_frame_id.values()) and self.track_frame_id[0x540] >=10:
+		print '- - - - fullfilled'
+		# else:
+		    # print '- - - - not completed'
+		    # print self.track_frame_id
+		# print self.track_frame_id
+		# print self.buffered_frames_count
+		# print len(self.track_frame_id), len(self.buffered_frames_count), self.frames_length, len(self.registered_Ids)
+
+		# Here we go , push all data in one scan into the decoder
+		self.parse_can.crackScan(self.buffered_frames_candt,
+					 self.buffered_frames_count
+					)
+
+		# self.track_frame_id = dict.fromkeys(self.registered_Ids, 0)
+		# self.track_frame_id[self.registered_Ids[0]] = 1
 		self.counter_processed = self.counter_processed + 1
+
+		# self.buffered_frames_candt = array('B', (self.frames_length * 64) * [0])
+		self.buffered_frames_count= array('B', self.frames_length * [0])
+		self.buffered_frames_count[0] = 1
+		for i in range(64):
+		    self.buffered_frames_candt[i] = barray_unpacked[i]
 	    else:
-		self.track_frame_id[msg.id] = self.track_frame_id[msg.id] + 1
+		# self.track_frame_id[msg.id] = self.track_frame_id[msg.id] + 1
+		buffered_index = self.registered_Ids.index(msg.id)
+		# print buffered_index
+		self.buffered_frames_count[buffered_index] = self.buffered_frames_count[buffered_index] + 1
+		for i in range(64):
+		    # try:
+			self.buffered_frames_candt[i+(buffered_index*64)] = barray_unpacked[i]
+		    # except:
+			# print 'cant assign candt zzz ',  buffered_index, i, len(self.buffered_frames_candt)
 		# try:
 		    # # self.radar_process_queue.put((msg, frame_detected, frame_info),block=False)
 		    # self.radar_process_queue.put(msg, block=False)
@@ -202,11 +271,18 @@ class RadarEsr:
 	    # print msg_data
 	    # print type(msg_data)
 
-	    msg_pub = None
+	    # msg_pub = None
 	    # try:
 	    # print frame_info
 
-	    _siglist = RadarMsgs.crack([x for x in (bytearray(msg.data))] , [ s._name for s in frame_detected._signals] , frame_detected._name, frame_detected._signals, frame_info)
+
+
+	    # _siglist = RadarMsgs.crack([x for x in (bytearray(msg.data))] , frame_info, self.parse_can)
+
+
+
+	    # _siglist = RadarMsgs.crack([x for x in (bytearray(msg.data))] , [ s._name for s in frame_detected._signals] , frame_detected._name, frame_detected._signals, frame_info)
+	    # _siglist = RadarMsgsCython.crack([x for x in (bytearray(msg.data))] , [ s._name for s in frame_detected._signals] , frame_detected._name, frame_detected._signals, frame_info)
 	    # if msg.id == 0x5e4:
 		# print _siglist
 	    # msg_pub = RadarMsgs.decodeMsg(msg, _siglist, frame_detected._name) 
@@ -220,8 +296,8 @@ class RadarEsr:
 	    # print msg_pub
 
 
-	    if msg_pub is not None:
-		self.pub_result.publish(msg_pub)
+	    # if msg_pub is not None:
+		# self.pub_result.publish(msg_pub)
 
 
 	    # self.counter_processed = self.counter_processed + 1

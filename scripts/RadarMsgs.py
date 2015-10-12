@@ -6,6 +6,10 @@ from bitarray import bitarray
 from array import array
 import numpy as np
 
+# import pyximport
+# pyximport.install()
+import RadarMsgsCython
+
 class BitVector:
     def __init__(self,val):
 	self._val = val
@@ -173,6 +177,7 @@ def pParseSignal(barray_unpacked, no_of_signal, signal_is_signed_types ,signal_s
 	# if id == 0x4e0:
 	    # print i, ppParseSignal(barray_unpacked, i, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors ) 
 	numbers = numbers + [ppParseSignal(barray_unpacked, i, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors, id)] 
+	# numbers = numbers + [RadarMsgsCython.ppParseSignal(barray_unpacked, i, signal_is_signed_types ,signal_start_bits ,signal_is_integers ,signal_sizes ,signal_offsets ,signal_factors, id)] 
     return numbers
 
 
@@ -197,7 +202,8 @@ def parseSignal(barray, barray_unpacked, signal_names, signals, frame_info):
 
     # print signal_start_bits, type(signal_start_bits)
 
-    signal_number = pParseSignal(barray_unpacked, len(signal_names)
+    # signal_number = pParseSignal(barray_unpacked, len(signal_names)
+    signal_number = RadarMsgsCython.pParseSignal(barray_unpacked, len(signal_names)
 	    , signal_is_signed_types=frame_info.signal_is_signed_types 
 	    , signal_start_bits=frame_info.signal_start_bits 
 	    , signal_is_integers=frame_info.signal_is_integers 
@@ -333,22 +339,32 @@ def parseSignal_old(barray, barray_unpacked, signal_names):
 # @jit(nopython=True)
 # @profile
 # @jit
-def crack(msg_data, signal_names, frame_name, signals, frame_info):
+# def crack(msg_data, signal_names, frame_name, signals, frame_info):
+def crack(msg_data, frame_info, parse_can):
     # barray = convertRadarToBitVector(msg)
     # barray = convertRadarToArray(msg)
     # barray = np.array(bytearray(msg_data), dtype=np.uint8).tolist()
+
     barray = np.array((msg_data), dtype=np.uint8)
+
+
     # barray_unpacked  = np.unpackbits(barray).tolist()
     barray_unpacked  = np.unpackbits(barray)
+
+
     # signal = self.test_signal
 
     # return None
 
-    signal_list = parseSignal(barray.tolist(), barray_unpacked, signal_names, signals, frame_info)
+    # signal_list = parseSignal(barray.tolist(), barray_unpacked, signal_names, signals, frame_info)
+    # signal_list = RadarMsgsCython.parseSignal(array('B', barray_unpacked.tolist()) , array('B', frame_info.signal_sizes), array ('B', frame_info.signal_start_bits), array('B', frame_info.signal_is_signed_types ))
+    # signal_list = RadarMsgsCython.parseSignal( array('B',barray_unpacked.tolist()) ,  frame_info.signal_sizes,  frame_info.signal_start_bits,  frame_info.signal_is_signed_types )
+    signal_list = parse_can.parseSignal( array('B',barray_unpacked.tolist()) ,  frame_info.signal_sizes,  frame_info.signal_start_bits,  frame_info.signal_is_signed_types )
     return signal_list
 
     # try:
     # print signal_list
+
 
 # @jit
 def decodeMsg(msg, signal_list, frame_name):

@@ -66,29 +66,34 @@ def startRosNode(node_name):
 
 
 
-    radar_list = {}
-    for device in devices_conf:
-        _radar_type = 'esr' if re.search('esr',device['name_id']) else None
-        if _radar_type:
-            # radar_list[device['name_id']] = {}
-            # _pub_can_send  = rospy.Publisher ('radar_packet/'+device['interface']+'/send'     , CanBusMsg, queue_size=10)
-            # _pub_result    = rospy.Publisher ('radar_packet/'+device['interface']+'/processed', String, queue_size=10)
-            # radar_list[device['name_id']]['pub_can_send'] = _pub_can_send 
-            # radar_list[device['name_id']]['pub_result']   = _pub_result
+    _bad_thing_happened = False
+    try:
+	radar_list = {}
+	for device in devices_conf:
+	    _radar_type = 'esr' if re.search('esr',device['name_id']) else None
+	    if _radar_type:
+		# radar_list[device['name_id']] = {}
+		# _pub_can_send  = rospy.Publisher ('radar_packet/'+device['interface']+'/send'     , CanBusMsg, queue_size=10)
+		# _pub_result    = rospy.Publisher ('radar_packet/'+device['interface']+'/processed', String, queue_size=10)
+		# radar_list[device['name_id']]['pub_can_send'] = _pub_can_send 
+		# radar_list[device['name_id']]['pub_result']   = _pub_result
 
-            print device['interface'], device['name_id'], ' interface: ', _radar_type
-            createRadarHandler(radar_list, device['name_id'], device['interface'], _radar_type, options_conf['name_resolution'])
+		print device['interface'], device['name_id'], ' interface: ', _radar_type
+		createRadarHandler(radar_list, device['name_id'], device['interface'], _radar_type, options_conf['name_resolution'])
 
-            # rospy.Subscriber('radar_packet/'+device['interface']+'/recv', CanBusMsg, processRadarEsr)
-        else:
-            print device['interface'], device['name_id'], ' interface: WARNING not detected!'
+		# rospy.Subscriber('radar_packet/'+device['interface']+'/recv', CanBusMsg, processRadarEsr)
+	    else:
+		print device['interface'], device['name_id'], ' interface: WARNING not detected!'
+    except Exception, e:
+	_bad_thing_happened = True
+	_the_bad_thing = e
 
     pub_process_log  = rospy.Publisher ('radar_packet/process_log' , String   , queue_size=10)
 
     # print radar_list
     # rospy.spin()
     rate = rospy.Rate(1)
-    while not rospy.is_shutdown():
+    while not rospy.is_shutdown() and not _bad_thing_happened:
         string_log = ''
         for handler in radar_list:
             string_log = string_log + handler + ' ' +  str(radar_list[handler]['handler'].counter_processed) + ' '\
@@ -102,13 +107,19 @@ def startRosNode(node_name):
         rate.sleep()
 
     print "stopping sync thread..."
-    for handler in radar_list:
-        radar_list[handler]['handler_sync_thread'].setThreadStop(True)
-        radar_list[handler]['handler_sync_thread'].join()
-        # radar_list[handler]['handler_process_thread'].setThreadStop(True)
-        # radar_list[handler]['handler_process_thread'].join()
-        print 'stopped ' + handler
+    try:
+	for handler in radar_list:
+	    radar_list[handler]['handler_sync_thread'].setThreadStop(True)
+	    radar_list[handler]['handler_sync_thread'].join()
+	    # radar_list[handler]['handler_process_thread'].setThreadStop(True)
+	    # radar_list[handler]['handler_process_thread'].join()
+	    print 'stopped ' + handler
+    except KeyError:
+	pass
 
+    if _bad_thing_happened:
+	rospy.signal_shutdown('yup bad thing happened!')
+	raise _the_bad_thing
 
 
 if __name__ == '__main__':
