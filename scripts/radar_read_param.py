@@ -23,8 +23,12 @@ if __name__ == '__main__':
 	for device in radar_conf['DEVICES']:
 		devices_tuple.append(namedtuple('DeviceTuple',['interface','name_id'])(**device))
 	print devices_tuple
+	print 'topic rendered by ' + radar_conf['OPTIONS']['name_resolution']
 	print 'Publishing to param server.'
 	rospy.set_param('radar_packet/devices',radar_conf['DEVICES'])
 	rospy.set_param('radar_packet/options',radar_conf['OPTIONS'])
+	rospy.set_param('radar_packet/esr_vehicle',radar_conf['ESR_VEHICLE'])
+	# print [(item,val) for (item,val) in (radar_conf['ESR_VEHICLE'].keys(), radar_conf['ESR_VEHICLE'].values())]
+	print [(item,val) for (item,val) in radar_conf['ESR_VEHICLE'].iteritems()]
 
 	

@@ -23,7 +23,7 @@ def getNameResolution(name_resolution, name_id, interface):
             }
     return name_res_dict.get(name_resolution, None)
 
-def createRadarHandler(radar_list, name_id, interface, radar_type, name_resolution):
+def createRadarHandler(radar_list, name_id, interface, radar_type, name_resolution, esr_vehicle_conf):
     solved_name_res = getNameResolution(name_resolution, name_id, interface)
     if solved_name_res is None: 
         print 'WARNING: internal error, name resolution faulty, couldni\'t create radar handler'
@@ -36,7 +36,7 @@ def createRadarHandler(radar_list, name_id, interface, radar_type, name_resoluti
             }
     puber = pub_dict.get(radar_type,None)
     handler_dict = {
-            'esr': RadarEsr(puber[0], puber[1], name_id, interface)
+            'esr': RadarEsr(puber[0], puber[1], name_id, interface, esr_vehicle_conf)
             }
     # radar_handler = RadarEsr(puber[0], puber[1], name_id, interface)
     radar_handler = handler_dict.get(radar_type)
@@ -57,6 +57,9 @@ def startRosNode(node_name):
     # options_conf = ServerSolution.resolveParameters('radar_packet/options','rosrun foobar radar_read_param.py') 
     options_conf = ServerSolution.resolveParameters('radar_packet/options',os.path.dirname(__file__)+'/radar_read_param.py') 
     if options_conf is None: return 
+    esr_vehicle_conf = ServerSolution.resolveParameters('radar_packet/esr_vehicle',os.path.dirname(__file__)+'/radar_read_param.py') 
+    if esr_vehicle_conf is None: return 
+    print esr_vehicle_conf
     if ServerSolution.checkNodeStarted(node_name): return
     rospy.init_node(node_name, anonymous=False)
 
@@ -79,7 +82,7 @@ def startRosNode(node_name):
 		# radar_list[device['name_id']]['pub_result']   = _pub_result
 
 		print device['interface'], device['name_id'], ' interface: ', _radar_type
-		createRadarHandler(radar_list, device['name_id'], device['interface'], _radar_type, options_conf['name_resolution'])
+		createRadarHandler(radar_list, device['name_id'], device['interface'], _radar_type, options_conf['name_resolution'], esr_vehicle_conf)
 
 		# rospy.Subscriber('radar_packet/'+device['interface']+'/recv', CanBusMsg, processRadarEsr)
 	    else:

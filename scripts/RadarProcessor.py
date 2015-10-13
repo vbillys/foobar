@@ -73,11 +73,8 @@ def getProcessedFrameById(db, frame_id):
     # return frame_signal_data
 
 class RadarEsr:
-    def __init__(self, pub_can_send, pub_result, name_id, interface):
+    def __init__(self, pub_can_send, pub_result, name_id, interface, esr_vehicle_conf):
 
-	self.radar_sync_queue = Queue.Queue()
-	self.radar_sync_thread = RadarSync.RadarEsrSyncThread(pub_can_send, self.radar_sync_queue)
-	self.radar_sync_thread.start()
 
 	# self.radar_process_queue = Queue.Queue()#(maxsize=1000)
 	# self.radar_process_thread = RadarProcess.RadarEsrProcessThread(pub_result, self.radar_process_queue, self)
@@ -137,10 +134,18 @@ class RadarEsr:
 		self.buffered_frames_candt = array('B', (self.frames_length * 64) * [0])
 		self.parse_can = RadarMsgsCython.ParseCan(self.registered_processed_frames)
 		# print self.parse_can.test()
+
+		self.radar_sync_queue = Queue.Queue()
+		self.radar_sync_thread = RadarSync.RadarEsrSyncThread(pub_can_send, self.radar_sync_queue, esr_vehicle_conf, self.db)
+		self.radar_sync_thread.start()
+
+
 	except Exception, e:
+	    traceback.print_exc(file=sys.stdout)
+	    try:
 		self.radar_sync_thread.setThreadStop(True)
 		self.radar_sync_thread.join()
-		traceback.print_exc(file=sys.stdout)
+	    finally:
 		raise e
 
 
