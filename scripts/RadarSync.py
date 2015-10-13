@@ -28,7 +28,7 @@ def getDefaultVehicleData(db, cid, data_list):
 	setBigEndiNumberToNpArr(barray_unpacked, getArrayIdxFromStartBit(signal._startbit), signal._signalsize,data_list[idx])
 	idx = idx + 1
     data = np.packbits(barray_unpacked).tolist()
-    return data
+    return data, barray_unpacked
 
 canbus_msg = CanBusMsg()
 
@@ -51,27 +51,27 @@ class RadarEsrSyncThread(threading.Thread):
 	self.vehicle1 = CanBusMsg()
 	self.vehicle1.id = 0x4f0
 	self.vehicle1.dlc = 8
-	self.vehicle1.data = getDefaultVehicleData(self.db, self.vehicle1.id, self.esr_vehicle_conf['Vehicle1'])
+	self.vehicle1.data, self.vehicle1_unpacked = getDefaultVehicleData(self.db, self.vehicle1.id, self.esr_vehicle_conf['Vehicle1'])
 	self.vehicle2 = CanBusMsg()
 	self.vehicle2.id = 0x4f1
 	self.vehicle2.dlc = 8
-	self.vehicle2.data = getDefaultVehicleData(self.db, self.vehicle2.id, self.esr_vehicle_conf['Vehicle2'])
+	self.vehicle2.data, self.vehicle2_unpacked = getDefaultVehicleData(self.db, self.vehicle2.id, self.esr_vehicle_conf['Vehicle2'])
 	self.vehicle3 = CanBusMsg()
 	self.vehicle3.id = 0x5f2
 	self.vehicle3.dlc = 8
-	self.vehicle3.data = getDefaultVehicleData(self.db, self.vehicle3.id, self.esr_vehicle_conf['Vehicle3'])
+	self.vehicle3.data, self.vehicle3_unpacked = getDefaultVehicleData(self.db, self.vehicle3.id, self.esr_vehicle_conf['Vehicle3'])
 	self.vehicle4 = CanBusMsg()
 	self.vehicle4.id = 0x5f3
 	self.vehicle4.dlc = 8
-	self.vehicle4.data = getDefaultVehicleData(self.db, self.vehicle4.id, self.esr_vehicle_conf['Vehicle4'])
+	self.vehicle4.data, self.vehicle4_unpacked = getDefaultVehicleData(self.db, self.vehicle4.id, self.esr_vehicle_conf['Vehicle4'])
 	self.vehicle5 = CanBusMsg()
 	self.vehicle5.id = 0x5f4
 	self.vehicle5.dlc = 8
-	self.vehicle5.data = getDefaultVehicleData(self.db, self.vehicle5.id, self.esr_vehicle_conf['Vehicle5'])
+	self.vehicle5.data, self.vehicle5_unpacked = getDefaultVehicleData(self.db, self.vehicle5.id, self.esr_vehicle_conf['Vehicle5'])
 	self.vehicle6 = CanBusMsg()
 	self.vehicle6.id = 0x5f5
 	self.vehicle6.dlc = 8
-	self.vehicle6.data = getDefaultVehicleData(self.db, self.vehicle6.id, self.esr_vehicle_conf['Vehicle6'])
+	self.vehicle6.data, self.vehicle6_unpacked = getDefaultVehicleData(self.db, self.vehicle6.id, self.esr_vehicle_conf['Vehicle6'])
 
     def run(self):
 
