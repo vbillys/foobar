@@ -192,7 +192,8 @@ cdef class ParseCan:
                 idx_ed = i*64 + 64
                 #print [x for x in bf_candt[idx_st:idx_ed]], idx_st, idx_ed, i ,(self.frame_info[i].howmanysignal)#, [x for x in self.frame_info[i].signal_is_signed_types],  [x for x in self.frame_info[i].signal_start_bits], [x for x in self.frame_info[i].signal_sizes]
 
-                numbers = self.pParseSignal2(bf_candt[idx_st:idx_ed], 
+                #numbers = self.pParseSignal2(bf_candt[idx_st:idx_ed], 
+                self.pParseSignal2(bf_candt[idx_st:idx_ed], 
                                   self.frame_info[i].howmanysignal,
                                   self.frame_info[i].signal_is_signed_types,
                                   self.frame_info[i].signal_start_bits,
@@ -246,6 +247,7 @@ cdef class ParseCan:
 
 
         return esr_numbers
+        #return None
 
     # @profile
     # @jit

@@ -207,13 +207,17 @@ class RadarEsr:
 		# print len(self.track_frame_id), len(self.buffered_frames_count), self.frames_length, len(self.registered_Ids)
 
 		# Here we go , push all data in one scan into the decoder
-		msg_pub = self.parse_can.crackScan(self.buffered_frames_candt,
-						   self.buffered_frames_count
-						  )
+		# msg_pub = self.parse_can.crackScan(self.buffered_frames_candt,
+		#                                    self.buffered_frames_count
+		#                                   )
 
 		# print msg_pub[0:64]
 		# if msg_pub is not None:
 		    # self.pub_result.publish(msg_pub)
+		self.parse_can.crackScan(self.buffered_frames_candt,
+					 self.buffered_frames_count
+					)
+
 		# self.track_frame_id = dict.fromkeys(self.registered_Ids, 0)
 		# self.track_frame_id[self.registered_Ids[0]] = 1
 		self.counter_processed = self.counter_processed + 1
