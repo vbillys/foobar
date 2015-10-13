@@ -35,7 +35,10 @@ def startRosNode():
 
     barray = np.array(canbus_msg.data, dtype=np.uint8)
     barray_unpacked = np.unpackbits(barray)
-    setBigEndiNumberToNpArr(barray_unpacked, getArrayIdxFromStartBit(55), 8, 1)
+    # setBigEndiNumberToNpArr(barray_unpacked, getArrayIdxFromStartBit(55), 8, 1)
+    # setBigEndiNumberToNpArr(barray_unpacked, getArrayIdxFromStartBit(9), 10, 1)
+    # setBigEndiNumberToNpArr(barray_unpacked, getArrayIdxFromStartBit(63), 8, (1<<8) - 10)
+    setBigEndiNumberToNpArr(barray_unpacked, getArrayIdxFromStartBit(7), 8, (1<<8) - 10)
     canbus_msg.data = np.packbits(barray_unpacked).tolist()
 
     #print len(canbus_msg.data)

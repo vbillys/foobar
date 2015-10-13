@@ -4,6 +4,8 @@ sys.path.append(os.path.dirname(__file__) + '/canmatrix')
 import library.importall as im
 import math
 from foobar.msg import Esr_track
+from foobar.msg import GenericObjCanData
+from std_msgs.msg import Int32MultiArray
 import RadarSync, Queue
 import RadarMsgs
 import RadarMsgsCython
@@ -207,16 +209,20 @@ class RadarEsr:
 		# print len(self.track_frame_id), len(self.buffered_frames_count), self.frames_length, len(self.registered_Ids)
 
 		# Here we go , push all data in one scan into the decoder
-		# msg_pub = self.parse_can.crackScan(self.buffered_frames_candt,
-		#                                    self.buffered_frames_count
-		#                                   )
+		_numbers = self.parse_can.crackScan(self.buffered_frames_candt,
+						   self.buffered_frames_count
+						  )
 
-		# print msg_pub[0:64]
+		msg_pub= GenericObjCanData() 
+		msg_pub.header.stamp = msg.header.stamp
+		msg_pub.header.frame_id = msg.header.frame_id
+
+		msg_pub.data = _numbers
+
+		# print msg_pub[853:860]
+		# print msg_pub[768:773]
 		# if msg_pub is not None:
-		    # self.pub_result.publish(msg_pub)
-		self.parse_can.crackScan(self.buffered_frames_candt,
-					 self.buffered_frames_count
-					)
+		self.pub_result.publish(msg_pub)
 
 		# self.track_frame_id = dict.fromkeys(self.registered_Ids, 0)
 		# self.track_frame_id[self.registered_Ids[0]] = 1
