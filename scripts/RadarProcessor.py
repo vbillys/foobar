@@ -116,6 +116,7 @@ class RadarEsr:
 		print self.track_frame_id
 		print [self.registered_processed_dict.get(x).howmanysignal for x in self.registered_processed_dict]
 		print [(x).howmanysignal for x in self.registered_processed_frames]
+		print [(x).sid for x in self.registered_processed_frames]
 
 		# self.registerFrames(['SODL_Status4','SODL_Status1','SODL_Status2','SODL_Status3'])
 		self.counter_processed = 0
@@ -197,7 +198,7 @@ class RadarEsr:
 	    #starting frame
 	    if msg.id == self.first_frame_id:
 		# if 0 < min(self.track_frame_id.values()) and self.track_frame_id[0x540] >=10:
-		print '- - - - fullfilled'
+		    # print '- - - - fullfilled'
 		# else:
 		    # print '- - - - not completed'
 		    # print self.track_frame_id
@@ -206,10 +207,13 @@ class RadarEsr:
 		# print len(self.track_frame_id), len(self.buffered_frames_count), self.frames_length, len(self.registered_Ids)
 
 		# Here we go , push all data in one scan into the decoder
-		self.parse_can.crackScan(self.buffered_frames_candt,
-					 self.buffered_frames_count
-					)
+		msg_pub = self.parse_can.crackScan(self.buffered_frames_candt,
+						   self.buffered_frames_count
+						  )
 
+		# print msg_pub[0:64]
+		# if msg_pub is not None:
+		    # self.pub_result.publish(msg_pub)
 		# self.track_frame_id = dict.fromkeys(self.registered_Ids, 0)
 		# self.track_frame_id[self.registered_Ids[0]] = 1
 		self.counter_processed = self.counter_processed + 1
@@ -296,8 +300,6 @@ class RadarEsr:
 	    # print msg_pub
 
 
-	    # if msg_pub is not None:
-		# self.pub_result.publish(msg_pub)
 
 
 	    # self.counter_processed = self.counter_processed + 1

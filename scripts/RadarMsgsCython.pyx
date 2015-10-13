@@ -178,7 +178,12 @@ cdef class ParseCan:
     def crackScan(self,unsigned char[:]bf_candt, uint8_t[:]bf_count):
         cdef int idx_st
         cdef int idx_ed
-        cdef int i
+        cdef int i, ii
+        
+        # data structure: ESR_Track01-64, ESR_Valid1-2, ESR_Status1-9, ESR_GroupingIngo (10 times of 0x0540)
+        # 64 * 12, 5 * 2, (7, 13, 5, 13, 8, 13, 8, 8, 7), 258 * 10
+        cdef array.array esr_numbers = array.array('i', 3440 * [0]) 
+        #cdef int [:] esr_track_numbers_view = esr_track_numbers
         #print self.no_of_frames
         for idx in range(self.no_of_frames):
             i = idx
@@ -187,13 +192,60 @@ cdef class ParseCan:
                 idx_ed = i*64 + 64
                 #print [x for x in bf_candt[idx_st:idx_ed]], idx_st, idx_ed, i ,(self.frame_info[i].howmanysignal)#, [x for x in self.frame_info[i].signal_is_signed_types],  [x for x in self.frame_info[i].signal_start_bits], [x for x in self.frame_info[i].signal_sizes]
 
-                self.pParseSignal2(bf_candt[idx_st:idx_ed], 
+                numbers = self.pParseSignal2(bf_candt[idx_st:idx_ed], 
                                   self.frame_info[i].howmanysignal,
                                   self.frame_info[i].signal_is_signed_types,
                                   self.frame_info[i].signal_start_bits,
                                   self.frame_info[i].signal_sizes
                                  )
-        #return None
+                
+                if i >= 4 and i <= 67:
+                #if i == 4:
+                    ii = i - 4
+                    for j in range(12):
+                        esr_numbers.data.as_ints[ii*12 + j] = numbers[j]
+                        #print numbers[j], esr_track_numbers.data.as_ints[ii*12 + j],  self.frame_info[i].howmanysignal
+                elif i == 78 or i ==79:
+                    ii = i - 78
+                    for j in range(5):
+                        esr_numbers.data.as_ints[768+j+(ii*5)] = numbers[j]
+                elif i == 0:
+                    for j in range(7):
+                        esr_numbers.data.as_ints[778+j] = numbers[j]
+                elif i == 1:
+                    for j in range(13):
+                        esr_numbers.data.as_ints[785+j] = numbers[j]
+                elif i == 2:
+                    for j in range(5):
+                        esr_numbers.data.as_ints[798+j] = numbers[j]
+                elif i == 3:
+                    for j in range(13):
+                        esr_numbers.data.as_ints[803+j] = numbers[j]
+
+                elif i == 80:
+                    for j in range(8):
+                        esr_numbers.data.as_ints[816+j] = numbers[j]
+                elif i == 81:
+                    for j in range(13):
+                        esr_numbers.data.as_ints[824+j] = numbers[j]
+                elif i == 82:
+                    for j in range(8):
+                        esr_numbers.data.as_ints[837+j] = numbers[j]
+                elif i == 83:
+                    for j in range(8):
+                        esr_numbers.data.as_ints[845+j] = numbers[j]
+                elif i == 84:
+                    for j in range(7):
+                        esr_numbers.data.as_ints[853+j] = numbers[j]
+
+                elif i >= 68 and i<= 77:
+                    ii = i - 68
+                    for j in range(258):
+                        esr_numbers.data.as_ints[854+j+(ii*258)] = numbers[j]
+
+
+
+        return esr_numbers
 
     # @profile
     # @jit
