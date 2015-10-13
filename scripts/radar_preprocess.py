@@ -7,6 +7,7 @@ from std_msgs.msg import String
 from nav_msgs.msg import Odometry
 from foobar.msg import Esr_track
 from foobar.msg import GenericObjCanData
+from std_srvs.srv import Empty
 
 import os, sys
 import ServerSolution
@@ -48,6 +49,15 @@ def createRadarHandler(radar_list, name_id, interface, radar_type, name_resoluti
 
     # radar_list[name_id]['pub_can_send'] = handler[0]
     # radar_list[name_id]['pub_result']   = handler[1]
+
+g_radar_list = {}
+def resetVehicleData(req):
+    esr_vehicle_conf = rospy.get_param('radar_packet/esr_vehicle')
+    if esr_vehicle_conf is None: return 
+    for handler in g_radar_list:
+	g_radar_list[handler]['handler'].resetVehicleData(esr_vehicle_conf)
+	# print 'hi from RadarEsr , not forwarding to RadarSync (yet)'
+    return []
 
 def startRosNode(node_name):
     if not ServerSolution.resolveRosmaster(): return
@@ -92,6 +102,9 @@ def startRosNode(node_name):
 	_the_bad_thing = e
 
     pub_process_log  = rospy.Publisher ('radar_packet/process_log' , String   , queue_size=10)
+    global g_radar_list 
+    g_radar_list= radar_list
+    rospy.Service('radar_packet/reread_vehicle_data', Empty, resetVehicleData)
 
     # print radar_list
     # rospy.spin()

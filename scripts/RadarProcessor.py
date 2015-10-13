@@ -148,6 +148,10 @@ class RadarEsr:
 	    finally:
 		raise e
 
+    def resetVehicleData(self, esr_vehicle_conf):
+	self.radar_sync_thread.setEsrVehicleConf(esr_vehicle_conf)
+	self.radar_sync_thread.generateVehicleData()
+	
 
     def resetIdIdx(self):
 	self.reg_id_idx = 0

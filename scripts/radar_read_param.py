@@ -5,6 +5,7 @@ import rospkg
 import yaml
 from collections import namedtuple
 import os, sys
+from std_srvs.srv import Empty
 
 if __name__ == '__main__':
 	rospack = rospkg.RosPack()
@@ -30,5 +31,11 @@ if __name__ == '__main__':
 	rospy.set_param('radar_packet/esr_vehicle',radar_conf['ESR_VEHICLE'])
 	# print [(item,val) for (item,val) in (radar_conf['ESR_VEHICLE'].keys(), radar_conf['ESR_VEHICLE'].values())]
 	print [(item,val) for (item,val) in radar_conf['ESR_VEHICLE'].iteritems()]
+	print 'trying to reset any ongoing Radar Sync vehicle data'
+	try:
+	    callable = rospy.ServiceProxy('radar_packet/reread_vehicle_data', Empty)
+	    print type(callable())
+	except rospy.ServiceException, e:
+	    print "Service call failed: %s"%e
 
 	

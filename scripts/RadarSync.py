@@ -40,14 +40,28 @@ class RadarEsrSyncThread(threading.Thread):
 	self.sync_counter = 0
 	self.esr_vehicle_conf = esr_vehicle_conf
 	self.db = db
+	self.vehicle_data_locked = False
+	self.egomotion = None
 	self.generateVehicleData()
 	threading.Thread.__init__ (self)
    
     def setThreadStop(self, thread_stop):
 	self.thread_stop = thread_stop
 
+    def setEsrVehicleConf(self, conf):
+	self.esr_vehicle_conf = conf
+
+    def lockVehicleData(self):
+	self.vehicle_data_locked = True
+
+    def unlockVehicleData(self):
+	self.vehicle_data_locked = False
+
+    def getIfLockedVehicleData(self):
+	return self.vehicle_data_locked
     
     def generateVehicleData(self):
+	self.lockVehicleData()
 	self.vehicle1 = CanBusMsg()
 	self.vehicle1.id = 0x4f0
 	self.vehicle1.dlc = 8
@@ -72,6 +86,8 @@ class RadarEsrSyncThread(threading.Thread):
 	self.vehicle6.id = 0x5f5
 	self.vehicle6.dlc = 8
 	self.vehicle6.data, self.vehicle6_unpacked = getDefaultVehicleData(self.db, self.vehicle6.id, self.esr_vehicle_conf['Vehicle6'])
+	self.updateEgomotion()
+	self.unlockVehicleData()
 
     def run(self):
 
@@ -88,20 +104,21 @@ class RadarEsrSyncThread(threading.Thread):
 	    #     # print 'queue empty from radar_esr sync...'
 	    #     pass
 	    rate.sleep()
-	    if counter == 2:
-		self.pub_can_send.publish(self.vehicle1)
-		self.pub_can_send.publish(self.vehicle2)
-		# for cid in range(0x4f0, 0x4f2):
-		    # canbus_msg.id = cid
-		    # self.pub_can_send.publish(canbus_msg)
-	    elif counter == 5:
-		self.pub_can_send.publish(self.vehicle3)
-		self.pub_can_send.publish(self.vehicle4)
-		self.pub_can_send.publish(self.vehicle5)
-		self.pub_can_send.publish(self.vehicle6)
-		# for cid in range(0x5f2, 0x5f6):
-		    # canbus_msg.id = cid
-		    # self.pub_can_send.publish(canbus_msg)
+	    if not self.getIfLockedVehicleData():
+		if counter == 2:
+		    self.pub_can_send.publish(self.vehicle1)
+		    self.pub_can_send.publish(self.vehicle2)
+		    # for cid in range(0x4f0, 0x4f2):
+			# canbus_msg.id = cid
+			# self.pub_can_send.publish(canbus_msg)
+		elif counter == 5:
+		    self.pub_can_send.publish(self.vehicle3)
+		    self.pub_can_send.publish(self.vehicle4)
+		    self.pub_can_send.publish(self.vehicle5)
+		    self.pub_can_send.publish(self.vehicle6)
+		    # for cid in range(0x5f2, 0x5f6):
+			# canbus_msg.id = cid
+			# self.pub_can_send.publish(canbus_msg)
 
 	    counter = counter + 1
 	    self.sync_counter = self.sync_counter + 1
@@ -110,3 +127,9 @@ class RadarEsrSyncThread(threading.Thread):
 
     def processEgomotion(self, egomotion_msg):
 	self.egomotion = egomotion_msg
+	self.updateEgomotion()
+
+    def updateEgomotion(self):
+	if self.egomotion is None:
+	    return
+	# TO DO: update the vehicle data here
