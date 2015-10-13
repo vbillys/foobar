@@ -159,7 +159,7 @@ def startRosNode(node_name):
 
 		thread_list[device['interface']] = {}
 		thread_list[device['interface']]['name_id'] = device['name_id']
-		pub_can_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+solved_name_res+'/recv', CanBusMsg, queue_size=10)
+		pub_can_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+solved_name_res+'/recv', CanBusMsg, queue_size=100)
 		pub_log_msg[device['interface']]  = rospy.Publisher ('radar_packet/'+solved_name_res+'/log' , String   , queue_size=10)
 		_thread = startCanThread(pub_can_msg[device['interface']], device['interface'], device['name_id'])
 		thread_list[device['interface']]['can_publish_thread'] = _thread[0]
