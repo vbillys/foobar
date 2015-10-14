@@ -69,6 +69,26 @@ def setRadarOff(req):
 	g_radar_list[handler]['handler_sync_thread'].setRadarOff()
     return []
 
+def rawDataOn(req):
+    for handler in g_radar_list:
+	g_radar_list[handler]['handler_sync_thread'].rawDataOn()
+    return []
+
+def rawDataOff(req):
+    for handler in g_radar_list:
+	g_radar_list[handler]['handler_sync_thread'].rawDataOff()
+    return []
+
+def clearFaultOn(req):
+    for handler in g_radar_list:
+	g_radar_list[handler]['handler_sync_thread'].clearFaultOn()
+    return []
+
+def clearFaultOff(req):
+    for handler in g_radar_list:
+	g_radar_list[handler]['handler_sync_thread'].clearFaultOff()
+    return []
+
 def startRosNode(node_name):
     if not ServerSolution.resolveRosmaster(): return
     # devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
@@ -117,6 +137,10 @@ def startRosNode(node_name):
     rospy.Service('radar_packet/reread_vehicle_data', Empty, resetVehicleData)
     rospy.Service('radar_packet/radar_on' , Empty, setRadarOn)
     rospy.Service('radar_packet/radar_off', Empty, setRadarOff)
+    rospy.Service('radar_packet/rawdata_on' , Empty, rawDataOn)
+    rospy.Service('radar_packet/rawdata_off' , Empty, rawDataOff)
+    rospy.Service('radar_packet/clear_fault_on', Empty, clearFaultOn)
+    rospy.Service('radar_packet/clear_fault_off', Empty, clearFaultOff)
 
     # print radar_list
     # rospy.spin()

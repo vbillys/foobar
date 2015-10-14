@@ -52,13 +52,21 @@ class Example(QtGui.QWidget):
 	self.reread_button = QtGui.QPushButton('Reread Vehicle Data')
 	grid.addWidget(self.reread_button, 1, 0)
 
+	self.rawdata_button = QtGui.QPushButton('Raw Data')
+	grid.addWidget(self.rawdata_button, 2, 0)
+
+	self.clear_fault_button = QtGui.QPushButton('Clear Faults On')
+	grid.addWidget(self.clear_fault_button, 3, 0)
+
 	self.status_bar = QtGui.QStatusBar()
-	grid.addWidget(self.status_bar, 2, 0)
+	grid.addWidget(self.status_bar, 5, 0)
 
 	self.setLayout(grid) 
 
 	QtCore.QObject.connect(self.reread_button, QtCore.SIGNAL('clicked()'), self.onClickedRereadButton)
 	QtCore.QObject.connect(self.onoff_button , QtCore.SIGNAL('clicked()'), self.onClickedOnoffButton)
+	QtCore.QObject.connect(self.rawdata_button , QtCore.SIGNAL('clicked()'), self.onClickedRawdataButton)
+	QtCore.QObject.connect(self.clear_fault_button , QtCore.SIGNAL('clicked()'), self.onClickedClearFaultButton)
 
 	self.setGeometry(300, 300, 350, 300)
 	self.setWindowTitle('Radar Control')    
@@ -87,6 +95,36 @@ class Example(QtGui.QWidget):
 	    else:
 		self.onoff_button.setText('On Radar')
 		self.status_bar.showMessage('sent radar off')
+
+    def onClickedRawdataButton(self):
+	# print self.onoff_button.text()
+	if self.rawdata_button.text() == 'Raw Data':
+	    if callEmptyService('radar_packet/rawdata_on') is None:
+		self.status_bar.showMessage('no service. radar driver/process started?')
+	    else:
+		self.rawdata_button.setText('Filtered Data')
+		self.status_bar.showMessage('sent rawdata mode')
+	else:
+	    if callEmptyService('radar_packet/rawdata_off') is None:
+		self.status_bar.showMessage('no service. radar driver/process started?')
+	    else:
+		self.rawdata_button.setText('Raw Data')
+		self.status_bar.showMessage('sent filtered data mode')
+
+    def onClickedClearFaultButton(self):
+	# print self.onoff_button.text()
+	if self.clear_fault_button.text() == 'Clear Faults On':
+	    if callEmptyService('radar_packet/clear_fault_on') is None:
+		self.status_bar.showMessage('no service. radar driver/process started?')
+	    else:
+		self.clear_fault_button.setText('Clear Faults Off')
+		self.status_bar.showMessage('sent clearing fault on')
+	else:
+	    if callEmptyService('radar_packet/clear_fault_off') is None:
+		self.status_bar.showMessage('no service. radar driver/process started?')
+	    else:
+		self.clear_fault_button.setText('Clear Faults On')
+		self.status_bar.showMessage('sent clearing fault off')
 
 def main():
 

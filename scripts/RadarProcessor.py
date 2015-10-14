@@ -191,6 +191,7 @@ class RadarEsr:
     def DEBUGprintRollingIndexesAndCheck(self,_numbers):
 	print _numbers[782]
 	print [_numbers[783], _numbers[797], _numbers[810]]
+	print [self.buffered_frames_count[i] for i in [0, 1, 3]]
 	print [_numbers[i] for i in range(6,768,12)]
 	print [self.buffered_frames_count[i] for i in range (4,68)]
 

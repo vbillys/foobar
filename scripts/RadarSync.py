@@ -48,6 +48,9 @@ class RadarEsrSyncThread(threading.Thread):
 	self.vehicle_data_locked = False
 	self.egomotion = None
 	self.rolling_count = 0
+	self.radar_poweron = False
+	self.clear_fault_on = False
+	self.rawdata_on = False
 	self.generateVehicleData()
 	threading.Thread.__init__ (self)
    
@@ -146,7 +149,13 @@ class RadarEsrSyncThread(threading.Thread):
 	# TO DO: update the state variables reflected to vehicle data
 	# i.e. to maintain continuity if vehicle data reread is requested
 	# you need to map all the state control here
-	pass
+	setBigEndiNumberToNpArr(self.vehicle2_unpacked, getArrayIdxFromStartBit(55), 1,int(self.radar_poweron))
+	self.vehicle2.data = np.packbits(self.vehicle2_unpacked).tolist()
+	setBigEndiNumberToNpArr(self.vehicle2_unpacked, getArrayIdxFromStartBit(22), 1,int(self.clear_fault_on))
+	self.vehicle2.data = np.packbits(self.vehicle2_unpacked).tolist()
+	setBigEndiNumberToNpArr(self.vehicle2_unpacked, getArrayIdxFromStartBit(56), 1,int(self.rawdata_on))
+	self.vehicle2.data = np.packbits(self.vehicle2_unpacked).tolist()
+	
 
     def updateSyncRollingCount(self):
 	# self.vehicle2[17] = self.rolling_count
@@ -162,10 +171,32 @@ class RadarEsrSyncThread(threading.Thread):
 
     def setRadarOn(self):
 	print 'turning radar on'
+	self.radar_poweron = True
 	pass
 
     def setRadarOff(self):
 	print 'turning radar off'
+	self.radar_poweron = False
+	pass
+
+    def clearFaultOn(self):
+	print 'turning clear fault on'
+	self.clear_fault_on = True
+	pass
+
+    def clearFaultOff(self):
+	print 'turning clear fault off'
+	self.clear_fault_on = False
+	pass
+
+    def rawDataOn(self):
+	print 'turning raw data on'
+	self.rawdata_on = True
+	pass
+
+    def rawDataOff(self):
+	print 'turning raw data off'
+	self.rawdata_on = False
 	pass
 
     def processEgomotion(self, egomotion_msg):
