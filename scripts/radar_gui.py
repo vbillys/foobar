@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 import os, subprocess
-import sys
+import sys,signal
 import rospy
+from foobar.msg import GenericObjCanData
+import ServerSolution
+import re
 from std_srvs.srv import Empty
 from PyQt4 import QtGui, QtCore
 
@@ -14,15 +17,55 @@ def callEmptyService(svc_name):
 	print "Service call failed: %s"%e
 	return None
 
-class Example(QtGui.QWidget):
+
+class RadarStatusGui(QtGui.QWidget):
+    def __init__(self, name_id, pos_offset):
+	super(RadarStatusGui, self).__init__()
+
+	# self.status_bar = status_bar
+	# self.initUI()
+
+	grid = QtGui.QGridLayout()
+	grid.setSpacing(10)
+
+	self.label_timestamp = QtGui.QLabel('Stamp:')
+	self.label_timestamp_value = QtGui.QLabel('0')
+	grid.addWidget(self.label_timestamp, 0 , 0)
+	grid.addWidget(self.label_timestamp_value, 0 , 1)
+
+	self.label_scanindex = QtGui.QLabel('ScanIndex:')
+	self.label_scanindex_value = QtGui.QLabel('0')
+	grid.addWidget(self.label_scanindex, 1 , 0)
+	grid.addWidget(self.label_scanindex_value, 1 , 1)
+
+	self.setLayout(grid) 
+
+	self.setGeometry(800+pos_offset*40, 300, 350, 300)
+	self.setWindowTitle('Radar Status ' + name_id)    
+	self.show()
+	
+    def onIncomingData(self, msg):
+	# print 'received data ', msg.data[782]
+	scanindex = msg.data[782]
+	self.label_scanindex_value.setText(str(scanindex))
+	timestamp = msg.data[778] * 2
+	self.label_timestamp_value.setText(str(timestamp))
+
+
+class RadarControlGui(QtGui.QWidget):
 # class Example(QtGui.QMainWindow):
 
-    def __init__(self):
-	super(Example, self).__init__()
+    # def __init__(self, parent):
+    def __init__(self, app):
+	super(RadarControlGui, self).__init__()
+	self.app = app
 
 	# self.status_bar = status_bar
 	self.initUI()
 	
+    def closeEvent(self, event):
+	self.app.quit()
+	event.accept()
 
     def initUI(self):
 
@@ -126,12 +169,67 @@ class Example(QtGui.QWidget):
 		self.clear_fault_button.setText('Clear Faults On')
 		self.status_bar.showMessage('sent clearing fault off')
 
+def getNameResolution(name_resolution, name_id, interface):
+    name_res_dict = {
+	    'name_id': name_id,
+	    'interface': interface
+	    }
+    return name_res_dict.get(name_resolution, None)
+
+def static_vars(**kwargs):
+    def decorate(func):
+	for k in kwargs:
+	    setattr(func, k, kwargs[k])
+	return func
+    return decorate
+
+@static_vars(pos_offset=0)
+def createRadarGui(radar_gui_list, name_id, interface, radar_type, name_resolution):
+    solved_name_res = getNameResolution(name_resolution, name_id, interface)
+    if solved_name_res is None: 
+	print 'WARNING: internal error, name resolution faulty, couldni\'t create radar handler'
+	return
+    if radar_type == 'esr':
+	radar_gui_list[name_id] = {}
+	new_radar_gui = RadarStatusGui(name_id, createRadarGui.pos_offset)
+	sub_data = rospy.Subscriber ('radar_packet/'+solved_name_res+'/processed', GenericObjCanData, new_radar_gui.onIncomingData)
+	radar_gui_list[name_id]['gui'] = new_radar_gui
+	createRadarGui.pos_offset = createRadarGui.pos_offset + 1
+
+
 def main():
 
-    app = QtGui.QApplication(sys.argv)
-    ex = Example()
-    sys.exit(app.exec_())
+    if not ServerSolution.resolveRosmaster(): return
+    devices_conf = ServerSolution.resolveParameters('radar_packet/devices',os.path.dirname(__file__)+'/radar_read_param.py') 
+    if devices_conf is None: return 
+    options_conf = ServerSolution.resolveParameters('radar_packet/options',os.path.dirname(__file__)+'/radar_read_param.py') 
+    if options_conf is None: return 
+    if ServerSolution.checkNodeStarted('radar_gui'): return
+    rospy.init_node('radar_gui', anonymous=False)
 
+    app = QtGui.QApplication(sys.argv)
+
+    radar_gui_list = {}
+    for device in devices_conf:
+	_radar_type = 'esr' if re.search('esr',device['name_id']) else None
+	if _radar_type:
+	    print device['interface'], device['name_id'], ' interface: ', _radar_type
+	    createRadarGui(radar_gui_list, device['name_id'], device['interface'], _radar_type, options_conf['name_resolution'])
+	else:
+	    print device['interface'], device['name_id'], ' interface: WARNING not detected!'
+
+    ex = RadarControlGui(app)
+    # ex.setDisabled(True)
+    # ex2 = RadarStatusGui()
+    sys.exit(app.exec_())
+    
+    return app
+
+def sigint_handler(*args):
+    """Handler for the SIGINT signal."""
+    g_app.quit()
 
 if __name__ == '__main__':
-    main()
+    g_app = main()
+    signal.signal(signal.SIGINT, sigint_handler)
+    # sys.exit(g_app.exec_())
