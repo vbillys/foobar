@@ -61,6 +61,7 @@ class RadarEsrSyncThread(threading.Thread):
 	return self.vehicle_data_locked
     
     def generateVehicleData(self):
+	print 'generating default esr vehicle data'
 	self.lockVehicleData()
 	self.vehicle1 = CanBusMsg()
 	self.vehicle1.id = 0x4f0
@@ -86,7 +87,9 @@ class RadarEsrSyncThread(threading.Thread):
 	self.vehicle6.id = 0x5f5
 	self.vehicle6.dlc = 8
 	self.vehicle6.data, self.vehicle6_unpacked = getDefaultVehicleData(self.db, self.vehicle6.id, self.esr_vehicle_conf['Vehicle6'])
-	self.updateEgomotion()
+	# self.updateEgomotion()
+	# self.updateState()
+	# self.updateSyncRollingCount()
 	self.unlockVehicleData()
 
     def run(self):
@@ -105,6 +108,9 @@ class RadarEsrSyncThread(threading.Thread):
 	    #     pass
 	    rate.sleep()
 	    if not self.getIfLockedVehicleData():
+		self.updateEgomotion()
+		self.updateState()
+		self.updateSyncRollingCount()
 		if counter == 2:
 		    self.pub_can_send.publish(self.vehicle1)
 		    self.pub_can_send.publish(self.vehicle2)
@@ -125,11 +131,32 @@ class RadarEsrSyncThread(threading.Thread):
 	    if counter >= 6:
 		counter = 0
 
-    def processEgomotion(self, egomotion_msg):
-	self.egomotion = egomotion_msg
-	self.updateEgomotion()
-
     def updateEgomotion(self):
 	if self.egomotion is None:
 	    return
 	# TO DO: update the vehicle data here
+
+    def updateState(self):
+	# TO DO: update the state variables reflected to vehicle data
+	# i.e. to maintain continuity if vehicle data reread is requested
+	# you need to map all the state control here
+	pass
+
+    def updateSyncRollingCount(self):
+	pass
+
+    def setSyncRollingCount(self,count):
+	pass
+
+    def setRadarOn(self):
+	print 'turning radar on'
+	pass
+
+    def setRadarOff(self):
+	print 'turning radar off'
+	pass
+
+    def processEgomotion(self, egomotion_msg):
+	self.egomotion = egomotion_msg
+	# self.updateEgomotion()
+

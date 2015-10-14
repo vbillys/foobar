@@ -59,6 +59,16 @@ def resetVehicleData(req):
 	# print 'hi from RadarEsr , not forwarding to RadarSync (yet)'
     return []
 
+def setRadarOn(req):
+    for handler in g_radar_list:
+	g_radar_list[handler]['handler_sync_thread'].setRadarOn()
+    return []
+
+def setRadarOff(req):
+    for handler in g_radar_list:
+	g_radar_list[handler]['handler_sync_thread'].setRadarOff()
+    return []
+
 def startRosNode(node_name):
     if not ServerSolution.resolveRosmaster(): return
     # devices_conf = ServerSolution.resolveParameters('radar_packet/devices','rosrun foobar radar_read_param.py') 
@@ -105,6 +115,8 @@ def startRosNode(node_name):
     global g_radar_list 
     g_radar_list= radar_list
     rospy.Service('radar_packet/reread_vehicle_data', Empty, resetVehicleData)
+    rospy.Service('radar_packet/radar_on' , Empty, setRadarOn)
+    rospy.Service('radar_packet/radar_off', Empty, setRadarOff)
 
     # print radar_list
     # rospy.spin()
