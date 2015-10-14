@@ -10,8 +10,13 @@ def getArrayIdxFromStartBit(n):
 
 # @njit(numba.u8(numba.u1[:],numba.u1,numba.u1,numba.u8))
 def setBigEndiNumberToNpArr(blist, idx, size, number):
+    # print number
+    # print [number & (1 << (size - i  - 1)) for i in range (0,size)]
     for i in range (0,size):
-	blist[idx+i] = (number & (1 << (size - i  - 1)))
+	if (number & (1 << (size - i  - 1))):
+	    blist[idx+i] = 1
+	else:
+	    blist[idx+i] = 0
 
 def getFrame(db,frame_name):
     return db._fl.byName(frame_name)
@@ -42,6 +47,7 @@ class RadarEsrSyncThread(threading.Thread):
 	self.db = db
 	self.vehicle_data_locked = False
 	self.egomotion = None
+	self.rolling_count = 0
 	self.generateVehicleData()
 	threading.Thread.__init__ (self)
    
@@ -143,10 +149,16 @@ class RadarEsrSyncThread(threading.Thread):
 	pass
 
     def updateSyncRollingCount(self):
-	pass
+	# self.vehicle2[17] = self.rolling_count
+	setBigEndiNumberToNpArr(self.vehicle2_unpacked, getArrayIdxFromStartBit(7), 16,self.rolling_count)
+	self.vehicle2.data = np.packbits(self.vehicle2_unpacked).tolist()
+	# print self.rolling_count
+	# print self.vehicle2.data
+	# print self.vehicle2_unpacked
 
     def setSyncRollingCount(self,count):
-	pass
+	self.rolling_count = count
+	# print self.rolling_count
 
     def setRadarOn(self):
 	print 'turning radar on'

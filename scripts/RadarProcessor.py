@@ -119,6 +119,7 @@ class RadarEsr:
 
 		# self.registerFrames(['SODL_Status4','SODL_Status1','SODL_Status2','SODL_Status3'])
 		self.counter_processed = 0
+		self.msg_pub= GenericObjCanData() 
 
 		self.reg_id_idx = 0
 		self.numba_errs = 0
@@ -222,16 +223,19 @@ class RadarEsr:
 						   self.buffered_frames_count
 						  )
 
-		msg_pub= GenericObjCanData() 
-		msg_pub.header.stamp = msg.header.stamp
-		msg_pub.header.frame_id = msg.header.frame_id
+		self.msg_pub.header.stamp = msg.header.stamp
+		self.msg_pub.header.frame_id = msg.header.frame_id
 
-		msg_pub.data = _numbers
+		self.msg_pub.data = _numbers
 
 		# print msg_pub[853:860]
 		# print msg_pub[768:773]
 		# if msg_pub is not None:
-		self.pub_result.publish(msg_pub)
+		self.pub_result.publish(self.msg_pub)
+
+		# print msg.header.stamp
+		# print _numbers[782]
+		self.radar_sync_thread.setSyncRollingCount(_numbers[782])
 
 		# self.track_frame_id = dict.fromkeys(self.registered_Ids, 0)
 		# self.track_frame_id[self.registered_Ids[0]] = 1
@@ -246,6 +250,7 @@ class RadarEsr:
 		# self.track_frame_id[msg.id] = self.track_frame_id[msg.id] + 1
 		buffered_index = self.registered_Ids.index(msg.id)
 		# print buffered_index
+		# print self.buffered_frames_count
 		self.buffered_frames_count[buffered_index] = self.buffered_frames_count[buffered_index] + 1
 		for i in range(64):
 		    # try:
