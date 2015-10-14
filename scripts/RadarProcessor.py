@@ -133,6 +133,7 @@ class RadarEsr:
 		self.buffered_frames_count = array('B', self.frames_length * [0])
 		# self.buffered_frames_canid = array('I', self.frames_length * [0])
 		self.buffered_frames_candt = array('B', (self.frames_length * 64) * [0])
+		# self.buffered_frames_candt = array('B', 3440 * [0])
 		self.parse_can = RadarMsgsCython.ParseCan(self.registered_processed_frames)
 		# print self.parse_can.test()
 
@@ -187,7 +188,11 @@ class RadarEsr:
     def processEgomotion(self, egomotion_msg):
 	self.radar_sync_thread.processEgomotion(egomotion_msg)
 	
-
+    def DEBUGprintRollingIndexesAndCheck(self,_numbers):
+	print _numbers[782]
+	print [_numbers[783], _numbers[797], _numbers[810]]
+	print [_numbers[i] for i in range(6,768,12)]
+	print [self.buffered_frames_count[i] for i in range (4,68)]
 
     # @profile
     def processRadar(self,msg):
@@ -234,14 +239,17 @@ class RadarEsr:
 		self.pub_result.publish(self.msg_pub)
 
 		# print msg.header.stamp
-		# print _numbers[782]
+
+		self.DEBUGprintRollingIndexesAndCheck(_numbers)
+
 		self.radar_sync_thread.setSyncRollingCount(_numbers[782])
 
 		# self.track_frame_id = dict.fromkeys(self.registered_Ids, 0)
 		# self.track_frame_id[self.registered_Ids[0]] = 1
 		self.counter_processed = self.counter_processed + 1
 
-		# self.buffered_frames_candt = array('B', (self.frames_length * 64) * [0])
+		self.buffered_frames_candt = array('B', (self.frames_length * 64) * [0])
+		# self.buffered_frames_candt = array('B', 3440 * [0])
 		self.buffered_frames_count= array('B', self.frames_length * [0])
 		self.buffered_frames_count[0] = 1
 		for i in range(64):
