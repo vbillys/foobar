@@ -14,9 +14,13 @@ def getArrayIdxFromStartBit(n):
 
 # @njit(numba.u8(numba.u1[:],numba.u1,numba.u1,numba.u8))
 def setBigEndiNumberToNpArr(blist, idx, size, number):
+    # print number
+    # print [number & (1 << (size - i  - 1)) for i in range (0,size)]
     for i in range (0,size):
-	blist[idx+i] = (number & (1 << (size - i  - 1)))
-    # return blist
+	if (number & (1 << (size - i  - 1))):
+	    blist[idx+i] = 1
+	else:
+	    blist[idx+i] = 0
 
 def startRosNode():
     rospy.init_node('can_test_msg_node', anonymous=True)
@@ -44,7 +48,7 @@ def startRosNode():
     #print len(canbus_msg.data)
 
     # rate = rospy.Rate(6000)
-    rate = rospy.Rate(45)
+    rate = rospy.Rate(37) #45
     while not rospy.is_shutdown():
         canbus_msg.header.stamp = rospy.Time.now()
 	# pub_can_msg.publish(canbus_msg)
