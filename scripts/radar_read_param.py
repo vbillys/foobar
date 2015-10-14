@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import rospy
 import rospkg
 import yaml
@@ -35,7 +36,9 @@ if __name__ == '__main__':
 	try:
 	    callable = rospy.ServiceProxy('radar_packet/reread_vehicle_data', Empty)
 	    print type(callable())
+	    sys.exit(0)
 	except rospy.ServiceException, e:
 	    print "Service call failed: %s"%e
+	    sys.exit(1)
 
 	

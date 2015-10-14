@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os
+import os, subprocess
 import sys
 import rospy
 from std_srvs.srv import Empty
@@ -9,15 +9,20 @@ def callEmptyService(svc_name):
     try:
 	callable = rospy.ServiceProxy(svc_name, Empty)
 	print type(callable())
+	return False
     except rospy.ServiceException, e:
 	print "Service call failed: %s"%e
+	return None
 
 class Example(QtGui.QWidget):
+# class Example(QtGui.QMainWindow):
 
     def __init__(self):
 	super(Example, self).__init__()
 
+	# self.status_bar = status_bar
 	self.initUI()
+	
 
     def initUI(self):
 
@@ -47,6 +52,9 @@ class Example(QtGui.QWidget):
 	self.reread_button = QtGui.QPushButton('Reread Vehicle Data')
 	grid.addWidget(self.reread_button, 1, 0)
 
+	self.status_bar = QtGui.QStatusBar()
+	grid.addWidget(self.status_bar, 2, 0)
+
 	self.setLayout(grid) 
 
 	QtCore.QObject.connect(self.reread_button, QtCore.SIGNAL('clicked()'), self.onClickedRereadButton)
@@ -58,16 +66,27 @@ class Example(QtGui.QWidget):
 
     def onClickedRereadButton(self):
 	# print 'hi trying to reread?'
-	os.system('rosrun foobar radar_read_param.py')
+	# os.system('rosrun foobar radar_read_param.py')
+	return_code = subprocess.call('rosrun foobar radar_read_param.py', shell=True)
+	if return_code:
+	    self.status_bar.showMessage('reread vehicle data, but could not reset process, not started ya?')
+	else:
+	    self.status_bar.showMessage('reread vehicle data, and success reset process sync accordingly')
 
     def onClickedOnoffButton(self):
 	# print self.onoff_button.text()
 	if self.onoff_button.text() == 'On Radar':
-	    self.onoff_button.setText('Off Radar')
-	    callEmptyService('radar_packet/radar_on')
+	    if callEmptyService('radar_packet/radar_on') is None:
+		self.status_bar.showMessage('no service. radar driver/process started?')
+	    else:
+		self.onoff_button.setText('Off Radar')
+		self.status_bar.showMessage('sent radar on')
 	else:
-	    self.onoff_button.setText('On Radar')
-	    callEmptyService('radar_packet/radar_off')
+	    if callEmptyService('radar_packet/radar_off') is None:
+		self.status_bar.showMessage('no service. radar driver/process started?')
+	    else:
+		self.onoff_button.setText('On Radar')
+		self.status_bar.showMessage('sent radar off')
 
 def main():
 
