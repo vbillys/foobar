@@ -24,27 +24,52 @@ class RadarStatusGui(QtGui.QWidget):
 
 	# self.status_bar = status_bar
 	# self.initUI()
+	
+	self.timer_till_NA = QtCore.QTimer()
+	self.recv_counter = 0
+	QtCore.QObject.connect(self.timer_till_NA,QtCore.SIGNAL("timeout()"), self.checkNAandResetCounter)
+	self.timer_till_NA.start(2500)
 
 	grid = QtGui.QGridLayout()
 	grid.setSpacing(10)
 
+	# splitter = QtGui.QSplitter(QtCore.Qt.Vertical)
+	horizLine	=  QtGui.QFrame()
+	horizLine.setFrameStyle(QtGui.QFrame.HLine)
+	# horizLine.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+	# horizLine.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+
 	self.label_timestamp = QtGui.QLabel('Stamp:')
-	self.label_timestamp_value = QtGui.QLabel('0')
+	self.label_timestamp_value = QtGui.QLabel('NA')
 	grid.addWidget(self.label_timestamp, 0 , 0)
 	grid.addWidget(self.label_timestamp_value, 0 , 1)
 
+	grid.addWidget(horizLine, 1, 0, 1 ,2)
+
 	self.label_scanindex = QtGui.QLabel('ScanIndex:')
-	self.label_scanindex_value = QtGui.QLabel('0')
-	grid.addWidget(self.label_scanindex, 1 , 0)
-	grid.addWidget(self.label_scanindex_value, 1 , 1)
+	self.label_scanindex_value = QtGui.QLabel('NA')
+	grid.addWidget(self.label_scanindex, 2 , 0)
+	grid.addWidget(self.label_scanindex_value, 2 , 1)
 
 	self.setLayout(grid) 
 
 	self.setGeometry(800+pos_offset*40, 300, 350, 300)
 	self.setWindowTitle('Radar Status ' + name_id)    
 	self.show()
+
+    def resetDisplayNA(self):
+	self.label_timestamp_value.setText('NA')
+	self.label_scanindex_value.setText('NA')
 	
+    def checkNAandResetCounter(self):
+	if self.recv_counter == 0:
+	    self.resetDisplayNA()
+	self.recv_counter = 0
+
     def onIncomingData(self, msg):
+
+	self.recv_counter = self.recv_counter + 1
+
 	# print 'received data ', msg.data[782]
 	scanindex = msg.data[782]
 	self.label_scanindex_value.setText(str(scanindex))
