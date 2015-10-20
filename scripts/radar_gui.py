@@ -24,6 +24,8 @@ class RadarStatusGui(QtGui.QWidget):
 
 	# self.status_bar = status_bar
 	# self.initUI()
+
+	self.defineConstant()
 	
 	self.timer_till_NA = QtCore.QTimer()
 	self.recv_counter = 0
@@ -149,6 +151,36 @@ class RadarStatusGui(QtGui.QWidget):
 	grid.addWidget(self.label_sw_ver_dsp, 2 , 7)
 	grid.addWidget(self.label_sw_ver_dsp_value , 2 , 8)
 
+	self.label_sw_ver_pld= QtGui.QLabel('Ver. SW Pld:')
+	self.label_sw_ver_pld_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_sw_ver_pld, 3 , 7)
+	grid.addWidget(self.label_sw_ver_pld_value , 3 , 8)
+
+	self.label_sw_ver_host= QtGui.QLabel('Ver. SW Host:')
+	self.label_sw_ver_host_value = QtGui.QLabel('NA')
+	grid.addWidget(self.label_sw_ver_host, 4 , 7)
+	grid.addWidget(self.label_sw_ver_host_value , 4 , 8)
+
+	self.label_hw_ver= QtGui.QLabel('Ver. HW:')
+	self.label_hw_ver_value = QtGui.QLabel('NA')
+	grid.addWidget(self.label_hw_ver, 5 , 7)
+	grid.addWidget(self.label_hw_ver_value , 5 , 8)
+
+	self.label_interface_ver= QtGui.QLabel('Ver. Interface:')
+	self.label_interface_ver_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_interface_ver, 6 , 7)
+	grid.addWidget(self.label_interface_ver_value, 6 , 8)
+
+	self.label_serial_ver= QtGui.QLabel('Ver. Serial:')
+	self.label_serial_ver_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_serial_ver, 7 , 7)
+	grid.addWidget(self.label_serial_ver_value , 7 , 8)
+
+	self.label_serial_full_ver= QtGui.QLabel('Ver. Serial Full:')
+	self.label_serial_full_ver_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_serial_full_ver, 8 , 7)
+	grid.addWidget(self.label_serial_full_ver_value, 8 , 8)
+
 
 	self.setLayout(grid) 
 
@@ -174,6 +206,10 @@ class RadarStatusGui(QtGui.QWidget):
 	    self.resetDisplayNA(False)
 	self.recv_counter = 0
 
+    def defineConstant(self):
+	self.strGroupingModes = ['no','mov. only','st. only','both']
+	self.strSysPowerModes = ['init','rad_off','rad_on','dsp_shut','dsp_off','host_shut','(invalid)']
+
     def onIncomingData(self, msg):
 
 	self.recv_counter = self.recv_counter + 1
@@ -183,8 +219,22 @@ class RadarStatusGui(QtGui.QWidget):
 	self.label_scanindex_value.setText(str(scanindex))
 	timestamp = msg.data[778] * 2
 	self.label_timestamp_value.setText(str(timestamp))
-	sw_ver_dsp_value = msg.data[787]
-	self.label_sw_ver_dsp_value.setText(str(sw_ver_dsp_value))
+	temperature_value = msg.data[788]
+	self.label_temp_value.setText(str(temperature_value))
+	raw_mode_value = msg.data[789]
+	self.label_raw_mode_value.setText(str(raw_mode_value))
+	max_track_ack_value = msg.data[792]
+	self.label_max_track_ack_value.setText(str(max_track_ack_value))
+	grouping_mode_value = msg.data[794]
+	self.label_grouping_mode_value.setText(self.strGroupingModes[grouping_mode_value])
+	xcvr_operational_value = msg.data[795]
+	self.label_xcvr_operational_value.setText(str(xcvr_operational_value))
+	autoalign_angle_value = msg.data[809]
+	self.label_autoalign_angle_value.setText(str(autoalign_angle_value))
+	recc_unconv_value = msg.data[832]
+	self.label_recc_unconv_value.setText(str(recc_unconv_value))
+	syspower_mode_value = msg.data[834]
+	self.label_syspower_mode_value.setText(self.strSysPowerModes[syspower_mode_value])
 
 	comm_err_value = msg.data[779]
 	self.label_comm_err_value.setText(str(comm_err_value))
@@ -195,26 +245,24 @@ class RadarStatusGui(QtGui.QWidget):
 	internal_err_value = msg.data[793]
 	self.label_internal_err_value.setText(str(internal_err_value))
 	active_fault_err_value = msg.data[837:845]
-	self.label_active_fault_err_value.setText(' '.join([str(x) for x in active_fault_err_value]))
+	self.label_active_fault_err_value.setText(' '.join([format(x,'02x') for x in active_fault_err_value]))
 	history_fault_err_value = msg.data[845:853]
-	self.label_history_fault_err_value.setText(' '.join([str(x) for x in history_fault_err_value]))
+	self.label_history_fault_err_value.setText(' '.join([format(x,'02x') for x in history_fault_err_value]))
 
-	temperature_value = msg.data[788]
-	self.label_temp_value.setText(str(temperature_value))
-	raw_mode_value = msg.data[789]
-	self.label_raw_mode_value.setText(str(raw_mode_value))
-	max_track_ack_value = msg.data[792]
-	self.label_max_track_ack_value.setText(str(max_track_ack_value))
-	grouping_mode_value = msg.data[794]
-	self.label_grouping_mode_value.setText(str(grouping_mode_value))
-	xcvr_operational_value = msg.data[795]
-	self.label_xcvr_operational_value.setText(str(xcvr_operational_value))
-	autoalign_angle_value = msg.data[809]
-	self.label_autoalign_angle_value.setText(str(autoalign_angle_value))
-	recc_unconv_value = msg.data[832]
-	self.label_recc_unconv_value.setText(str(recc_unconv_value))
-	syspower_mode_value = msg.data[834]
-	self.label_syspower_mode_value.setText(str(syspower_mode_value))
+	sw_ver_dsp_value = msg.data[787]
+	self.label_sw_ver_dsp_value.setText('x'+format(sw_ver_dsp_value,'04x'))
+	sw_ver_pld_value = msg.data[798]
+	self.label_sw_ver_pld_value.setText(str(sw_ver_pld_value))
+	sw_ver_host_value = msg.data[799]
+	self.label_sw_ver_host_value.setText('x'+format(sw_ver_host_value ,'08x'))
+	hw_ver_value = msg.data[800]
+	self.label_hw_ver_value.setText(str(hw_ver_value))
+	interface_ver_value = msg.data[801]
+	self.label_interface_ver_value.setText(str(interface_ver_value))
+	serial_ver_value = msg.data[857]
+	self.label_serial_ver_value.setText(str(serial_ver_value))
+	serial_full_ver_value = msg.data[802]
+	self.label_serial_full_ver_value.setText('x'+format(sw_ver_dsp_value,'06x'))
 
 
 class RadarControlGui(QtGui.QWidget):
