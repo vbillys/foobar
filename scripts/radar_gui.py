@@ -31,39 +31,122 @@ class RadarStatusGui(QtGui.QWidget):
 	self.timer_till_NA.start(2500)
 
 	grid = QtGui.QGridLayout()
-	grid.setSpacing(10)
+	grid.setSpacing(3)
 
 	# splitter = QtGui.QSplitter(QtCore.Qt.Vertical)
 	horizLine	=  QtGui.QFrame()
 	horizLine.setFrameStyle(QtGui.QFrame.HLine)
 	# horizLine.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-	# horizLine.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+	horizLine.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+
+	horizLine2	=  QtGui.QFrame()
+	horizLine2.setFrameStyle(QtGui.QFrame.HLine)
+	horizLine2.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+
+	horizLine3	=  QtGui.QFrame()
+	horizLine3.setFrameStyle(QtGui.QFrame.HLine)
+	horizLine3.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+
+	vertiLine2	=  QtGui.QFrame()
+	vertiLine2.setFrameStyle(QtGui.QFrame.VLine)
+	vertiLine2.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+
+	vertiLine3	=  QtGui.QFrame()
+	vertiLine3.setFrameStyle(QtGui.QFrame.VLine)
+	vertiLine3.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+
+	self.label_NA = QtGui.QLabel('CHECKING...')
+	grid.addWidget(self.label_NA, 0 , 0)
+
+	grid.addWidget(horizLine, 1, 0, 1 ,8)
 
 	self.label_timestamp = QtGui.QLabel('Stamp:')
 	self.label_timestamp_value = QtGui.QLabel('NA')
-	grid.addWidget(self.label_timestamp, 0 , 0)
-	grid.addWidget(self.label_timestamp_value, 0 , 1)
-
-	grid.addWidget(horizLine, 1, 0, 1 ,2)
+	grid.addWidget(self.label_timestamp, 2 , 0)
+	grid.addWidget(self.label_timestamp_value, 2 , 1)
 
 	self.label_scanindex = QtGui.QLabel('ScanIndex:')
 	self.label_scanindex_value = QtGui.QLabel('NA')
-	grid.addWidget(self.label_scanindex, 2 , 0)
-	grid.addWidget(self.label_scanindex_value, 2 , 1)
+	grid.addWidget(self.label_scanindex, 3 , 0)
+	grid.addWidget(self.label_scanindex_value, 3 , 1)
+
+	self.label_temp = QtGui.QLabel('Temperature:')
+	self.label_temp_value = QtGui.QLabel('NA')
+	grid.addWidget(self.label_temp, 4 , 0)
+	grid.addWidget(self.label_temp_value, 4 , 1)
+
+	self.label_raw_mode = QtGui.QLabel('Raw Mode:')
+	self.label_raw_mode_value = QtGui.QLabel('NA')
+	grid.addWidget(self.label_raw_mode, 5 , 0)
+	grid.addWidget(self.label_raw_mode_value, 5 , 1)
+
+	self.label_max_track_ack = QtGui.QLabel('No of Track ACK:')
+	self.label_max_track_ack_value = QtGui.QLabel('NA')
+	grid.addWidget(self.label_max_track_ack, 6 , 0)
+	grid.addWidget(self.label_max_track_ack_value, 6 , 1)
+
+	self.label_grouping_mode = QtGui.QLabel('Grouping Mode:')
+	self.label_grouping_mode_value = QtGui.QLabel('NA')
+	grid.addWidget(self.label_grouping_mode , 7 , 0)
+	grid.addWidget(self.label_grouping_mode_value , 7 , 1)
+
+	self.label_xcvr_operational= QtGui.QLabel('XVCR Operational:')
+	self.label_xcvr_operational_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_xcvr_operational, 8 , 0)
+	grid.addWidget(self.label_xcvr_operational_value , 8 , 1)
+
+	self.label_autoalign_angle= QtGui.QLabel('AngleAutoAlign:')
+	self.label_autoalign_angle_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_autoalign_angle, 9 , 0)
+	grid.addWidget(self.label_autoalign_angle_value, 9 , 1)
+
+	self.label_recc_unconv= QtGui.QLabel('UnConverge Recommend:')
+	self.label_recc_unconv_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_recc_unconv, 10 , 0)
+	grid.addWidget(self.label_recc_unconv_value, 10 , 1)
+
+	self.label_syspower_mode= QtGui.QLabel('Sys Power Mode:')
+	self.label_syspower_mode_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_syspower_mode, 11 , 0)
+	grid.addWidget(self.label_syspower_mode_value, 11 , 1)
+
+	grid.addWidget(vertiLine2, 2, 3, 10 ,1)
+
+	self.label_comm_err = QtGui.QLabel('Comm Error:')
+	self.label_comm_err_value  = QtGui.QLabel('NA')
+	grid.addWidget(self.label_comm_err , 2 , 4)
+	grid.addWidget(self.label_comm_err_value  , 2 , 5)
+
+	grid.addWidget(vertiLine3, 2, 6, 10 ,1)
+
+	self.label_sw_ver_dsp = QtGui.QLabel('Ver. SW Dsp:')
+	self.label_sw_ver_dsp_value = QtGui.QLabel('NA')
+	grid.addWidget(self.label_sw_ver_dsp, 2 , 7)
+	grid.addWidget(self.label_sw_ver_dsp_value , 2 , 8)
+
 
 	self.setLayout(grid) 
 
-	self.setGeometry(800+pos_offset*40, 300, 350, 300)
+	self.setGeometry(800+pos_offset*40, 200, 750, 400)
 	self.setWindowTitle('Radar Status ' + name_id)    
 	self.show()
 
-    def resetDisplayNA(self):
-	self.label_timestamp_value.setText('NA')
-	self.label_scanindex_value.setText('NA')
+    def resetDisplayNA(self, nodata):
+	# self.label_timestamp_value.setText('NA')
+	# self.label_scanindex_value.setText('NA')
+	# self.label_sw_ver_dsp_value.setText('NA')
+	# self.label_comm_err_value.setText('NA')
+	# self.label_temp_value.setText('NA')
+	if nodata:
+	    self.label_NA.setText('NO DATA!!')
+	else:
+	    self.label_NA.setText('INCOMING DATA OK')
 	
     def checkNAandResetCounter(self):
 	if self.recv_counter == 0:
-	    self.resetDisplayNA()
+	    self.resetDisplayNA(True)
+	else:
+	    self.resetDisplayNA(False)
 	self.recv_counter = 0
 
     def onIncomingData(self, msg):
@@ -75,6 +158,28 @@ class RadarStatusGui(QtGui.QWidget):
 	self.label_scanindex_value.setText(str(scanindex))
 	timestamp = msg.data[778] * 2
 	self.label_timestamp_value.setText(str(timestamp))
+	sw_ver_dsp_value = msg.data[787]
+	self.label_sw_ver_dsp_value.setText(str(sw_ver_dsp_value))
+
+	comm_err_value = msg.data[779]
+	self.label_comm_err_value.setText(str(comm_err_value))
+
+	temperature_value = msg.data[788]
+	self.label_temp_value.setText(str(temperature_value))
+	raw_mode_value = msg.data[789]
+	self.label_raw_mode_value.setText(str(raw_mode_value))
+	max_track_ack_value = msg.data[792]
+	self.label_max_track_ack_value.setText(str(max_track_ack_value))
+	grouping_mode_value = msg.data[794]
+	self.label_grouping_mode_value.setText(str(grouping_mode_value))
+	xcvr_operational_value = msg.data[795]
+	self.label_xcvr_operational_value.setText(str(xcvr_operational_value))
+	autoalign_angle_value = msg.data[809]
+	self.label_autoalign_angle_value.setText(str(autoalign_angle_value))
+	recc_unconv_value = msg.data[832]
+	self.label_recc_unconv_value.setText(str(recc_unconv_value))
+	syspower_mode_value = msg.data[834]
+	self.label_syspower_mode_value.setText(str(syspower_mode_value))
 
 
 class RadarControlGui(QtGui.QWidget):
