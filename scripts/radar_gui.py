@@ -117,6 +117,31 @@ class RadarStatusGui(QtGui.QWidget):
 	grid.addWidget(self.label_comm_err , 2 , 4)
 	grid.addWidget(self.label_comm_err_value  , 2 , 5)
 
+	self.label_range_perf_err= QtGui.QLabel('Radar Blocked:')
+	self.label_range_perf_err_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_range_perf_err, 3 , 4)
+	grid.addWidget(self.label_range_perf_err_value, 3 , 5)
+
+	self.label_overheat_err= QtGui.QLabel('Overheat:')
+	self.label_overheat_err_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_overheat_err, 4 , 4)
+	grid.addWidget(self.label_overheat_err_value, 4 , 5)
+
+	self.label_internal_err= QtGui.QLabel('Internal Err:')
+	self.label_internal_err_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_internal_err, 5 , 4)
+	grid.addWidget(self.label_internal_err_value, 5 , 5)
+
+	self.label_active_fault_err= QtGui.QLabel('Active:')
+	self.label_active_fault_err_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_active_fault_err, 6 , 4)
+	grid.addWidget(self.label_active_fault_err_value, 6 , 5)
+
+	self.label_history_fault_err= QtGui.QLabel('Historic:')
+	self.label_history_fault_err_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_history_fault_err, 7 , 4)
+	grid.addWidget(self.label_history_fault_err_value, 7 , 5)
+
 	grid.addWidget(vertiLine3, 2, 6, 10 ,1)
 
 	self.label_sw_ver_dsp = QtGui.QLabel('Ver. SW Dsp:')
@@ -163,6 +188,16 @@ class RadarStatusGui(QtGui.QWidget):
 
 	comm_err_value = msg.data[779]
 	self.label_comm_err_value.setText(str(comm_err_value))
+	range_perf_err_value = msg.data[790]
+	self.label_range_perf_err_value.setText(str(range_perf_err_value))
+	overheat_err_value = msg.data[791]
+	self.label_overheat_err_value.setText(str(overheat_err_value))
+	internal_err_value = msg.data[793]
+	self.label_internal_err_value.setText(str(internal_err_value))
+	active_fault_err_value = msg.data[837:845]
+	self.label_active_fault_err_value.setText(' '.join([str(x) for x in active_fault_err_value]))
+	history_fault_err_value = msg.data[845:853]
+	self.label_history_fault_err_value.setText(' '.join([str(x) for x in history_fault_err_value]))
 
 	temperature_value = msg.data[788]
 	self.label_temp_value.setText(str(temperature_value))
