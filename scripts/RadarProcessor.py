@@ -123,6 +123,8 @@ class RadarEsr:
 
 		self.reg_id_idx = 0
 		self.numba_errs = 0
+		
+		self.track_motion_power_cnt = 0
 
 		# just a trick to prevent multi thread numba complications
 		# _siglist = RadarMsgs.crack(8*[0] , [ s._name for s in self.registered_frames[0]._signals] , self.registered_frames[0]._name, self.registered_frames[0]._signals, self.registered_processed_frames[0])
@@ -191,9 +193,28 @@ class RadarEsr:
     def DEBUGprintRollingIndexesAndCheck(self,_numbers):
 	print _numbers[782]
 	print [_numbers[783], _numbers[797], _numbers[810]]
-	print [self.buffered_frames_count[i] for i in [0, 1, 3]]
+	if not (_numbers[783] == _numbers[797] and _numbers[797] == _numbers[810]):
+	    print 'rollign count incorrect!'
+	# print [self.buffered_frames_count[i] for i in [0, 1, 3]]
 	print [_numbers[i] for i in range(6,768,12)]
-	print [self.buffered_frames_count[i] for i in range (4,68)]
+	_thisnumber = _numbers[6]
+	for i in range(6+12,768,12):
+	    if not _numbers[i] == _thisnumber:
+		print 'rolling count not correct!'
+
+	# print [self.buffered_frames_count[i] for i in range (4,68)]
+	# print [_numbers[i] for i in range(854+228,3440,258)]
+	# _thisnumber = _numbers[854+228]
+	# for i in range(854+228+258,3440,258):
+	    # if not _numbers[i] == _thisnumber:
+		# print 'rolling count not correct!'
+	# print [self.buffered_frames_count[i] for i in range (68,78)]
+	# print [_numbers[i] for i in range(854+257,3440,258)]
+	# _thisnumber = _numbers[854+257]
+	# for i in range(854+257+258,3440,258):
+	    # if not _numbers[i] == _thisnumber+1:
+		# print 'group id not correct!'
+	    # _thisnumber = _thisnumber + 1
 
     # @profile
     def processRadar(self,msg):
@@ -255,6 +276,18 @@ class RadarEsr:
 		self.buffered_frames_count[0] = 1
 		for i in range(64):
 		    self.buffered_frames_candt[i] = barray_unpacked[i]
+		self.track_motion_power_cnt = 0
+
+	    elif msg.id == 0x0540: #ESR_TrackMotionPower need special attention:
+		# we have a good faith here, that this ESR_TrackMotionPower comes in 10 per set
+		buffered_index = self.registered_Ids.index(msg.id)
+		if self.track_motion_power_cnt <= 10:
+		    self.track_motion_power_cnt = self.track_motion_power_cnt + 1
+		buffered_index = buffered_index + self.track_motion_power_cnt - 1
+		self.buffered_frames_count[buffered_index] = self.buffered_frames_count[buffered_index] + 1
+		for i in range(64):
+		    self.buffered_frames_candt[i+(buffered_index*64)] = barray_unpacked[i]
+
 	    else:
 		# self.track_frame_id[msg.id] = self.track_frame_id[msg.id] + 1
 		buffered_index = self.registered_Ids.index(msg.id)
