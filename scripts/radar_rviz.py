@@ -81,6 +81,7 @@ class RadarVizNode:
 
 	self.pub_marker  = rospy.Publisher ('radar_packet/viz/marker' , Marker   , queue_size=10)
 	self.pub_marker_text  = rospy.Publisher ('radar_packet/viz/marker_text' , Marker   , queue_size=10)
+	self.pub_marker_array = rospy.Publisher ('radar_packet/viz/marker_array' , MarkerArray   , queue_size=10)
 	solved_name_res = 'can0'
 	self.sub_data = rospy.Subscriber ('radar_packet/'+solved_name_res+'/processed', GenericObjCanData, self.onIncomingData)
 
@@ -101,8 +102,11 @@ class RadarVizNode:
 		self.marker_text.text = 'GOT DATA'
 	    else:
 		self.marker_text.text = 'NODATA'
-		self.createCubeMarkerDel()
+		# self.createCubeMarkerDel()
+		self.createCubeMarker()
 		self.pub_marker.publish(self.marker)
+		self.createMarkerArray()
+		self.pub_marker_array.publish(self.marker_array)
 
 	    self.data_counter = 0
 
@@ -163,6 +167,48 @@ class RadarVizNode:
 	    self.marker.colors.append( color)
 
 
+    def createMarkerArray(self):
+	self.marker_array = MarkerArray()
+
+    def createTextsInMarkerArray(self, data):
+	for i in range(0,768,12):
+	    dist  = data.data[i+9] * .1
+	    angle = data.data[i+11]* .1
+	    angle_rad = math.radians(angle)
+	    unit = self.spawnTextMarker(i)
+	    unit.text = '+'
+	    unit.pose.position.x = - dist * math.sin(angle_rad)
+	    unit.pose.position.y = - dist * math.cos(angle_rad)
+	    self.marker_array.markers.append(unit)
+
+
+
+    def spawnTextMarker(self, id):
+	marker_text = Marker()
+	marker_text.header.frame_id = "/map"
+	marker_text.header.stamp = rospy.Time.now()
+	marker_text.ns = 'radar_array'
+	marker_text.id = id # i
+	marker_text.type =Marker.TEXT_VIEW_FACING
+	marker_text.action = Marker.ADD
+	# marker_text.pose.position.x = 0
+	# marker_text.pose.position.y = 5
+	marker_text.pose.position.z = 0
+	marker_text.pose.orientation.x = 0.0
+	marker_text.pose.orientation.y = 0.0
+	marker_text.pose.orientation.z = 0.0
+	marker_text.pose.orientation.w = 1.0
+	marker_text.scale.z = 0.60
+	marker_text.scale.y = 0.60
+	marker_text.scale.x = 0.60
+	marker_text.color.r = 1.0
+	marker_text.color.g = 0.0
+	marker_text.color.b = 1.0
+	marker_text.color.a = 1.0
+	marker_text.lifetime = rospy.Duration(1.0)
+	return marker_text
+
+
     def createCubeMarkerDel(self):
 	self.marker = Marker()
 	self.marker.header.frame_id = "/map"
@@ -202,6 +248,9 @@ class RadarVizNode:
 	self.createCubeMarker()
 	self.createPointsInMarker(msg)
 	self.pub_marker.publish(self.marker)
+	self.createMarkerArray()
+	self.createTextsInMarkerArray(msg)
+	self.pub_marker_array.publish(self.marker_array)
 	self.data_counter = self.data_counter + 1
 	# print self.data_counter
 
