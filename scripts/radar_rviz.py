@@ -56,6 +56,7 @@ def extractTargetFromData(data):
     _bridgeflag =[]
     _width =[]
     _rangerate =[]
+    _rangerateraw =[]
     _rangeaccel =[]
     _range =[]
     _medrangemode =[]
@@ -70,10 +71,11 @@ def extractTargetFromData(data):
 	_bridgeflag.append(data.data[i+3])
 	_width.append(data.data[i+4]*0.5)
 	_rangerate.append(data.data[i+7]*.01)
+	_rangerateraw.append(data.data[i+7])
 	_rangeaccel.append(data.data[i+8]*.05)
 	_medrangemode.append(data.data[i+10])
 	_status.append(data.data[i+5])
-    return _grouping_changed, _oncoming, _latrate, _bridgeflag, _width, _rangerate, _rangeaccel, _range, _medrangemode, _angle, _status
+    return _grouping_changed, _oncoming, _latrate, _bridgeflag, _width, _rangerate, _rangeaccel, _range, _medrangemode, _angle, _status, _rangerateraw
 
 class RadarVizNode:
     # def startVisuzalizationNode(self,node_name):
@@ -323,7 +325,7 @@ class RadarVizNode:
 
     def onIncomingData(self, msg):
 	self.movingflags, self.powernumbers, self.moveablefast, self.moveableslow = extractTrackingFromData(msg)
-	self.grouping_changed, self.oncoming, self.latrate, self.bridgeflag, self.width, self.rangerate, self.rangeaccel, self.dist, self.medrangemode, self.angle, self.status = extractTargetFromData(msg)
+	self.grouping_changed, self.oncoming, self.latrate, self.bridgeflag, self.width, self.rangerate, self.rangeaccel, self.dist, self.medrangemode, self.angle, self.status, self.rangerateraw = extractTargetFromData(msg)
 	self.createCubeMarker()
 	self.createPointsInMarker(msg)
 	self.pub_marker.publish(self.marker)
