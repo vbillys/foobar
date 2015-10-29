@@ -144,42 +144,81 @@ class RadarStatusGui(QtGui.QWidget):
 	grid.addWidget(self.label_history_fault_err, 7 , 4)
 	grid.addWidget(self.label_history_fault_err_value, 7 , 5)
 
-	grid.addWidget(vertiLine3, 2, 6, 10 ,1)
+	grid.addWidget(horizLine2, 8, 4, 1 ,2)
+
+	self.label_valid = QtGui.QLabel('VALID')
+	self.label_lr = QtGui.QLabel('Long')
+	self.label_sr = QtGui.QLabel('Short')
+	grid.addWidget(self.label_valid, 9 ,4)
+	grid.addWidget(self.label_lr, 9 ,5)
+	grid.addWidget(self.label_sr, 9 ,6)
+
+	self.label_valid_rangerate= QtGui.QLabel('RangeRate:')
+	grid.addWidget(self.label_valid_rangerate, 10 , 4)
+	self.label_valid_range= QtGui.QLabel('Range:')
+	grid.addWidget(self.label_valid_range, 11 , 4)
+	self.label_valid_power= QtGui.QLabel('Power:')
+	grid.addWidget(self.label_valid_power, 12 , 4)
+	self.label_valid_angle= QtGui.QLabel('Angle:')
+	grid.addWidget(self.label_valid_angle, 13 , 4)
+
+	self.label_valid_lr_rangerate_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_valid_lr_rangerate_value, 10 , 5)
+	self.label_valid_sr_rangerate_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_valid_sr_rangerate_value, 10 , 6)
+
+	self.label_valid_lr_range_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_valid_lr_range_value, 11 , 5)
+	self.label_valid_sr_range_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_valid_sr_range_value, 11 , 6)
+
+	self.label_valid_lr_power_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_valid_lr_power_value, 12 , 5)
+	self.label_valid_sr_power_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_valid_sr_power_value, 12 , 6)
+
+	self.label_valid_lr_angle_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_valid_lr_angle_value, 13 , 5)
+	self.label_valid_sr_angle_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_valid_sr_angle_value, 13 , 6)
+
+
+	grid.addWidget(vertiLine3, 2, 7, 10 ,1)
 
 	self.label_sw_ver_dsp = QtGui.QLabel('Ver. SW Dsp:')
 	self.label_sw_ver_dsp_value = QtGui.QLabel('NA')
-	grid.addWidget(self.label_sw_ver_dsp, 2 , 7)
-	grid.addWidget(self.label_sw_ver_dsp_value , 2 , 8)
+	grid.addWidget(self.label_sw_ver_dsp, 2 , 8)
+	grid.addWidget(self.label_sw_ver_dsp_value , 2 , 9)
 
 	self.label_sw_ver_pld= QtGui.QLabel('Ver. SW Pld:')
 	self.label_sw_ver_pld_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_sw_ver_pld, 3 , 7)
-	grid.addWidget(self.label_sw_ver_pld_value , 3 , 8)
+	grid.addWidget(self.label_sw_ver_pld, 3 , 8)
+	grid.addWidget(self.label_sw_ver_pld_value , 3 , 9)
 
 	self.label_sw_ver_host= QtGui.QLabel('Ver. SW Host:')
 	self.label_sw_ver_host_value = QtGui.QLabel('NA')
-	grid.addWidget(self.label_sw_ver_host, 4 , 7)
-	grid.addWidget(self.label_sw_ver_host_value , 4 , 8)
+	grid.addWidget(self.label_sw_ver_host, 4 , 8)
+	grid.addWidget(self.label_sw_ver_host_value , 4 , 9)
 
 	self.label_hw_ver= QtGui.QLabel('Ver. HW:')
 	self.label_hw_ver_value = QtGui.QLabel('NA')
-	grid.addWidget(self.label_hw_ver, 5 , 7)
-	grid.addWidget(self.label_hw_ver_value , 5 , 8)
+	grid.addWidget(self.label_hw_ver, 5 , 8)
+	grid.addWidget(self.label_hw_ver_value , 5 , 9)
 
 	self.label_interface_ver= QtGui.QLabel('Ver. Interface:')
 	self.label_interface_ver_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_interface_ver, 6 , 7)
-	grid.addWidget(self.label_interface_ver_value, 6 , 8)
+	grid.addWidget(self.label_interface_ver, 6 , 8)
+	grid.addWidget(self.label_interface_ver_value, 6 , 9)
 
 	self.label_serial_ver= QtGui.QLabel('Ver. Serial:')
 	self.label_serial_ver_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_serial_ver, 7 , 7)
-	grid.addWidget(self.label_serial_ver_value , 7 , 8)
+	grid.addWidget(self.label_serial_ver, 7 , 8)
+	grid.addWidget(self.label_serial_ver_value , 7 , 9)
 
 	self.label_serial_full_ver= QtGui.QLabel('Ver. Serial Full:')
 	self.label_serial_full_ver_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_serial_full_ver, 8 , 7)
-	grid.addWidget(self.label_serial_full_ver_value, 8 , 8)
+	grid.addWidget(self.label_serial_full_ver, 8 , 8)
+	grid.addWidget(self.label_serial_full_ver_value, 8 , 9)
 
 
 	self.setLayout(grid) 
@@ -263,6 +302,26 @@ class RadarStatusGui(QtGui.QWidget):
 	self.label_serial_ver_value.setText(str(serial_ver_value))
 	serial_full_ver_value = msg.data[802]
 	self.label_serial_full_ver_value.setText('x'+format(sw_ver_dsp_value,'06x'))
+
+	valid_lr_rangerate_value = msg.data[769] * 0.0078125
+	self.label_valid_lr_rangerate_value.setText(str(valid_lr_rangerate_value))
+	valid_sr_rangerate_value = msg.data[774] * 0.0078125
+	self.label_valid_sr_rangerate_value.setText(str(valid_sr_rangerate_value))
+
+	valid_lr_range_value = msg.data[770] * 0.0078125
+	self.label_valid_lr_range_value.setText(str(valid_lr_range_value))
+	valid_sr_range_value = msg.data[775] * 0.0078125
+	self.label_valid_sr_range_value.setText(str(valid_sr_range_value))
+
+	valid_lr_power_value = msg.data[771]
+	self.label_valid_lr_power_value.setText(str(valid_lr_power_value))
+	valid_sr_power_value = msg.data[776]
+	self.label_valid_sr_power_value.setText(str(valid_sr_power_value))
+
+	valid_lr_angle_value = msg.data[772] * 0.0625
+	self.label_valid_lr_angle_value.setText(str(valid_lr_angle_value))
+	valid_sr_angle_value = msg.data[777] * 0.0625
+	self.label_valid_sr_angle_value.setText(str(valid_sr_angle_value))
 
 
 class RadarControlGui(QtGui.QWidget):
