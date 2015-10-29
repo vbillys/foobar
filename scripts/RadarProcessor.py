@@ -192,27 +192,32 @@ class RadarEsr:
 	
     def DEBUGprintRollingIndexesAndCheck(self,_numbers):
 	print '- - - -'
+
+	# print _numbers[825:833]
+
 	print _numbers[782]
-	print [_numbers[783], _numbers[797], _numbers[810]]
-	print [self.buffered_frames_count[i] for i in [0, 1, 3]]
-	if not (_numbers[783] == _numbers[797] and _numbers[797] == _numbers[810]):
-	    print 'rollign count incorrect!'
-	print [_numbers[i] for i in range(6,768,12)]
-	print [self.buffered_frames_count[i] for i in range (4,68)]
-	_thisnumber = _numbers[6]
-	for i in range(6+12,768,12):
-	    if not _numbers[i] == _thisnumber:
-		print 'rolling count not correct!'
+	print [_numbers[i] for i in range(768,778)]
+
+	# print [_numbers[783], _numbers[797], _numbers[810]]
+	# print [self.buffered_frames_count[i] for i in [0, 1, 3]]
+	# if not (_numbers[783] == _numbers[797] and _numbers[797] == _numbers[810]):
+	    # print 'rollign count incorrect!'
+	# print [_numbers[i] for i in range(6,768,12)]
+	# print [self.buffered_frames_count[i] for i in range (4,68)]
+	# _thisnumber = _numbers[6]
+	# for i in range(6+12,768,12):
+	    # if not _numbers[i] == _thisnumber:
+		# print 'rolling count not correct!'
 
 	# print [_numbers[i] for i in range(1,768,12)]
 	# print [_numbers[i] for i in range(5,768,12)]
 	# print [_numbers[i] for i in range(10,768,12)]
 	# print [_numbers[i] for i in range(0,768,12)]
-	# print [_numbers[i] for i in range(4,768,12)]
+	print [_numbers[i] for i in range(4,768,12)]
 	# print [_numbers[i] for i in range(3,768,12)]
-	# print [_numbers[i] for i in range(2,768,12)]
-	# print [_numbers[i] for i in range(7,768,12)]
-	# print [_numbers[i] for i in range(8,768,12)]
+	print [_numbers[i] for i in range(2,768,12)]
+	print [_numbers[i] for i in range(7,768,12)]
+	print [_numbers[i] for i in range(8,768,12)]
 	# print [_numbers[i] for i in range(9,768,12)]
 	# print [_numbers[i] for i in range(11,768,12)]
 	# print [_numbers[i], _numbers[i+1], _numbers[i+2], _numbers[i+3], _numbers[i+4], _numbers[i+5], _numbers[i+6] for i in range(854+18,3440,258)]
@@ -266,18 +271,18 @@ class RadarEsr:
 	# print _displaynumbers
 
 
-	print [_numbers[i] for i in range(854+228,3440,258)]
-	_thisnumber = _numbers[854+228]
-	for i in range(854+228+258,3440,258):
-	    if not _numbers[i] == _thisnumber:
-		print 'rolling count not correct!'
-	print [self.buffered_frames_count[i] for i in range (68,78)]
-	print [_numbers[i] for i in range(854+257,3440,258)]
-	_thisnumber = _numbers[854+257]
-	for i in range(854+257+258,3440,258):
-	    if not _numbers[i] == _thisnumber+1:
-		print 'group id not correct!'
-	    _thisnumber = _thisnumber + 1
+	# print [_numbers[i] for i in range(854+228,3440,258)]
+	# _thisnumber = _numbers[854+228]
+	# for i in range(854+228+258,3440,258):
+	    # if not _numbers[i] == _thisnumber:
+		# print 'rolling count not correct!'
+	# print [self.buffered_frames_count[i] for i in range (68,78)]
+	# print [_numbers[i] for i in range(854+257,3440,258)]
+	# _thisnumber = _numbers[854+257]
+	# for i in range(854+257+258,3440,258):
+	    # if not _numbers[i] == _thisnumber+1:
+		# print 'group id not correct!'
+	    # _thisnumber = _thisnumber + 1
 
     # @profile
     def processRadar(self,msg):
