@@ -83,6 +83,7 @@ class RadarVizNode:
 	rospy.init_node(node_name, anonymous=False)
 
 	self.maintain_last_plot = maintain_last_plot
+	# self.createMarkerArray()
 
 	self.marker = Marker()
 
@@ -150,9 +151,9 @@ class RadarVizNode:
 	    self.marker.points.append( point)
 	    self.marker.colors.append( color)
 
-	self.pub_marker  = rospy.Publisher ('radar_packet/viz/marker' , Marker   , queue_size=10)
-	self.pub_marker_text  = rospy.Publisher ('radar_packet/viz/marker_text' , Marker   , queue_size=10)
-	self.pub_marker_array = rospy.Publisher ('radar_packet/viz/marker_array' , MarkerArray   , queue_size=10)
+	self.pub_marker  = rospy.Publisher ('radar_packet/viz/marker' , Marker   , queue_size=100)
+	self.pub_marker_text  = rospy.Publisher ('radar_packet/viz/marker_text' , Marker   , queue_size=100)
+	self.pub_marker_array = rospy.Publisher ('radar_packet/viz/marker_array' , MarkerArray   , queue_size=1000)
 	solved_name_res = 'can0'
 	self.sub_data = rospy.Subscriber ('radar_packet/'+solved_name_res+'/processed', GenericObjCanData, self.onIncomingData)
 
@@ -169,12 +170,16 @@ class RadarVizNode:
 	    # pub_marker.publish(marker_text)
 	    # # marker.pose.position.x = marker.pose.position.x + 1
 	    
+	    # self.createTextMarkerDel()
+	    # self.pub_marker_text.publish(self.marker_text)
 	    self.createTextMarker()
 	    if not self.data_counter == 0:
 		self.marker_text.text = 'GOT DATA'
 	    else:
 		self.marker_text.text = 'NODATA'
-		# self.createCubeMarkerDel()
+		# if self.maintain_last_plot:
+		    # self.createCubeMarkerDel()
+		    # self.pub_marker.publish(self.marker)
 		# self.createCubeMarker()
 		# if not self.maintain_last_plot:
 		    # self.pub_marker.publish(self.marker)
@@ -253,10 +258,15 @@ class RadarVizNode:
 
     def createMarkerArray(self):
 	self.marker_array = MarkerArray()
+	# for i in range (0,64):
+	    # unit = self.spawnTextMarker(i)
+	    # self.marker_array.markers.append(unit)
+
 
     def createMarkerArrayDel(self):
 	self.marker_array = MarkerArray()
-	for id in self.track_no_idxs:
+	# for id in self.track_no_idxs:
+	for id in range(0,64):
 	    marker_text = Marker()
 	    marker_text.header.frame_id = "/map"
 	    marker_text.header.stamp = rospy.Time.now()
@@ -267,14 +277,26 @@ class RadarVizNode:
 
     def createTextsInMarkerArray(self, data):
 	# track_no_idx = 0
+	# print self.track_no_idxs
 	# for i in range(0,768,12):
+	# for track_no_idx in range(0,64):
 	for track_no_idx in self.track_no_idxs:
 	    # if not self.rangerate[track_no_idx] == 81.91:
 	    dist  = self.dist [track_no_idx] #data.data[i+9] * .1
 	    angle = self.angle[track_no_idx] #data.data[i+11]* .1
 	    angle_rad = math.radians(angle)
 	    unit = self.spawnTextMarker(track_no_idx)
-	    unit.text = str(self.powernumbers[track_no_idx] - 10) + ' dB ' + str(self.rangerate[track_no_idx]) + ' ' + str(self.rangeaccel[track_no_idx]) + ' ' + str(self.grouping_changed[track_no_idx]) + ' ' + str(self.width[track_no_idx])
+	    # unit = self.marker_array.markers[track_no_idx]
+	    # print track_no_idx in self.track_no_idxs
+
+	    unit.text = str(self.powernumbers[track_no_idx] - 10) + ' dB ' + str(self.rangerate[track_no_idx]) + ' ' + str(self.rangeaccel[track_no_idx]) + ' ' + str(self.grouping_changed[track_no_idx]) + ' ' + str(self.width[track_no_idx]) + ' ' + str(self.status[track_no_idx]) + ' ' + str(self.medrangemode[track_no_idx]) + ' ' + str(track_no_idx)
+
+
+	    # if track_no_idx in self.track_no_idxs:
+		# unit.text = str(self.powernumbers[track_no_idx] - 10) + ' dB ' + str(self.rangerate[track_no_idx]) + ' ' + str(self.rangeaccel[track_no_idx]) + ' ' + str(self.grouping_changed[track_no_idx]) + ' ' + str(self.width[track_no_idx]) + ' ' + str(self.status[track_no_idx]) + ' ' + str(track_no_idx)
+	    # else:
+		# unit.text = ''
+	    # print unit.text
 	    unit.pose.position.x = - dist * math.sin(angle_rad)
 	    unit.pose.position.y = - dist * math.cos(angle_rad) + 0.6
 	    self.marker_array.markers.append(unit)
@@ -309,17 +331,25 @@ class RadarVizNode:
 	return marker_text
 
 
-    # def createCubeMarkerDel(self):
-	# self.marker = Marker()
-	# self.marker.header.frame_id = "/map"
-	# self.marker.header.stamp = rospy.Time.now()
-	# self.marker.ns = 'radar_obj'
-	# self.marker.id = 0 # i
-	# self.marker.type = Marker.CUBE
-	# self.marker.action = Marker.ADD#DELETE
+    def createCubeMarkerDel(self):
+	self.marker = Marker()
+	self.marker.header.frame_id = "/map"
+	self.marker.header.stamp = rospy.Time.now()
+	self.marker.ns = 'radar_obj'
+	self.marker.id = 0 # i
+	self.marker.type = Marker.CUBE_LIST
+	self.marker.action = Marker.DELETE
 	# self.marker.scale.x = 0.10
 	# self.marker.scale.y = 0.10
 	# self.marker.scale.z = 0.10
+
+    def createTextMarkerDel(self):
+	self.marker_text = Marker()
+	self.marker_text.header.frame_id = "/map"
+	self.marker_text.header.stamp = rospy.Time.now()
+	self.marker_text.ns = 'radar_text'
+	self.marker_text.id = 0 # i
+	self.marker_text.action = Marker.DELETE
 
     def createTextMarker(self):
 	self.marker_text = Marker()
@@ -369,6 +399,8 @@ class RadarVizNode:
 
 	self.filterTracking()
 
+	# self.createCubeMarkerDel()
+	# self.pub_marker.publish(self.marker)
 	self.createCubeMarker()
 	self.createPointsInMarker(msg)
 	self.pub_marker.publish(self.marker)
@@ -386,6 +418,7 @@ if __name__ == '__main__':
     try:
 	if not ServerSolution.resolveRosmaster(): raise rospy.ROSInterruptException
 	rosnode = RadarVizNode('radar_viz', maintain_last_plot = True)
+	# rosnode = RadarVizNode('radar_viz', maintain_last_plot = False)
 	# rosnode.startVisuzalizationNode('radar_viz')
     except rospy.ROSInterruptException:
 	pass
