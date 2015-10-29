@@ -158,6 +158,7 @@ class RadarVizNode:
 	# self.pub_marker_text.publish(self.marker_text)
 
 	self.data_counter = 0
+	self.filtered_first_track = False
 
 	rate = rospy.Rate(1)
 	while not rospy.is_shutdown():
@@ -173,8 +174,8 @@ class RadarVizNode:
 		# self.createCubeMarkerDel()
 		self.createCubeMarker()
 		self.pub_marker.publish(self.marker)
-		self.createMarkerArray()
-		self.pub_marker_array.publish(self.marker_array)
+		# self.createMarkerArray()
+		# self.pub_marker_array.publish(self.marker_array)
 
 	    self.data_counter = 0
 
@@ -218,8 +219,9 @@ class RadarVizNode:
 	    # self.marker.colors.append( color)
 
     def createPointsInMarker(self, data):
-	track_no_idx = 0
-	for i in range(0,768,12):
+	# track_no_idx = 0
+	# for i in range(0,768,12):
+	for track_no_idx in self.track_no_idxs:
 	# if not self.rangerate[track_no_idx] == 81.91:
 	    point = Point()
 	    dist  = self.dist [track_no_idx] #data.data[i+9] * .1
@@ -240,25 +242,37 @@ class RadarVizNode:
 	    color.a = 1.0
 	    self.marker.points.append( point)
 	    self.marker.colors.append( color)
-	    track_no_idx = track_no_idx + 1
+	    # track_no_idx = track_no_idx + 1
 
 
     def createMarkerArray(self):
 	self.marker_array = MarkerArray()
 
+    def createMarkerArrayDel(self):
+	self.marker_array = MarkerArray()
+	for id in self.track_no_idxs:
+	    marker_text = Marker()
+	    marker_text.header.frame_id = "/map"
+	    marker_text.header.stamp = rospy.Time.now()
+	    marker_text.ns = 'radar_array'
+	    marker_text.id = id # i
+	    marker_text.action = 2 #Marker.DELETEALL
+	    self.marker_array.markers.append(marker_text)
+
     def createTextsInMarkerArray(self, data):
-	track_no_idx = 0
-	for i in range(0,768,12):
+	# track_no_idx = 0
+	# for i in range(0,768,12):
+	for track_no_idx in self.track_no_idxs:
 	    # if not self.rangerate[track_no_idx] == 81.91:
-	    dist  = data.data[i+9] * .1
-	    angle = data.data[i+11]* .1
+	    dist  = self.dist [track_no_idx] #data.data[i+9] * .1
+	    angle = self.angle[track_no_idx] #data.data[i+11]* .1
 	    angle_rad = math.radians(angle)
-	    unit = self.spawnTextMarker(i)
+	    unit = self.spawnTextMarker(track_no_idx)
 	    unit.text = str(self.powernumbers[track_no_idx] - 10) + ' dB ' + str(self.rangerate[track_no_idx]) + ' ' + str(self.rangeaccel[track_no_idx]) + ' ' + str(self.grouping_changed[track_no_idx]) + ' ' + str(self.width[track_no_idx])
 	    unit.pose.position.x = - dist * math.sin(angle_rad)
 	    unit.pose.position.y = - dist * math.cos(angle_rad) + 0.6
 	    self.marker_array.markers.append(unit)
-	    track_no_idx = track_no_idx + 1
+	    # track_no_idx = track_no_idx + 1
 
 
 
@@ -288,17 +302,17 @@ class RadarVizNode:
 	return marker_text
 
 
-    def createCubeMarkerDel(self):
-	self.marker = Marker()
-	self.marker.header.frame_id = "/map"
-	self.marker.header.stamp = rospy.Time.now()
-	self.marker.ns = 'radar_obj'
-	self.marker.id = 0 # i
-	self.marker.type = Marker.CUBE
-	self.marker.action = Marker.ADD#DELETE
-	self.marker.scale.x = 0.10
-	self.marker.scale.y = 0.10
-	self.marker.scale.z = 0.10
+    # def createCubeMarkerDel(self):
+	# self.marker = Marker()
+	# self.marker.header.frame_id = "/map"
+	# self.marker.header.stamp = rospy.Time.now()
+	# self.marker.ns = 'radar_obj'
+	# self.marker.id = 0 # i
+	# self.marker.type = Marker.CUBE
+	# self.marker.action = Marker.ADD#DELETE
+	# self.marker.scale.x = 0.10
+	# self.marker.scale.y = 0.10
+	# self.marker.scale.z = 0.10
 
     def createTextMarker(self):
 	self.marker_text = Marker()
@@ -323,15 +337,39 @@ class RadarVizNode:
 	self.marker_text.color.b = 0.0
 	self.marker_text.color.a = 1.0
 
+    def checkFilterCondition(self, trackid):
+	if (self.rangerateraw[trackid] == 8191) or (self.status[trackid] == 0):
+	    return False
+	else:
+	    return True
+
+
+    def filterTracking(self):
+	self.track_no_idxs = []
+	for track_no_idx in range (0, 64):
+	    if self.checkFilterCondition(track_no_idx):
+		self.track_no_idxs.append(track_no_idx)
+
     def onIncomingData(self, msg):
 	self.movingflags, self.powernumbers, self.moveablefast, self.moveableslow = extractTrackingFromData(msg)
 	self.grouping_changed, self.oncoming, self.latrate, self.bridgeflag, self.width, self.rangerate, self.rangeaccel, self.dist, self.medrangemode, self.angle, self.status, self.rangerateraw = extractTargetFromData(msg)
+
+	if self.filtered_first_track:
+	    self.createMarkerArrayDel()
+	    self.pub_marker_array.publish(self.marker_array)
+	else:
+	    self.filtered_first_track = True
+
+	self.filterTracking()
+
 	self.createCubeMarker()
 	self.createPointsInMarker(msg)
 	self.pub_marker.publish(self.marker)
+
 	self.createMarkerArray()
 	self.createTextsInMarkerArray(msg)
 	self.pub_marker_array.publish(self.marker_array)
+
 	self.data_counter = self.data_counter + 1
 	# print self.data_counter
 
