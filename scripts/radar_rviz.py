@@ -79,8 +79,11 @@ def extractTargetFromData(data):
 
 class RadarVizNode:
     # def startVisuzalizationNode(self,node_name):
-    def __init__(self,node_name):
+    def __init__(self,node_name, maintain_last_plot):
 	rospy.init_node(node_name, anonymous=False)
+
+	self.maintain_last_plot = maintain_last_plot
+
 	self.marker = Marker()
 
 	# for i in range (10):
@@ -172,8 +175,9 @@ class RadarVizNode:
 	    else:
 		self.marker_text.text = 'NODATA'
 		# self.createCubeMarkerDel()
-		self.createCubeMarker()
-		self.pub_marker.publish(self.marker)
+		# self.createCubeMarker()
+		# if not self.maintain_last_plot:
+		    # self.pub_marker.publish(self.marker)
 		# self.createMarkerArray()
 		# self.pub_marker_array.publish(self.marker_array)
 
@@ -204,6 +208,8 @@ class RadarVizNode:
 	self.marker.color.g = 1.0
 	self.marker.color.b = 0.0
 	self.marker.color.a = 1.0
+	if not self.maintain_last_plot:
+	    self.marker.lifetime = rospy.Duration(1.0)
 	# for x in range (-100,100):
 	    # point = Point()
 	    # # point.x = 0
@@ -298,7 +304,8 @@ class RadarVizNode:
 	marker_text.color.g = 0.0
 	marker_text.color.b = 1.0
 	marker_text.color.a = 1.0
-	marker_text.lifetime = rospy.Duration(1.0)
+	if not self.maintain_last_plot:
+	    marker_text.lifetime = rospy.Duration(1.0)
 	return marker_text
 
 
@@ -378,7 +385,7 @@ if __name__ == '__main__':
 
     try:
 	if not ServerSolution.resolveRosmaster(): raise rospy.ROSInterruptException
-	rosnode = RadarVizNode('radar_viz')
+	rosnode = RadarVizNode('radar_viz', maintain_last_plot = True)
 	# rosnode.startVisuzalizationNode('radar_viz')
     except rospy.ROSInterruptException:
 	pass
