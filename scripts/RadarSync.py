@@ -129,13 +129,15 @@ class RadarEsrSyncThread(threading.Thread):
 	    #     pass
 	    rate.sleep()
 	    if not self.getIfLockedVehicleData():
-		# self.updateEgomotion()
-		# self.updateState()
-		# self.updateSyncRollingCount()
+		self.updateEgomotion()
+		self.updateState()
+		self.updateSyncRollingCount()
 		if counter == 1:
 		    # pass
 		    self.bus.send(self.msg_vehicle1)
 		    self.bus.send(self.msg_vehicle2)
+		    # print self.msg_vehicle2
+		    # print self.vehicle2
 
 		    # self.pub_can_send.publish(self.vehicle1)
 		    # self.pub_can_send.publish(self.vehicle2)
