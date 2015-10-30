@@ -19,8 +19,10 @@ def callEmptyService(svc_name):
 
 
 class RadarStatusGui(QtGui.QWidget):
-    def __init__(self, name_id, pos_offset):
+    def __init__(self, name_id, pos_offset, radar_data):
 	super(RadarStatusGui, self).__init__()
+
+	self.radar_data = radar_data
 
 	# self.status_bar = status_bar
 	# self.initUI()
@@ -30,7 +32,11 @@ class RadarStatusGui(QtGui.QWidget):
 	self.timer_till_NA = QtCore.QTimer()
 	self.recv_counter = 0
 	QtCore.QObject.connect(self.timer_till_NA,QtCore.SIGNAL("timeout()"), self.checkNAandResetCounter)
-	self.timer_till_NA.start(2500)
+	self.timer_till_NA.start(1000)
+
+	self.timer_poll = QtCore.QTimer()
+	QtCore.QObject.connect(self.timer_poll,QtCore.SIGNAL("timeout()"), self.pollData)
+	self.timer_poll.start(50)
 
 	grid = QtGui.QGridLayout()
 	grid.setSpacing(3)
@@ -239,15 +245,22 @@ class RadarStatusGui(QtGui.QWidget):
 	    self.label_NA.setText('INCOMING DATA OK')
 	
     def checkNAandResetCounter(self):
-	if self.recv_counter == 0:
+	# if self.recv_counter == 0:
+	if self.radar_data.getCounter() == 0:
 	    self.resetDisplayNA(True)
 	else:
 	    self.resetDisplayNA(False)
 	self.recv_counter = 0
+	self.radar_data.resetCounter()
 
     def defineConstant(self):
 	self.strGroupingModes = ['no','mov. only','st. only','both']
 	self.strSysPowerModes = ['init','rad_off','rad_on','dsp_shut','dsp_off','host_shut','(invalid)']
+
+    def pollData(self):
+	_msg = self.radar_data.getData()
+	if _msg is not None:
+	    self.onIncomingData(_msg)
 
     def onIncomingData(self, msg):
 
@@ -441,6 +454,27 @@ class RadarControlGui(QtGui.QWidget):
 		self.clear_fault_button.setText('Clear Faults On')
 		self.status_bar.showMessage('sent clearing fault off')
 
+class radarData:
+    def __init__(self):
+	self.recv_counter = 0
+    def onIncomingData(self, msg):
+
+	self.recv_counter = self.recv_counter + 1
+	self.data = msg
+
+    def getData(self):
+	if self.recv_counter:
+	    return self.data
+	else:
+	    return None
+
+    def resetCounter(self):
+	self.recv_counter = 0
+
+    def getCounter(self):
+	return self.recv_counter
+
+
 def getNameResolution(name_resolution, name_id, interface):
     name_res_dict = {
 	    'name_id': name_id,
@@ -463,8 +497,11 @@ def createRadarGui(radar_gui_list, name_id, interface, radar_type, name_resoluti
 	return
     if radar_type == 'esr':
 	radar_gui_list[name_id] = {}
-	new_radar_gui = RadarStatusGui(name_id, createRadarGui.pos_offset)
-	sub_data = rospy.Subscriber ('radar_packet/'+solved_name_res+'/processed', GenericObjCanData, new_radar_gui.onIncomingData)
+	# new_radar_gui = RadarStatusGui(name_id, createRadarGui.pos_offset)
+	radar_data = radarData()
+	new_radar_gui = RadarStatusGui(name_id, createRadarGui.pos_offset, radar_data)
+	# sub_data = rospy.Subscriber ('radar_packet/'+solved_name_res+'/processed', GenericObjCanData, new_radar_gui.onIncomingData)
+	sub_data = rospy.Subscriber ('radar_packet/'+solved_name_res+'/processed', GenericObjCanData, radar_data.onIncomingData)
 	radar_gui_list[name_id]['gui'] = new_radar_gui
 	createRadarGui.pos_offset = createRadarGui.pos_offset + 1
 
