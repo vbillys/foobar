@@ -79,10 +79,11 @@ def extractTargetFromData(data):
 
 class RadarVizNode:
     # def startVisuzalizationNode(self,node_name):
-    def __init__(self,node_name, maintain_last_plot):
+    def __init__(self,node_name, maintain_last_plot,text_plot ):
 	rospy.init_node(node_name, anonymous=False)
 
 	self.maintain_last_plot = maintain_last_plot
+	self.text_plot = text_plot 
 	# self.createMarkerArray()
 
 	self.marker = Marker()
@@ -407,7 +408,8 @@ class RadarVizNode:
 
 	self.createMarkerArray()
 	self.createTextsInMarkerArray(msg)
-	self.pub_marker_array.publish(self.marker_array)
+	if self.text_plot: 
+	    self.pub_marker_array.publish(self.marker_array)
 
 	self.data_counter = self.data_counter + 1
 	# print self.data_counter
@@ -417,7 +419,8 @@ if __name__ == '__main__':
 
     try:
 	if not ServerSolution.resolveRosmaster(): raise rospy.ROSInterruptException
-	rosnode = RadarVizNode('radar_viz', maintain_last_plot = True)
+	rosnode = RadarVizNode('radar_viz', maintain_last_plot = True, text_plot = False)
+	# rosnode = RadarVizNode('radar_viz', maintain_last_plot = True, text_plot = True)
 	# rosnode = RadarVizNode('radar_viz', maintain_last_plot = False)
 	# rosnode.startVisuzalizationNode('radar_viz')
     except rospy.ROSInterruptException:
