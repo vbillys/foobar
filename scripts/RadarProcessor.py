@@ -140,7 +140,7 @@ class RadarEsr:
 		# print self.parse_can.test()
 
 		self.radar_sync_queue = Queue.Queue()
-		self.radar_sync_thread = RadarSync.RadarEsrSyncThread(pub_can_send, self.radar_sync_queue, esr_vehicle_conf, self.db)
+		self.radar_sync_thread = RadarSync.RadarEsrSyncThread(pub_can_send, self.radar_sync_queue, esr_vehicle_conf, self.db, interface)
 		self.radar_sync_thread.start()
 
 

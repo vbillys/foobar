@@ -1,6 +1,8 @@
 import threading, Queue
 import rospy
 import numpy as np
+import time
+import can
 
 from foobar.msg import Canbus as CanBusMsg
 
@@ -38,7 +40,10 @@ def getDefaultVehicleData(db, cid, data_list):
 canbus_msg = CanBusMsg()
 
 class RadarEsrSyncThread(threading.Thread):
-    def __init__(self, pub_can_send, sync_queue, esr_vehicle_conf, db):
+    def __init__(self, pub_can_send, sync_queue, esr_vehicle_conf, db, can_interface):
+
+	self.bus = can.interface.Bus(can_interface, bustype='socketcan_ctypes')
+
 	self.pub_can_send = pub_can_send
 	self.thread_stop = False
 	self.sync_queue  = sync_queue
@@ -76,26 +81,32 @@ class RadarEsrSyncThread(threading.Thread):
 	self.vehicle1.id = 0x4f0
 	self.vehicle1.dlc = 8
 	self.vehicle1.data, self.vehicle1_unpacked = getDefaultVehicleData(self.db, self.vehicle1.id, self.esr_vehicle_conf['Vehicle1'])
+	self.msg_vehicle1 = can.Message(arbitration_id=self.vehicle1.id, data=[i for i in self.vehicle1.data], extended_id=False, dlc=self.vehicle1.dlc)
 	self.vehicle2 = CanBusMsg()
 	self.vehicle2.id = 0x4f1
 	self.vehicle2.dlc = 8
 	self.vehicle2.data, self.vehicle2_unpacked = getDefaultVehicleData(self.db, self.vehicle2.id, self.esr_vehicle_conf['Vehicle2'])
+	self.msg_vehicle2 = can.Message(arbitration_id=self.vehicle2.id, data=[i for i in self.vehicle2.data], extended_id=False, dlc=self.vehicle2.dlc)
 	self.vehicle3 = CanBusMsg()
 	self.vehicle3.id = 0x5f2
 	self.vehicle3.dlc = 8
 	self.vehicle3.data, self.vehicle3_unpacked = getDefaultVehicleData(self.db, self.vehicle3.id, self.esr_vehicle_conf['Vehicle3'])
+	self.msg_vehicle3 = can.Message(arbitration_id=self.vehicle3.id, data=[i for i in self.vehicle3.data], extended_id=False, dlc=self.vehicle3.dlc)
 	self.vehicle4 = CanBusMsg()
 	self.vehicle4.id = 0x5f3
 	self.vehicle4.dlc = 8
 	self.vehicle4.data, self.vehicle4_unpacked = getDefaultVehicleData(self.db, self.vehicle4.id, self.esr_vehicle_conf['Vehicle4'])
+	self.msg_vehicle4 = can.Message(arbitration_id=self.vehicle4.id, data=[i for i in self.vehicle4.data], extended_id=False, dlc=self.vehicle4.dlc)
 	self.vehicle5 = CanBusMsg()
 	self.vehicle5.id = 0x5f4
 	self.vehicle5.dlc = 8
 	self.vehicle5.data, self.vehicle5_unpacked = getDefaultVehicleData(self.db, self.vehicle5.id, self.esr_vehicle_conf['Vehicle5'])
+	self.msg_vehicle5 = can.Message(arbitration_id=self.vehicle5.id, data=[i for i in self.vehicle5.data], extended_id=False, dlc=self.vehicle5.dlc)
 	self.vehicle6 = CanBusMsg()
 	self.vehicle6.id = 0x5f5
 	self.vehicle6.dlc = 8
 	self.vehicle6.data, self.vehicle6_unpacked = getDefaultVehicleData(self.db, self.vehicle6.id, self.esr_vehicle_conf['Vehicle6'])
+	self.msg_vehicle6 = can.Message(arbitration_id=self.vehicle6.id, data=[i for i in self.vehicle6.data], extended_id=False, dlc=self.vehicle6.dlc)
 	# self.updateEgomotion()
 	# self.updateState()
 	# self.updateSyncRollingCount()
@@ -103,10 +114,11 @@ class RadarEsrSyncThread(threading.Thread):
 
     def run(self):
 
-	rate = rospy.Rate(50)
+	rate = rospy.Rate(100)
 	canbus_msg.dlc = 8
 	canbus_msg.data = 8 * [0]
 	counter = 0
+	counter2= 0
 
 	while not self.thread_stop:
 	    # try:
@@ -117,28 +129,42 @@ class RadarEsrSyncThread(threading.Thread):
 	    #     pass
 	    rate.sleep()
 	    if not self.getIfLockedVehicleData():
-		self.updateEgomotion()
-		self.updateState()
-		self.updateSyncRollingCount()
-		if counter == 2:
-		    self.pub_can_send.publish(self.vehicle1)
-		    self.pub_can_send.publish(self.vehicle2)
+		# self.updateEgomotion()
+		# self.updateState()
+		# self.updateSyncRollingCount()
+		if counter == 1:
+		    # pass
+		    self.bus.send(self.msg_vehicle1)
+		    self.bus.send(self.msg_vehicle2)
+
+		    # self.pub_can_send.publish(self.vehicle1)
+		    # self.pub_can_send.publish(self.vehicle2)
 		    # for cid in range(0x4f0, 0x4f2):
 			# canbus_msg.id = cid
 			# self.pub_can_send.publish(canbus_msg)
-		elif counter == 5:
-		    self.pub_can_send.publish(self.vehicle3)
-		    self.pub_can_send.publish(self.vehicle4)
-		    self.pub_can_send.publish(self.vehicle5)
-		    self.pub_can_send.publish(self.vehicle6)
+		if counter2 == 4:
+		    # pass
+		    self.bus.send(self.msg_vehicle3)
+		    self.bus.send(self.msg_vehicle4)
+		    self.bus.send(self.msg_vehicle5)
+		    self.bus.send(self.msg_vehicle6)
+
+		    # self.pub_can_send.publish(self.vehicle3)
+		    # self.pub_can_send.publish(self.vehicle4)
+		    # self.pub_can_send.publish(self.vehicle5)
+		    # self.pub_can_send.publish(self.vehicle6)
 		    # for cid in range(0x5f2, 0x5f6):
 			# canbus_msg.id = cid
 			# self.pub_can_send.publish(canbus_msg)
 
 	    counter = counter + 1
+	    counter2 = counter2 + 1
 	    self.sync_counter = self.sync_counter + 1
-	    if counter >= 6:
+	    if counter >= 2:
 		counter = 0
+	    if counter2 >= 5:
+		counter2 = 0
+	    # print counter, counter2
 
     def updateEgomotion(self):
 	if self.egomotion is None:
@@ -155,6 +181,8 @@ class RadarEsrSyncThread(threading.Thread):
 	self.vehicle2.data = np.packbits(self.vehicle2_unpacked).tolist()
 	setBigEndiNumberToNpArr(self.vehicle2_unpacked, getArrayIdxFromStartBit(56), 1,int(self.rawdata_on))
 	self.vehicle2.data = np.packbits(self.vehicle2_unpacked).tolist()
+
+	self.msg_vehicle2 = can.Message(arbitration_id=self.vehicle2.id, data=[i for i in self.vehicle2.data], extended_id=False, dlc=self.vehicle2.dlc)
 	
 
     def updateSyncRollingCount(self):
@@ -164,6 +192,7 @@ class RadarEsrSyncThread(threading.Thread):
 	# print self.rolling_count
 	# print self.vehicle2.data
 	# print self.vehicle2_unpacked
+	self.msg_vehicle2 = can.Message(arbitration_id=self.vehicle2.id, data=[i for i in self.vehicle2.data], extended_id=False, dlc=self.vehicle2.dlc)
 
     def setSyncRollingCount(self,count):
 	self.rolling_count = count
