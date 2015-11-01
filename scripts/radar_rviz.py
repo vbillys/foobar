@@ -154,7 +154,7 @@ class RadarVizNode:
 
 	self.pub_marker  = rospy.Publisher ('radar_packet/viz/marker' , Marker   , queue_size=100)
 	self.pub_marker_text  = rospy.Publisher ('radar_packet/viz/marker_text' , Marker   , queue_size=100)
-	self.pub_marker_array = rospy.Publisher ('radar_packet/viz/marker_array' , MarkerArray   , queue_size=1000)
+	self.pub_marker_array = rospy.Publisher ('radar_packet/viz/array' , MarkerArray   , queue_size=100)
 	solved_name_res = 'can0'
 	self.sub_data = rospy.Subscriber ('radar_packet/'+solved_name_res+'/processed', GenericObjCanData, self.onIncomingData)
 
@@ -280,8 +280,8 @@ class RadarVizNode:
 	# track_no_idx = 0
 	# print self.track_no_idxs
 	# for i in range(0,768,12):
-	# for track_no_idx in range(0,64):
-	for track_no_idx in self.track_no_idxs:
+	for track_no_idx in range(0,64):
+	# for track_no_idx in self.track_no_idxs:
 	    # if not self.rangerate[track_no_idx] == 81.91:
 	    dist  = self.dist [track_no_idx] #data.data[i+9] * .1
 	    angle = self.angle[track_no_idx] #data.data[i+11]* .1
@@ -290,13 +290,14 @@ class RadarVizNode:
 	    # unit = self.marker_array.markers[track_no_idx]
 	    # print track_no_idx in self.track_no_idxs
 
-	    unit.text = str(self.powernumbers[track_no_idx] - 10) + ' dB ' + str(self.rangerate[track_no_idx]) + ' ' + str(self.rangeaccel[track_no_idx]) + ' ' + str(self.grouping_changed[track_no_idx]) + ' ' + str(self.width[track_no_idx]) + ' ' + str(self.status[track_no_idx]) + ' ' + str(self.medrangemode[track_no_idx]) + ' ' + str(track_no_idx)
+	    # unit.text = str(self.powernumbers[track_no_idx] - 10) + ' dB ' + str(self.rangerate[track_no_idx]) + ' ' + str(self.rangeaccel[track_no_idx]) + ' ' + str(self.grouping_changed[track_no_idx]) + ' ' + str(self.width[track_no_idx]) + ' ' + str(self.status[track_no_idx]) + ' ' + str(self.medrangemode[track_no_idx]) + ' ' + str(track_no_idx)
 
 
-	    # if track_no_idx in self.track_no_idxs:
+	    if track_no_idx in self.track_no_idxs:
+		unit.text = str(self.powernumbers[track_no_idx] - 10) + ' dB ' + str(self.rangerate[track_no_idx]) + ' ' + str(self.rangeaccel[track_no_idx]) + ' ' + str(self.grouping_changed[track_no_idx]) + ' ' + str(self.width[track_no_idx]) + ' ' + str(self.status[track_no_idx]) + ' ' + str(self.medrangemode[track_no_idx]) + ' ' + str(track_no_idx)
 		# unit.text = str(self.powernumbers[track_no_idx] - 10) + ' dB ' + str(self.rangerate[track_no_idx]) + ' ' + str(self.rangeaccel[track_no_idx]) + ' ' + str(self.grouping_changed[track_no_idx]) + ' ' + str(self.width[track_no_idx]) + ' ' + str(self.status[track_no_idx]) + ' ' + str(track_no_idx)
-	    # else:
-		# unit.text = ''
+	    else:
+		unit.text = ''
 	    # print unit.text
 	    unit.pose.position.x = - dist * math.sin(angle_rad)
 	    unit.pose.position.y = - dist * math.cos(angle_rad) + 0.6
@@ -419,9 +420,9 @@ if __name__ == '__main__':
 
     try:
 	if not ServerSolution.resolveRosmaster(): raise rospy.ROSInterruptException
-	rosnode = RadarVizNode('radar_viz', maintain_last_plot = True, text_plot = False)
-	# rosnode = RadarVizNode('radar_viz', maintain_last_plot = True, text_plot = True)
-	# rosnode = RadarVizNode('radar_viz', maintain_last_plot = False)
+	# rosnode = RadarVizNode('radar_viz', maintain_last_plot = True, text_plot = False)
+	rosnode = RadarVizNode('radar_viz', maintain_last_plot = True, text_plot = True)
+	# rosnode = RadarVizNode('radar_viz', maintain_last_plot = False, text_plot = True)
 	# rosnode.startVisuzalizationNode('radar_viz')
     except rospy.ROSInterruptException:
 	pass
