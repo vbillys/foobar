@@ -118,6 +118,46 @@ class RadarStatusGui(QtGui.QWidget):
 	grid.addWidget(self.label_syspower_mode, 11 , 0)
 	grid.addWidget(self.label_syspower_mode_value, 11 , 1)
 
+	self.label_mrlr_mode= QtGui.QLabel('MR_LR Mode:')
+	self.label_mrlr_mode_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_mrlr_mode, 12 , 0)
+	grid.addWidget(self.label_mrlr_mode_value, 12 , 1)
+
+	self.label_sidelobe_blockage= QtGui.QLabel('Sidelobe Blockage:')
+	self.label_sidelobe_blockage_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_sidelobe_blockage, 13 , 0)
+	grid.addWidget(self.label_sidelobe_blockage_value, 13 , 1)
+
+	self.label_partial_blockage= QtGui.QLabel('Partial Blockage:')
+	self.label_partial_blockage_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_partial_blockage, 14 , 0)
+	grid.addWidget(self.label_partial_blockage_value, 14 , 1)
+
+	self.label_found_target= QtGui.QLabel('Found Target:')
+	self.label_found_target_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_found_target, 15 , 0)
+	grid.addWidget(self.label_found_target_value, 15 , 1)
+
+	# self.label_= QtGui.QLabel('MR_LR Mode:')
+	# self.label__value= QtGui.QLabel('NA')
+	# grid.addWidget(self.label_, 12 , 0)
+	# grid.addWidget(self.label__value, 12 , 1)
+
+	self.label_vert_alignupdt= QtGui.QLabel('Vert Align Updated:')
+	self.label_vert_alignupdt_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_vert_alignupdt, 16 , 0)
+	grid.addWidget(self.label_vert_alignupdt_value, 16 , 1)
+
+	self.label_vert_misalign= QtGui.QLabel('Vert Misalign:')
+	self.label_vert_misalign_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_vert_misalign, 17 , 0)
+	grid.addWidget(self.label_vert_misalign_value, 17 , 1)
+
+	self.label_serv_updatesdone= QtGui.QLabel('Serv UpdatesDone:')
+	self.label_serv_updatesdone_value= QtGui.QLabel('NA')
+	grid.addWidget(self.label_serv_updatesdone, 18 , 0)
+	grid.addWidget(self.label_serv_updatesdone_value, 18 , 1)
+
 	grid.addWidget(vertiLine2, 2, 3, 10 ,1)
 
 	self.label_comm_err = QtGui.QLabel('Comm Error:')
@@ -150,43 +190,45 @@ class RadarStatusGui(QtGui.QWidget):
 	grid.addWidget(self.label_history_fault_err, 7 , 4)
 	grid.addWidget(self.label_history_fault_err_value, 7 , 5)
 
-	grid.addWidget(horizLine2, 8, 4, 1 ,2)
+	base_row_for_center_horiz = 8
+
+	grid.addWidget(horizLine2, base_row_for_center_horiz, 4, 1 ,2)
 
 	self.label_valid = QtGui.QLabel('VALID')
 	self.label_lr = QtGui.QLabel('Long')
 	self.label_sr = QtGui.QLabel('Short')
-	grid.addWidget(self.label_valid, 9 ,4)
-	grid.addWidget(self.label_lr, 9 ,5)
-	grid.addWidget(self.label_sr, 9 ,6)
+	grid.addWidget(self.label_valid, base_row_for_center_horiz+1,4)
+	grid.addWidget(self.label_lr, base_row_for_center_horiz+1 ,5)
+	grid.addWidget(self.label_sr, base_row_for_center_horiz+1 ,6)
 
 	self.label_valid_rangerate= QtGui.QLabel('RangeRate:')
-	grid.addWidget(self.label_valid_rangerate, 10 , 4)
+	grid.addWidget(self.label_valid_rangerate, base_row_for_center_horiz+2, 4)
 	self.label_valid_range= QtGui.QLabel('Range:')
-	grid.addWidget(self.label_valid_range, 11 , 4)
+	grid.addWidget(self.label_valid_range,  base_row_for_center_horiz+3 , 4)
 	self.label_valid_power= QtGui.QLabel('Power:')
-	grid.addWidget(self.label_valid_power, 12 , 4)
+	grid.addWidget(self.label_valid_power,  base_row_for_center_horiz+4, 4)
 	self.label_valid_angle= QtGui.QLabel('Angle:')
-	grid.addWidget(self.label_valid_angle, 13 , 4)
+	grid.addWidget(self.label_valid_angle,  base_row_for_center_horiz+5, 4)
 
 	self.label_valid_lr_rangerate_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_valid_lr_rangerate_value, 10 , 5)
+	grid.addWidget(self.label_valid_lr_rangerate_value,  base_row_for_center_horiz+2, 5)
 	self.label_valid_sr_rangerate_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_valid_sr_rangerate_value, 10 , 6)
+	grid.addWidget(self.label_valid_sr_rangerate_value,  base_row_for_center_horiz+2, 6)
 
 	self.label_valid_lr_range_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_valid_lr_range_value, 11 , 5)
+	grid.addWidget(self.label_valid_lr_range_value,  base_row_for_center_horiz+3, 5)
 	self.label_valid_sr_range_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_valid_sr_range_value, 11 , 6)
+	grid.addWidget(self.label_valid_sr_range_value,  base_row_for_center_horiz+3, 6)
 
 	self.label_valid_lr_power_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_valid_lr_power_value, 12 , 5)
+	grid.addWidget(self.label_valid_lr_power_value,  base_row_for_center_horiz+4, 5)
 	self.label_valid_sr_power_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_valid_sr_power_value, 12 , 6)
+	grid.addWidget(self.label_valid_sr_power_value,  base_row_for_center_horiz+4, 6)
 
 	self.label_valid_lr_angle_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_valid_lr_angle_value, 13 , 5)
+	grid.addWidget(self.label_valid_lr_angle_value,  base_row_for_center_horiz+5, 5)
 	self.label_valid_sr_angle_value= QtGui.QLabel('NA')
-	grid.addWidget(self.label_valid_sr_angle_value, 13 , 6)
+	grid.addWidget(self.label_valid_sr_angle_value,  base_row_for_center_horiz+5, 6)
 
 
 	grid.addWidget(vertiLine3, 2, 7, 10 ,1)
@@ -229,7 +271,7 @@ class RadarStatusGui(QtGui.QWidget):
 
 	self.setLayout(grid) 
 
-	self.setGeometry(800+pos_offset*40, 200, 750, 400)
+	self.setGeometry(800+pos_offset*40, 200, 750, 450)
 	self.setWindowTitle('Radar Status ' + name_id)    
 	self.show()
 
@@ -256,6 +298,7 @@ class RadarStatusGui(QtGui.QWidget):
     def defineConstant(self):
 	self.strGroupingModes = ['no','mov. only','st. only','both']
 	self.strSysPowerModes = ['init','rad_off','rad_on','dsp_shut','dsp_off','host_shut','(invalid)']
+	self.strMrlrModes = ['resv', 'MR-only', 'LR-only', 'MR-and-LR']
 
     def pollData(self):
 	_msg = self.radar_data.getData()
@@ -287,6 +330,20 @@ class RadarStatusGui(QtGui.QWidget):
 	self.label_recc_unconv_value.setText(str(recc_unconv_value))
 	syspower_mode_value = msg.data[834]
 	self.label_syspower_mode_value.setText(self.strSysPowerModes[syspower_mode_value])
+	sidelobe_blockage_value = msg.data[805]
+	self.label_sidelobe_blockage_value.setText(str(sidelobe_blockage_value))
+	partial_blockage_value = msg.data[806]
+	self.label_partial_blockage_value.setText(str(partial_blockage_value))
+	mrlr_mode_value = msg.data[808]
+	self.label_mrlr_mode_value.setText(self.strMrlrModes[mrlr_mode_value])
+	found_target_value = msg.data[828]
+	self.label_found_target_value.setText(str(found_target_value))
+	vert_alignupdt_value = msg.data[825]
+	self.label_vert_alignupdt_value.setText(str(vert_alignupdt_value))
+	vert_misalign_value = msg.data[826] * 0.0625
+	self.label_vert_misalign_value.setText(str(vert_misalign_value))
+	serv_updatesdone_value = msg.data[827]
+	self.label_serv_updatesdone_value.setText(str(serv_updatesdone_value))
 
 	comm_err_value = msg.data[779]
 	self.label_comm_err_value.setText(str(comm_err_value))
