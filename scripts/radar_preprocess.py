@@ -34,10 +34,17 @@ def createRadarHandler(radar_list, name_id, interface, radar_type, name_resoluti
             'esr': (rospy.Publisher ('radar_packet/'+solved_name_res+'/send'     , CanBusMsg, queue_size=10),
                     rospy.Publisher ('radar_packet/'+solved_name_res+'/processed', GenericObjCanData, queue_size=10)
                    )
+            ,
+            'sms': (rospy.Publisher ('radar_packet/'+solved_name_res+'/send'     , CanBusMsg, queue_size=10),
+                    rospy.Publisher ('radar_packet/'+solved_name_res+'/processed', GenericObjCanData, queue_size=10)
+                    )
             }
     puber = pub_dict.get(radar_type,None)
     handler_dict = {
             'esr': RadarEsr(puber[0], puber[1], name_id, interface, esr_vehicle_conf)
+            ,
+            'sms': RadarSms(puber[0], puber[1], name_id, interface, esr_vehicle_conf)
+
             }
     # radar_handler = RadarEsr(puber[0], puber[1], name_id, interface)
     radar_handler = handler_dict.get(radar_type)
@@ -114,6 +121,7 @@ def startRosNode(node_name):
 	radar_list = {}
 	for device in devices_conf:
 	    _radar_type = 'esr' if re.search('esr',device['name_id']) else None
+            _radar_type = 'sms' if re.search('sms',device['name_id']) else None
 	    if _radar_type:
 		# radar_list[device['name_id']] = {}
 		# _pub_can_send  = rospy.Publisher ('radar_packet/'+device['interface']+'/send'     , CanBusMsg, queue_size=10)

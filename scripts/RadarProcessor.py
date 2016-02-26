@@ -9,7 +9,7 @@ from std_msgs.msg import Int32MultiArray
 import RadarSync, Queue
 import RadarMsgs
 import RadarMsgsCython
-import RadarProcess
+# import RadarProcess
 from collections import namedtuple
 import numpy as np
 from array import array
@@ -72,7 +72,7 @@ def getProcessedFrameById(db, frame_id):
 	# frame_signal_data.append(signal_data)
     # return frame_signal_data
 
-class RadarEsr:
+class RadarEsr(object):
     def __init__(self, pub_can_send, pub_result, name_id, interface, esr_vehicle_conf):
 
 
@@ -136,7 +136,9 @@ class RadarEsr:
 		# self.buffered_frames_canid = array('I', self.frames_length * [0])
 		self.buffered_frames_candt = array('B', (self.frames_length * 64) * [0])
 		# self.buffered_frames_candt = array('B', 3440 * [0])
+
 		self.parse_can = RadarMsgsCython.ParseCan(self.registered_processed_frames)
+
 		# print self.parse_can.test()
 
 		self.radar_sync_queue = Queue.Queue()
@@ -330,7 +332,7 @@ class RadarEsr:
 
 		# print msg.header.stamp
 
-		self.DEBUGprintRollingIndexesAndCheck(_numbers)
+		# self.DEBUGprintRollingIndexesAndCheck(_numbers)
 
 		self.radar_sync_thread.setSyncRollingCount(_numbers[782])
 
@@ -448,4 +450,47 @@ class RadarEsr:
 	# else:
 	    # print format(msg.id, '04x') + ' not registered'
 
+def createSmsFrameInfo():
+	frame_info = []
+	frame_info_0x400 = FrameSignalInfo(id = 0x400, signal_is_signed_types = array('B', [0]*9), signal_start_bits = array('B',[18,23,31,35,0,12,13,14,15]),
+		signal_is_integers = array('B', [1]*9), signal_sizes = array('B', [5,8,4,4,12,1,1,1,3]),signal_offsets = array('d',[.0]*9),
+		signal_factors = array('d', [1.]*9), howmanysignal = 9, sid = 0x400)
+	frame_info.append(frame_info_0x400)
+	return frame_info
+    # return FrameSignalInfo(
+		    # id = frame_id,
+		    # signal_is_signed_types  = array('B',[RadarMsgs.isSignalSignedType(signal) for signal in frame._signals]),
+		    # signal_start_bits  = array('B',[int(signal._startbit) for signal in frame._signals]),
+		    # signal_is_integers = array('B',[RadarMsgs.getFactorIsIntegerFromSignal(signal) and RadarMsgs.getOffsetIsIntegerFromSignal(signal) for signal in frame._signals]),
+		    # signal_sizes = array('B',[int(signal._signalsize) for signal in frame._signals]),
+		    # signal_offsets = array('d',[float(signal._offset) for signal in frame._signals]),
+		    # signal_factors = array('d',[float(signal._factor) for signal in frame._signals]),
+		    # howmanysignal = len(frame._signals),
+		    # sid = frame._Id
+		    # )
+
+class RadarSms(RadarEsr):
+	def __init__(self, *args, **kwargs):
+		super(RadarSms, self).__init__(*args, **kwargs)
+		self.registered_processed_frames_sms = createSmsFrameInfo()
+		self.parse_can_sms = RadarMsgsCython.ParseCan(self.registered_processed_frames_sms)
+
+	def processRadar(self,msg):
+		# print msg
+		# first of cyclic sequence
+		if msg.id == 0x400 :# or msg.id ==0x420 or msg.id == 0x440:
+		# if msg.id == 0x400 or (msg.id >= 0x401 and msg.id <= 0x41f):
+			msg_data = bytearray(msg.data)
+			barray = np.array((msg_data), dtype=np.uint8)
+			barray_unpacked  = np.unpackbits(barray)
+			print format(msg.id, '04x'), msg.dlc, [format((ord(i)),'02x') for i in msg.data]
+			# padding = array('B',[0]*(64 - len(barray_unpacked)))
+			self.buffered_frames_candt = array('B', barray_unpacked.tolist()+ [0]*(64 - len(barray_unpacked)))
+			# self.buffered_frames_candt=np.concatenate((self.buffered_frames_candt, padding), axis=0)
+			print barray_unpacked #, self.buffered_frames_candt, padding
+			# print len(self.buffered_frames_candt)
+			_numbers = self.parse_can_sms.crackScanSms(self.buffered_frames_candt, array('B',[64]))
+			print _numbers
+		# if (msg.id >= 0x401 and msg.id <= 0x41f) : #or (msg.id >= 0x421 and msg.id <= 0x43f) or (msg.id >= 0x441 and msg.id <= 0x45f):
+		# if msg.id == 0x400 or (msg.id >= 0x401 and msg.id <= 0x41f):
 

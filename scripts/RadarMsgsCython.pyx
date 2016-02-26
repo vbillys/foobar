@@ -125,6 +125,14 @@ cdef class ParseCan:
         return (0 if (n+1)%8 == 0 else 8-((n+1)%8))  + (n/8)*8
 
 
+    cdef inline unsigned long getLittleEndiNumberFromBitNpArr(self,unsigned char [:] blist, unsigned char idx, unsigned char size):
+        cdef unsigned long signal_number = 0
+        cdef unsigned char index 
+        #print size, [x for x in blist]
+        for i in range (size):
+            index = idx + i
+            signal_number = signal_number | (blist[index] << i )# (size - i  - 1))
+        return signal_number
 
     # big endian assumption 
     #@njit(numba.u8(numba.u1[:],numba.u1,numba.u1, numba.u4))
@@ -250,6 +258,35 @@ cdef class ParseCan:
         return esr_numbers
         #return None
 
+    cdef inline int ppParseSignalSimpleSms(self,unsigned char [:] barray_unpacked, unsigned char signal_is_signed_types ,unsigned char signal_start_bits ,unsigned char signal_sizes ):
+        #cdef unsigned char start_bit_idx = self.getArrayIdxFromStartBit(signal_start_bits)
+        #print start_bit_idx, signal_start_bits
+        #cdef int this_signal_number = 0
+        #cdef int this_signal_number = self.getBigEndiNumberFromBitNpArr(barray_unpacked, start_bit_idx, signal_sizes)
+        cdef int i
+        cdef unsigned char barray_unpacked_cc[64]
+        for i in range(64):
+            barray_unpacked_cc[((i/8)+1)*8 -1  - (i%8)] = barray_unpacked[i]
+
+        #print signal_is_signed_types, signal_start_bits, signal_sizes, barray_unpacked_cc
+        cdef int this_signal_number = self.getLittleEndiNumberFromBitNpArr(barray_unpacked_cc, signal_start_bits , signal_sizes)
+        #if signal_is_signed_types and self.getIsNegativeBigEndianNumberFormBitNpArr(barray_unpacked, start_bit_idx):
+            #this_signal_number = self.twosComplement(this_signal_number, signal_sizes)
+        return this_signal_number
+
+
+    def crackScanSms(self,unsigned char[:]bf_candt, uint8_t[:]bf_count):
+        cdef int[:] numbers = array.array('i',[self.ppParseSignalSimpleSms(bf_candt[0:64], self.frame_info[0].signal_is_signed_types[i] ,self.frame_info[0].signal_start_bits[i] ,self.frame_info[0].signal_sizes[i]) for i in range (self.frame_info[0].howmanysignal)])
+        cdef array.array sms_numbers = array.array('i', 9 * [0]) 
+        #cdef int i, ii
+        cdef int j
+        #print len(numbers), self.frame_info[0].howmanysignal
+
+        for j in range(9):
+            #print sms_numbers, numbers, j
+            sms_numbers.data.as_ints[j] = numbers[j]
+
+        return sms_numbers
     # @profile
     # @jit
     def parseSignal(self,unsigned char [:] barray_unpacked, unsigned char [:] signal_sizes, unsigned char [:] signal_start_bits, unsigned char [:] signal_is_signed_types):
