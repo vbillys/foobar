@@ -455,7 +455,15 @@ def createSmsFrameInfo():
 	frame_info_0x400 = FrameSignalInfo(id = 0x400, signal_is_signed_types = array('B', [0]*9), signal_start_bits = array('B',[18,23,31,35,0,12,13,14,15]),
 		signal_is_integers = array('B', [1]*9), signal_sizes = array('B', [5,8,4,4,12,1,1,1,3]),signal_offsets = array('d',[.0]*9),
 		signal_factors = array('d', [1.]*9), howmanysignal = 9, sid = 0x400)
+	frame_info_0x420 = FrameSignalInfo(id = 0x420, signal_is_signed_types = array('B', [0]*9), signal_start_bits = array('B',[18,23,31,35,0,12,13,14,15]),
+			signal_is_integers = array('B', [1]*9), signal_sizes = array('B', [5,8,4,4,12,1,1,1,3]),signal_offsets = array('d',[.0]*9),
+			signal_factors = array('d', [1.]*9), howmanysignal = 9, sid = 0x420)
+	frame_info_0x440 = FrameSignalInfo(id = 0x440, signal_is_signed_types = array('B', [0]*9), signal_start_bits = array('B',[18,23,31,35,0,12,13,14,15]),
+			signal_is_integers = array('B', [1]*9), signal_sizes = array('B', [5,8,4,4,12,1,1,1,3]),signal_offsets = array('d',[.0]*9),
+			signal_factors = array('d', [1.]*9), howmanysignal = 9, sid = 0x440)
 	frame_info.append(frame_info_0x400)
+	frame_info.append(frame_info_0x420)
+	frame_info.append(frame_info_0x440)
 	return frame_info
     # return FrameSignalInfo(
 		    # id = frame_id,
@@ -469,11 +477,26 @@ def createSmsFrameInfo():
 		    # sid = frame._Id
 		    # )
 
+def get64ByteArrayFromCanMsg(msg):
+	msg_data = bytearray(msg.data)
+	barray = np.array((msg_data), dtype=np.uint8)
+	barray_unpacked  = np.unpackbits(barray)
+	return array('B', barray_unpacked.tolist()+ [0]*(64 - len(barray_unpacked)))
+
+
 class RadarSms(RadarEsr):
 	def __init__(self, *args, **kwargs):
 		super(RadarSms, self).__init__(*args, **kwargs)
 		self.registered_processed_frames_sms = createSmsFrameInfo()
 		self.parse_can_sms = RadarMsgsCython.ParseCan(self.registered_processed_frames_sms)
+		self.no_of_tracked_obj_id0 = 0#array('B',[0])
+		self.no_of_tracked_obj_id1 = 0#array('B',[0])
+		self.no_of_tracked_obj_id2 = 0#array('B',[0])
+		# self.no_of_tracked_obj_id0 = array('B',[0])
+		# self.no_of_tracked_obj_id1 = array('B',[0])
+		# self.no_of_tracked_obj_id2 = array('B',[0])
+		self.nos_of_tracked_obj = array('i',[0]*3)
+		self.sensor_control_raw_targets = [array('B', [0]*64) for i in range(2)]
 
 	def processRadar(self,msg):
 		# print msg
@@ -483,14 +506,42 @@ class RadarSms(RadarEsr):
 			msg_data = bytearray(msg.data)
 			barray = np.array((msg_data), dtype=np.uint8)
 			barray_unpacked  = np.unpackbits(barray)
-			print format(msg.id, '04x'), msg.dlc, [format((ord(i)),'02x') for i in msg.data]
+
+			# print format(msg.id, '04x'), msg.dlc, [format((ord(i)),'02x') for i in msg.data]
+
 			# padding = array('B',[0]*(64 - len(barray_unpacked)))
-			self.buffered_frames_candt = array('B', barray_unpacked.tolist()+ [0]*(64 - len(barray_unpacked)))
+			# self.buffered_frames_candt = array('B', barray_unpacked.tolist()
+			self.buffered_frames_candt = array('B', barray_unpacked.tolist()+ [0]*(64 - len(barray_unpacked))) + self.sensor_control_raw_targets[0] + self.sensor_control_raw_targets[1]
 			# self.buffered_frames_candt=np.concatenate((self.buffered_frames_candt, padding), axis=0)
-			print barray_unpacked #, self.buffered_frames_candt, padding
+
+			# print barray_unpacked #, self.buffered_frames_candt, padding
+
 			# print len(self.buffered_frames_candt)
 			_numbers = self.parse_can_sms.crackScanSms(self.buffered_frames_candt, array('B',[64]))
-			print _numbers
+			# print _numbers
+			self.msg_pub.header.stamp = msg.header.stamp
+			self.msg_pub.header.frame_id = msg.header.frame_id
+
+			# self.msg_pub.data = _numbers
+			self.msg_pub.data = _numbers + self.nos_of_tracked_obj
+			# self.msg_pub.data = _numbers + array('i',[ord(self.no_of_tracked_obj_id0), ord(self.no_of_tracked_obj_id1), ord(self.no_of_tracked_obj_id2)])
+			# self.msg_pub.data = _numbers + self.no_of_tracked_obj_id0+ self.no_of_tracked_obj_id1+ self.no_of_tracked_obj_id2
+			self.pub_result.publish(self.msg_pub)
 		# if (msg.id >= 0x401 and msg.id <= 0x41f) : #or (msg.id >= 0x421 and msg.id <= 0x43f) or (msg.id >= 0x441 and msg.id <= 0x45f):
 		# if msg.id == 0x400 or (msg.id >= 0x401 and msg.id <= 0x41f):
+
+		elif msg.id == 0x501 :
+			# self.no_of_tracked_obj_id0 = msg.data[0]
+			self.nos_of_tracked_obj[0] = (ord(msg.data[0]))
+		elif msg.id == 0x581 :
+			# self.no_of_tracked_obj_id1 = msg.data[0]
+			self.nos_of_tracked_obj[1] = (ord(msg.data[0]))
+		elif msg.id == 0x601 :
+			# self.no_of_tracked_obj_id2 = msg.data[0]
+			self.nos_of_tracked_obj[2] = (ord(msg.data[0]))
+		elif msg.id == 0x420 :
+			self.sensor_control_raw_targets[0] = get64ByteArrayFromCanMsg(msg)
+		elif msg.id == 0x440 :
+			self.sensor_control_raw_targets[1] = get64ByteArrayFromCanMsg(msg)
+
 

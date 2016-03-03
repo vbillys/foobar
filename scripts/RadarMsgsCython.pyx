@@ -276,15 +276,20 @@ cdef class ParseCan:
 
 
     def crackScanSms(self,unsigned char[:]bf_candt, uint8_t[:]bf_count):
-        cdef int[:] numbers = array.array('i',[self.ppParseSignalSimpleSms(bf_candt[0:64], self.frame_info[0].signal_is_signed_types[i] ,self.frame_info[0].signal_start_bits[i] ,self.frame_info[0].signal_sizes[i]) for i in range (self.frame_info[0].howmanysignal)])
-        cdef array.array sms_numbers = array.array('i', 9 * [0]) 
+        #cdef int[:] numbers = array.array('i',[self.ppParseSignalSimpleSms(bf_candt[0:64], self.frame_info[0].signal_is_signed_types[i] ,self.frame_info[0].signal_start_bits[i] ,self.frame_info[0].signal_sizes[i]) for i in range (self.frame_info[0].howmanysignal)])
+        cdef int[:] numbers
+        cdef array.array sms_numbers = array.array('i', 27 * [0]) 
         #cdef int i, ii
-        cdef int j
+        cdef int j, l, k
         #print len(numbers), self.frame_info[0].howmanysignal
 
-        for j in range(9):
-            #print sms_numbers, numbers, j
-            sms_numbers.data.as_ints[j] = numbers[j]
+        for l in range(3):
+                numbers = array.array('i',[self.ppParseSignalSimpleSms(bf_candt[l*64:(l+1)*64], self.frame_info[l].signal_is_signed_types[i] ,self.frame_info[l].signal_start_bits[i] ,self.frame_info[l].signal_sizes[i]) for i in range (self.frame_info[l].howmanysignal)])
+                k = 0
+                for j in range(l*9,(l+1)*9):
+                        #print sms_numbers, numbers, j
+                        sms_numbers.data.as_ints[j] = numbers[k]
+                        k=k+1
 
         return sms_numbers
     # @profile
