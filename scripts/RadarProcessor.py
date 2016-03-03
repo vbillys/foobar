@@ -461,9 +461,16 @@ def createSmsFrameInfo():
 	frame_info_0x440 = FrameSignalInfo(id = 0x440, signal_is_signed_types = array('B', [0]*9), signal_start_bits = array('B',[18,23,31,35,0,12,13,14,15]),
 			signal_is_integers = array('B', [1]*9), signal_sizes = array('B', [5,8,4,4,12,1,1,1,3]),signal_offsets = array('d',[.0]*9),
 			signal_factors = array('d', [1.]*9), howmanysignal = 9, sid = 0x440)
+	frame_info_rawtarget_0 = FrameSignalInfo(id = 0x441, signal_is_signed_types = array('B', [0]*5), signal_start_bits = array('B',[1,22,39,72,95]),
+			signal_is_integers = array('B', [1]*5), signal_sizes = array('B', [13,10,12,8,5]),signal_offsets = array('d',[.0]*5),
+			signal_factors = array('d', [1.]*5), howmanysignal = 5, sid = 0x441)
+	frame_info_rawtarget_1 = FrameSignalInfo(id = 0x441, signal_is_signed_types = array('B', [0]*9), signal_start_bits = array('B',[18,23,31,35,0,12,13,14,15]),
+			signal_is_integers = array('B', [1]*9), signal_sizes = array('B', [5,8,4,4,12,1,1,1,3]),signal_offsets = array('d',[.0]*9),
+			signal_factors = array('d', [1.]*9), howmanysignal = 9, sid = 0x441)
 	frame_info.append(frame_info_0x400)
 	frame_info.append(frame_info_0x420)
 	frame_info.append(frame_info_0x440)
+	frame_info.append(frame_info_rawtarget_0)
 	return frame_info
     # return FrameSignalInfo(
 		    # id = frame_id,
@@ -497,6 +504,9 @@ class RadarSms(RadarEsr):
 		# self.no_of_tracked_obj_id2 = array('B',[0])
 		self.nos_of_tracked_obj = array('i',[0]*3)
 		self.sensor_control_raw_targets = [array('B', [0]*64) for i in range(2)]
+		# self.sensor_raw_targets = [array('B', [0]*64) for i in range(93)]
+		self.sensor_raw_targets = array('B', [0]*128*93)
+		self.sensor_raw_targets_counts = array('B', [0]*3)
 
 	def processRadar(self,msg):
 		# print msg
@@ -517,7 +527,8 @@ class RadarSms(RadarEsr):
 			# print barray_unpacked #, self.buffered_frames_candt, padding
 
 			# print len(self.buffered_frames_candt)
-			_numbers = self.parse_can_sms.crackScanSms(self.buffered_frames_candt, array('B',[64]))
+			# _numbers = self.parse_can_sms.crackScanSms(self.buffered_frames_candt, self.sensor_raw_targets_counts)
+			_numbers = self.parse_can_sms.crackScanSms(self.buffered_frames_candt, self.sensor_raw_targets, self.sensor_raw_targets_counts)
 			# print _numbers
 			self.msg_pub.header.stamp = msg.header.stamp
 			self.msg_pub.header.frame_id = msg.header.frame_id
@@ -543,5 +554,20 @@ class RadarSms(RadarEsr):
 			self.sensor_control_raw_targets[0] = get64ByteArrayFromCanMsg(msg)
 		elif msg.id == 0x440 :
 			self.sensor_control_raw_targets[1] = get64ByteArrayFromCanMsg(msg)
+		elif msg.id >= 0x401 and msg.id <=0x41f:
+			data = get64ByteArrayFromCanMsg(msg)
+			# print data[7]
+			raw_i = data[7]*64+(msg.id-0x401)*128
+			self.sensor_raw_targets[raw_i:raw_i+64] = data
+		elif msg.id >= 0x421 and msg.id <=0x43f:
+			data = get64ByteArrayFromCanMsg(msg)
+			# print data[7]
+			raw_i = data[7]*64+(msg.id-0x421+32)*128
+			self.sensor_raw_targets[raw_i:raw_i+64] = data
 
+		elif msg.id >= 0x441 and msg.id <=0x45f:
+			data = get64ByteArrayFromCanMsg(msg)
+			# print data[7]
+			raw_i = data[7]*64+(msg.id-0x441+63)*128
+			self.sensor_raw_targets[raw_i:raw_i+64] = data
 

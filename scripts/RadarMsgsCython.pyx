@@ -274,24 +274,53 @@ cdef class ParseCan:
             #this_signal_number = self.twosComplement(this_signal_number, signal_sizes)
         return this_signal_number
 
+    cdef inline int ppParseSignalSimpleSms128(self,unsigned char [:] barray_unpacked, unsigned char signal_is_signed_types ,unsigned char signal_start_bits ,unsigned char signal_sizes ):
+        cdef int i
+        cdef unsigned char barray_unpacked_cc[128]
+        for i in range(128):
+            barray_unpacked_cc[((i/8)+1)*8 -1  - (i%8)] = barray_unpacked[i]
 
-    def crackScanSms(self,unsigned char[:]bf_candt, uint8_t[:]bf_count):
+        cdef int this_signal_number = self.getLittleEndiNumberFromBitNpArr(barray_unpacked_cc, signal_start_bits , signal_sizes)
+        return this_signal_number
+
+
+    def crackScanSms(self,unsigned char[:]bf_candt,unsigned char[:]bf_raw_target, uint8_t[:]bf_count):
         #cdef int[:] numbers = array.array('i',[self.ppParseSignalSimpleSms(bf_candt[0:64], self.frame_info[0].signal_is_signed_types[i] ,self.frame_info[0].signal_start_bits[i] ,self.frame_info[0].signal_sizes[i]) for i in range (self.frame_info[0].howmanysignal)])
         cdef int[:] numbers
+        cdef int[3] raw_target_counts
         cdef array.array sms_numbers = array.array('i', 27 * [0]) 
+        #cdef array.array raw_target_numbers
         #cdef int i, ii
         cdef int j, l, k
+        cdef int target_cnt, target_idx
+        cdef int total_no_of_raw_targets = 0
         #print len(numbers), self.frame_info[0].howmanysignal
 
         for l in range(3):
                 numbers = array.array('i',[self.ppParseSignalSimpleSms(bf_candt[l*64:(l+1)*64], self.frame_info[l].signal_is_signed_types[i] ,self.frame_info[l].signal_start_bits[i] ,self.frame_info[l].signal_sizes[i]) for i in range (self.frame_info[l].howmanysignal)])
                 k = 0
+                raw_target_counts[l] = numbers[0]
+                total_no_of_raw_targets = total_no_of_raw_targets + numbers[0]
                 for j in range(l*9,(l+1)*9):
                         #print sms_numbers, numbers, j
                         sms_numbers.data.as_ints[j] = numbers[k]
                         k=k+1
+        
+        if total_no_of_raw_targets > 0:
+            raw_target_numbers = array.array('i', total_no_of_raw_targets * [0] * 6)
+            k=0
+            for l in range(3):
+                for target_cnt in range(raw_target_counts[l]):
+                    raw_target_numbers[k*6] = l
+                    target_idx = l*128*31+target_cnt*128
+                    numbers = array.array('i',[self.ppParseSignalSimpleSms128(bf_raw_target[target_idx:target_idx+128], self.frame_info[3].signal_is_signed_types[i] ,self.frame_info[3].signal_start_bits[i] ,self.frame_info[3].signal_sizes[i]) for i in range (self.frame_info[3].howmanysignal)])
+                    for j in range(5):
+                        raw_target_numbers[k*6+1+j]= numbers[j]
+                    k=k+1
 
-        return sms_numbers
+            return sms_numbers +raw_target_numbers
+        else:
+            return sms_numbers
     # @profile
     # @jit
     def parseSignal(self,unsigned char [:] barray_unpacked, unsigned char [:] signal_sizes, unsigned char [:] signal_start_bits, unsigned char [:] signal_is_signed_types):
