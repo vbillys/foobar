@@ -223,6 +223,11 @@ add_executable(image_saver src/image_saver.cpp)
 target_link_libraries(image_saver ${roscpp_LIBRARIES} ${OpenCV_LIBS} ${HIREDIS_LIBRARIES} ${catkin_LIBRARIES}
 )
 
+
+add_executable(cloud_extract_one_ring src/cloud_extract_one_ring.cpp)
+target_link_libraries(cloud_extract_one_ring ${roscpp_LIBRARIES} ${PCL_LIBRARIES} ${Eigen3_LIBRARIES} ${HIREDIS_LIBRARIES} 
+)
+
 #  ${PCL_LIBRARIES}
 #############
 ## Install ##
