@@ -1,0 +1,10 @@
+DEVICES:
+-
+        interface: 'can0'
+        name_id: 'group_front_sms'
+
+OPTIONS:
+        name_resolution: 'name_id' # 'name_id' or 'interface'
+        #name_resolution: 'interface' # 'name_id' or 'interface'
+
+
