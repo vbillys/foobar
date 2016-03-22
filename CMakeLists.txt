@@ -30,6 +30,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   image_transport
   message_generation
+  libpointmatcher_ros
 )
 
 MESSAGE( STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH} )
@@ -45,6 +46,8 @@ find_package(Eigen REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Hiredis REQUIRED)
 find_package(Armadillo REQUIRED)
+
+find_package(libpointmatcher REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -140,6 +143,7 @@ include_directories(
   ${Eigen3_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS} ${HIREDIS_INCLUDE_DIR} /usr/include/hiredis
   ${ARMADILLO_INCLUDE_DIRS}
+  ${libpointmatcher_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -226,6 +230,13 @@ target_link_libraries(image_saver ${roscpp_LIBRARIES} ${OpenCV_LIBS} ${HIREDIS_L
 
 add_executable(cloud_extract_one_ring src/cloud_extract_one_ring.cpp)
 target_link_libraries(cloud_extract_one_ring ${roscpp_LIBRARIES} ${PCL_LIBRARIES} ${Eigen3_LIBRARIES} ${HIREDIS_LIBRARIES} 
+)
+
+
+add_executable(velo_2d src/velo_2d.cpp)
+target_link_libraries(velo_2d ${roscpp_LIBRARIES} ${PCL_LIBRARIES} ${Eigen3_LIBRARIES} ${HIREDIS_LIBRARIES} 
+  ${catkin_LIBRARIES}
+  ${libpointmatcher_LIBRARIES}
 )
 
 #  ${PCL_LIBRARIES}
