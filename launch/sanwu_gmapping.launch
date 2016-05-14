@@ -1,4 +1,6 @@
 <launch>
+<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser" 
+args="0.06 0.0 0.0 0.0 0.0 0.0 /base_link /laser 10" />
 <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
 <rosparam>
 odom_frame: odom
@@ -11,7 +13,7 @@ ymin: -15.0
 xmax: 18.0
 ymax: 15.0
 delta: 0.025
-base_frame: laser
+base_frame: base_link
 minimumScore: 50
 linearUpdate: 0.2
 angularUpdate: 0.25
