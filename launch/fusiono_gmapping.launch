@@ -1,0 +1,25 @@
+<launch>
+<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser" 
+args="0.1 0.0 0.00 0.0 0.0 0.0 /base_link /laser 10" />
+<node pkg="icp_test" type="pose_to_tf_pioneer.py" name="tf_odom_publisher" />
+<node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+<rosparam>
+odom_frame: odom
+map_update_interval: 5
+maxUrange: 15.5
+maxRange: 30.5
+particles: 80
+xmin: -20.0
+ymin: -10.0
+xmax: 50.0
+ymax: 50.0
+delta: 0.05
+base_frame: base_link
+minimumScore: 10.0
+linearUpdate: 0.5
+angularUpdate: 0.25
+temporalUpdate: -1.0
+</rosparam>
+</node>
+</launch>
+
