@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<launch>
+
+
+    <!-- run pointcloud_to_laserscan node -->
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+
+        <param name="use_inf" value="true"/>
+        <param name="use_concurrency" value="true"/>
+
+        <param name="target_frame" value="velodyne"/>
+	<param name="angle_min" value="-3.14159"/>
+	<param name="angle_max" value="3.14159"/>
+	<param name="min_height" value="2"/>
+	<param name="max_height" value="4"/>
+	<param name="scan_time" value="0.1"/>
+	<param name="angle_increment" value="0.00349065555"/>
+	<param name="range_min" value="0.1"/>
+	<param name="range_max" value="50"/>
+	<param name="use_inf" value="false"/>
+	
+	
+	<!--
+	<param name="target_frame" value="base_link"/>
+        -->
+	<!--<remap from="cloud_in" to="$(arg camera)/depth_registered/points_processed"/>-->
+	<remap from="cloud_in" to="velodyne_points"/>
+        <!--<remap from="scan" to="onering_laserscan"/>-->
+
+    </node>
+
+</launch>
