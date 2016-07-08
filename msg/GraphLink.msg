@@ -1,0 +1,2 @@
+string connected_to
+geometry_msgs/PoseWithCovariance rel_pose

@@ -38,13 +38,13 @@ LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../Armadillo/CMake/Armadillo"
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 find_package(Boost)
-find_package(Hiredis REQUIRED)
+#find_package(Hiredis REQUIRED)
 find_package( PCL REQUIRED )
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 find_package(OpenCV REQUIRED)
-find_package(Hiredis REQUIRED)
-find_package(Armadillo REQUIRED)
+#find_package(Hiredis REQUIRED)
+#find_package(Armadillo REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -83,6 +83,9 @@ find_package(Armadillo REQUIRED)
    GenericObjCanData.msg
 #   Message1.msg
 #   Message2.msg
+   GraphLink.msg
+   GraphNode.msg
+   GraphStruct.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -103,6 +106,7 @@ find_package(Armadillo REQUIRED)
  generate_messages(
    DEPENDENCIES
    std_msgs
+   geometry_msgs
  )
 
 ###################################
@@ -207,21 +211,21 @@ MESSAGE( STATUS "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS} )
 
 #ADD_LIBRARY(test STATIC IMPORTED)
 
-add_executable(cloud_test_crf src/cloud_test_crf.cpp src/cloud_util.cpp src/ring_process.cpp src/common.cpp src/data/velo_data.cpp)
-target_link_libraries(cloud_test_crf ${roscpp_LIBRARIES} ${PCL_LIBRARIES} ${Eigen3_LIBRARIES} ${HIREDIS_LIBRARIES} armadillo libtest.a
-)
-
-add_executable(cloud_repub src/cloud_repub.cpp)
-target_link_libraries(cloud_repub ${roscpp_LIBRARIES} ${PCL_LIBRARIES} ${Eigen3_LIBRARIES} ${HIREDIS_LIBRARIES}
-)
-
-add_executable(cloud_filter src/cloud_filter.cpp)
-target_link_libraries(cloud_filter ${roscpp_LIBRARIES} ${PCL_LIBRARIES} ${Eigen3_LIBRARIES} ${HIREDIS_LIBRARIES}
-)
-
-add_executable(image_saver src/image_saver.cpp)
-target_link_libraries(image_saver ${roscpp_LIBRARIES} ${OpenCV_LIBS} ${HIREDIS_LIBRARIES} ${catkin_LIBRARIES}
-)
+#add_executable(cloud_test_crf src/cloud_test_crf.cpp src/cloud_util.cpp src/ring_process.cpp src/common.cpp src/data/velo_data.cpp)
+#target_link_libraries(cloud_test_crf ${roscpp_LIBRARIES} ${PCL_LIBRARIES} ${Eigen3_LIBRARIES} ${HIREDIS_LIBRARIES} armadillo libtest.a
+#)
+#
+#add_executable(cloud_repub src/cloud_repub.cpp)
+#target_link_libraries(cloud_repub ${roscpp_LIBRARIES} ${PCL_LIBRARIES} ${Eigen3_LIBRARIES} ${HIREDIS_LIBRARIES}
+#)
+#
+#add_executable(cloud_filter src/cloud_filter.cpp)
+#target_link_libraries(cloud_filter ${roscpp_LIBRARIES} ${PCL_LIBRARIES} ${Eigen3_LIBRARIES} ${HIREDIS_LIBRARIES}
+#)
+#
+#add_executable(image_saver src/image_saver.cpp)
+#target_link_libraries(image_saver ${roscpp_LIBRARIES} ${OpenCV_LIBS} ${HIREDIS_LIBRARIES} ${catkin_LIBRARIES}
+#)
 
 #  ${PCL_LIBRARIES}
 #############
