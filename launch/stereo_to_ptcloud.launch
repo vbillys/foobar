@@ -1,0 +1,29 @@
+<launch>
+
+<arg name="approx_sync"             default="true"/>         <!-- if timestamps of the input topics are not synchronized -->
+<node  name="republish_left"  type="republish" pkg="image_transport" args="compressed in:=/camera/left/image_rect_color raw out:=/camera/left/image_rect_color" />
+<node  name="republish_right" type="republish" pkg="image_transport" args="compressed in:=/camera/right/image_rect_color raw out:=/camera/right/image_rect_color" />
+<group ns="rtabmap">   
+<!-- Stereo Odometry -->   
+<!--<node pkg="rtabmap_ros" type="stereo_odometry" name="stereo_odometry" output="screen">-->
+<!--<remap from="left/image_rect"       to="/camera/left/image_rect_color"/>-->
+<!--<remap from="right/image_rect"      to="/camera/right/image_rect_color"/>-->
+<!--<remap from="left/camera_info"      to="/camera/left/camera_info"/>-->
+<!--<remap from="right/camera_info"     to="/camera/right/camera_info"/>-->
+<!--<remap from="odom"                  to="/stereo_odometry"/>-->
+
+<!--<param name="Reg/Force3DoF"      type="bool" value="true"/>-->
+<!--<param name="frame_id"      type="string" value="base_link"/>-->
+<!--<param name="odom_frame_id" type="string" value="odom_stereo"/>-->
+<!--<param name="approx_sync"                 type="bool"   value="$(arg approx_sync)"/>-->
+
+<!--<param name="Odom/Strategy"      type="string" value="0"/> [> 0=Frame-to-Map, 1=Frame=to=Frame <]-->
+<!--<param name="Vis/EstimationType" type="string" value="0"/> [> 0=3D->3D 1=3D->2D (PnP) <]-->
+<!--<param name="Vis/MaxDepth"       type="string" value="10"/>-->
+<!--<param name="Vis/MinInliers"     type="string" value="10"/>-->
+<!--<param name="OdomF2M/MaxSize"    type="string" value="1000"/> -->
+<!--<param name="GFTT/MinDistance"   type="string" value="10"/>-->
+<!--<param name="GFTT/QualityLevel"  type="string" value="0.00001"/> -->
+<!--</node>-->
+</group>
+</launch>

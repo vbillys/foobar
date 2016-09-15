@@ -1,0 +1,9 @@
+<launch>
+<arg name="left_image_topic" default="/camera/left/image_rect_color" />
+<arg name="right_image_topic" default="/camera/right/image_rect_color" />
+<arg name="left_image_topic_relay" default="/camera/left/image_raw" />
+<arg name="right_image_topic_relay" default="/camera/right/image_raw" />
+<node  name="republish_left"  type="republish" pkg="image_transport" args="compressed in:=$(arg left_image_topic) raw out:=$(arg left_image_topic_relay)" />
+<node  name="republish_right" type="republish" pkg="image_transport" args="compressed in:=$(arg right_image_topic) raw out:=$(arg right_image_topic_relay)" />
+</launch>
+

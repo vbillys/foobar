@@ -1,0 +1,10 @@
+<launch>
+<arg name="rgb_image_topic" default="/camera/rgb/image_rect_color" />
+<arg name="depth_image_topic" default="/camera/depth/image_rect_raw" />
+<arg name="rgb_image_topic_relay" default="/camera/rgb/image_rect_color" />
+<arg name="depth_image_topic_relay" default="/camera/depth/image_rect_raw" />
+<node  name="republish_rgb"  type="republish" pkg="image_transport" args="compressed in:=$(arg rgb_image_topic) raw out:=$(arg rgb_image_topic_relay)" />
+<node  name="republish_depth" type="republish" pkg="image_transport" args="compressedDepth in:=$(arg depth_image_topic) raw out:=$(arg depth_image_topic_relay)" />
+<include file="$(find foobar)/launch/dancux_registered_asus.launch" />
+</launch>
+
