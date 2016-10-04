@@ -1,0 +1,15 @@
+<launch>
+<arg name="left_image_topic" default="/camera/left/image_rect_color/compressed" />
+<arg name="right_image_topic" default="/camera/right/image_rect_color/compressed" />
+<arg name="left_image_topic_throttled" default="/camera/left/image_rect_color_throttled/compressed" />
+<arg name="right_image_topic_throttled" default="/camera/right/image_rect_color_throttled/compressed" />
+<arg name="left_image_topic_throttled_orig" default="/camera/left/image_rect_color_throttled" />
+<arg name="right_image_topic_throttled_orig" default="/camera/right/image_rect_color_throttled" />
+<arg name="left_image_topic_relay" default="/camera/left/image_raw" />
+<arg name="right_image_topic_relay" default="/camera/right/image_raw" />
+<node name="throttle_left" type="throttle" pkg="topic_tools" args="messages $(arg left_image_topic) 4 $(arg left_image_topic_throttled)"/>
+<node name="throttle_right" type="throttle" pkg="topic_tools" args="messages $(arg right_image_topic) 4 $(arg right_image_topic_throttled)"/>
+<node  name="republish_left"  type="republish" pkg="image_transport" args="compressed in:=$(arg left_image_topic_throttled_orig) raw out:=$(arg left_image_topic_relay)" />
+<node  name="republish_right" type="republish" pkg="image_transport" args="compressed in:=$(arg right_image_topic_throttled_orig) raw out:=$(arg right_image_topic_relay)" />
+</launch>
+
